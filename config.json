@@ -5,7 +5,12 @@
   "active": false,
   "test_pattern": "TODO",
   "problems": [
-
+    "binary",
+    "octal",
+    "trinary",
+    "hexadecimal",
+    "leap",
+    "hamming"
   ],
   "deprecated": [
 
