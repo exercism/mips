@@ -20,7 +20,7 @@
 n: .word 6
 # input values (null terminated) & expected output values (word sized ints)
 ins:  .asciiz "1", "10", "17", "130", "2047", "1234567"
-outs: .word     1,    8,   15,    88,   1063,  342391
+outs: .word     1,    8,   15,    88,   1063,    342391
 
 failmsg: .asciiz "failed for test input: "
 expectedmsg: .asciiz ". expected "

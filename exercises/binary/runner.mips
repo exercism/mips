@@ -17,10 +17,10 @@
 .data
 
 # number of test cases
-n: .word 4
+n: .word 9
 # input values (null terminated) & expected output values (word sized ints)
-ins:  .asciiz "1", "10", "11", "100", "1001"
-outs: .word     1,   2,     3,    4,      9
+ins:  .asciiz "0", "1", "10", "11", "100", "1001", "11010", "10001101000", "000011111"
+outs: .word     0,   1,   2,     3,    4,       9,      26,          1128,          31
 
 failmsg: .asciiz "failed for test input: "
 okmsg: .asciiz "all tests passed"

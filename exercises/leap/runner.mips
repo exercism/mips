@@ -16,9 +16,9 @@
 
 .data
 
-n: .word 5                      # number of test cases
-ins:  .word 400, 4, 100, 5, 0   # input values
-outs: .word   1, 1,   0, 0, 1   # expected output values
+n: .word 7                      # number of test cases
+ins:  .word 1996, 1997, 1998, 1900, 1800, 2400, 2000  # input years
+outs: .word    1,    0,    0,    0,    0,    1,    1  # expected result
 
 failmsg: .asciiz "failed for test input: "
 okmsg: .asciiz "all tests passed"
