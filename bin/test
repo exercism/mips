@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# unofficial "strict mode"
+set -euo pipefail
+IFS=$'\n\t'
+
+MARS=`dirname $0`/mars-4-5.jar
+
+# test all test runners against example code
+function test-all {
+  log "Testing all exercises..."
+  for exercise in exercises/*; do
+    echo
+    test-one $exercise
+  done
+}
+
+# test an individual exercise
+function test-one {
+  exercise=$1
+  log "Testing $exercise..."
+  java -jar $MARS nc $exercise/runner.mips $exercise/example.mips
+}
+
+# log a message
+function log {
+  echo "*- $@"
+}
+
+# if called with interpreter, run fn that matches first arg
+[[ ${BASH_SOURCE[0]} = "$0" ]] && {
+  eval "$1" "${@:2}"
+}
