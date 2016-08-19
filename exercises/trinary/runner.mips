@@ -34,9 +34,9 @@ runner:
         la      $s2, outs
 
 run_test:
-        add     $a0, $s1, $zero         # move address of input str to a0
+        move    $a0, $s1                # move address of input str to a0
         jal     trinary_convert         # call subroutine under test
-        add     $v1, $zero, $v0         # move return value in v0 to v1 because we need v0 for syscall
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
 
         lw      $s4, 0($s2)             # read expected output from memory
         bne     $v1, $s4, exit_fail     # if expected doesn't match actual, jump to fail
@@ -68,7 +68,7 @@ exit_fail:
         syscall
 
         move    $a0, $s1                # print input that failed on
-        add     $v0, $zero, 4
+        li      $v0, 4
         syscall
 
         li      $a0, 1                  # set error code to 1
