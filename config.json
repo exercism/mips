@@ -10,7 +10,9 @@
     "trinary",
     "hexadecimal",
     "leap",
-    "hamming"
+    "hamming",
+    "rna-transcription",
+    "raindrops"
   ],
   "deprecated": [
 
