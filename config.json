@@ -11,8 +11,10 @@
     "hexadecimal",
     "leap",
     "hamming",
+    "rna-transcription",
     "isogram",
-    "triangle"
+    "triangle",
+    "raindrops"
   ],
   "deprecated": [
 
