@@ -12,6 +12,8 @@
     "leap",
     "hamming",
     "rna-transcription",
+    "isogram",
+    "triangle",
     "raindrops"
   ],
   "deprecated": [
