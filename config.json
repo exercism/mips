@@ -2,7 +2,7 @@
   "slug": "mips",
   "language": "MIPS Assembly",
   "repository": "https://github.com/exercism/xmips",
-  "active": false,
+  "active": true,
   "test_pattern": "TODO",
   "problems": [
     "binary",
