@@ -47,13 +47,15 @@ run_test:
         jal     clear_output            # zero out output location
         move    $a0, $s1                # move address of input str to a0
         jal     transcribe_rna          # call subroutine under test
+        move    $v1, $a1                # retain a copy of response from callee
 
 scan:
         lb      $s3, 0($s2)             # load one byte of the expectation
-        lb      $s4, 0($a1)             # load one byte of the actual
+        lb      $s4, 0($v1)             # load one byte of the actual
         bne     $s3, $s4, exit_fail     # if the two differ, the test has failed
         addi    $s2, $s2, 1             # point to next expectation byte
         addi    $v1, $v1, 1             # point to next actual byte
+        addi    $s1, $s1, 1             # point to next input byte
         bne     $s3, $zero, scan        # if one char (and therefore the other) was not null, loop
 
 done_scan:
@@ -81,7 +83,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        move    $a0, $a1                # print actual that failed on
+        move    $a0, $v1                # print actual that failed on
         li      $v0, 4
         syscall
 
