@@ -105,4 +105,4 @@ clear_output:
         jr      $ra
 
 # # Include your implementation here if you wish to run this from the MARS GUI.
-.include "example.mips"
+# .include "impl.mips"
