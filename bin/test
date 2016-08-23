@@ -19,7 +19,7 @@ function test-all {
 function test-one {
   exercise=$1
   log "Testing $exercise..."
-  java -jar $MARS nc $exercise/runner.mips $exercise/example.mips
+  java -jar $MARS ae1 nc $exercise/runner.mips $exercise/example.mips
 }
 
 # log a message
