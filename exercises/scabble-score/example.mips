@@ -24,10 +24,10 @@ loop:
         blt     $t1, $zero, downcase    # If negative, presume upper case, so downcase
 
 score_letter:
-        sll     $t1, $t1, 2		# compute offset in bytes
+        sll     $t1, $t1, 2             # compute offset in bytes
         addu    $t1, $t1, $t0           # use it to calcute address in lookup,
-	lw      $t3, 0($t1)             # retrieve its integer value,
-	addu	$v0, $v0, $t3		# add letter score to word score
+        lw      $t3, 0($t1)             # retrieve its integer value,
+        addu    $v0, $v0, $t3           # add letter score to word score
 
 increment:
         addi    $a0, $a0, 1             # Finally, increment the pointer
