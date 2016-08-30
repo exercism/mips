@@ -1,0 +1,46 @@
+# Compute the Scrabble score for a given word.
+#
+# Strategy: use a look-up table to increment the current score by value of each letter
+#
+# $a0 - input, pointer to null-terminated string of chars
+# $v0 - output, integer representing word score
+# $t0 - letter value lookup table
+# $t1 - an encountered character
+
+.globl scrabble_score
+
+scrabble_score:
+        li      $v0, 0                  # Reset set to 0.
+        la      $t0, lettervals         # Load address of lookup into register.
+
+loop:
+        lb      $t1, 0($a0)             # Load a character,
+        beq     $t1, $zero, done        # if end of string, return true.
+
+        addi    $t2, $t1, -65           # If less than 'A'...
+        blt     $t2, $zero, increment   # continue to next letter.
+
+        addi    $t1, $t1, -97           # Find offset from 'a'.
+        blt     $t1, $zero, downcase    # If negative, presume upper case, so downcase
+
+score_letter:
+        sll     $t1, $t1, 2		# compute offset in bytes
+        addu    $t1, $t1, $t0           # use it to calcute address in lookup,
+	lw      $t3, 0($t1)             # retrieve its integer value,
+	addu	$v0, $v0, $t3		# add letter score to word score
+
+increment:
+        addi    $a0, $a0, 1             # Finally, increment the pointer
+        j       loop                    # and loop.
+
+downcase:
+        addi    $t1, $t1, 32            # Upper -> lower ascii value
+        j       score_letter
+
+done:
+        jr      $ra
+
+.data
+
+                # A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q   R  S  T  U  V  W  X  Y  Z
+lettervals: .word 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
