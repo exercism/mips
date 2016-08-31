@@ -1,0 +1,11 @@
+# Encode a string using the Atbash cipher
+#
+# $a0 - input, pointer to null-terminated input string
+# $a1 - input, pointer to output string
+
+.globl atbash_cipher
+
+atbash_cipher:
+
+end:
+        jr $ra
