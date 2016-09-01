@@ -1,0 +1,35 @@
+.globl difference_of_squares
+
+#
+# Compute the difference between the sum of squares.
+#
+# Variables:
+#
+# $a0 - given value (as an int)
+# $v0 - final value - difference of squares
+# $t0 - square of sum
+# $t1 - sum of squares
+
+difference_of_squares:
+
+        move    $v0, $zero      # clear result
+        move    $t0, $zero      # clear square of sum
+        move    $t1, $zero      # clear sum of squares
+
+loop:
+        beqz    $a0, done       # if number is zero, we're done
+        add     $t0, $t0, $a0   # add number to sum
+
+        mult    $a0, $a0        # square number
+        mflo    $t2
+        add     $t1, $t1, $t2   # add to sum of squares
+        addi    $a0, $a0, -1    # decrement number
+        j       loop
+
+done:
+        mult    $t0, $t0        # square sum
+        mflo    $t0
+
+        sub     $v0, $t0, $t1   # find difference
+
+        jr $ra
