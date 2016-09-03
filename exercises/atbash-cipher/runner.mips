@@ -22,7 +22,7 @@
 # number of test cases
 n: .word 5
 # input values and expected output values (all null terminated)
-ins:  .asciiz "yes", "no", "OMG", "mindblowingly",   "The quick brown fox jumps over the lazy dog"
+ins:  .asciiz "yes", "no", "OMG", "mindblowingly",   "The quick brown fox jumps over the lazy dog."
 outs: .asciiz "bvh", "ml", "lnt", "nrmwy oldrm tob", "gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt"
 
 failmsg: .asciiz "failed for test input: "
@@ -39,15 +39,18 @@ runner:
         la      $s2, outs
 
         li      $v0, 9                  # code for allocating heap memory
-        li      $a0, 42                 # specify 42 bytes - length of longest expected output
+        li      $a0, 44                 # specify 44 bytes - length of longest expected output
         syscall
         move    $a1, $v0                # location of allocated memory is where callee writes result
         move    $s5, $v0                # also keep a copy for ourselves
 
 run_test:
         jal     clear_output            # zero out output location
-        lw      $a0, 0($s1)             # load input value into a0
+        move    $a0, $s1                # load input value into a0
+        move    $a1, $s5
         jal     atbash_cipher           # call subroutine under test
+        move    $s6, $a1                # take copy of output value
+        move    $s7, $s2
 
 scan:
         lb      $s3, 0($s2)             # load one byte of the expectation
@@ -57,8 +60,13 @@ scan:
         addi    $a1, $a1, 1             # point to next actual byte
         bne     $s3, $zero, scan        # if one char (and therefore the other) was not null, loop
 
+input_scan:
+        addi    $s1, $s1, 1
+        lb      $s3, 0($s1)
+        bne     $s3, $zero, input_scan
+
 done_scan:
-        addi    $s1, $s1, 4             # point to next input word
+        addi    $s1, $s1, 1             # point to next input word
         sub     $s0, $s0, 1             # decrement num of tests left to run
         bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
 
@@ -83,7 +91,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        move    $a0, $a1                # print actual that failed on
+        move    $a0, $s6                # print actual that failed on
         li      $v0, 4
         syscall
 
@@ -91,7 +99,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        move    $a0, $s2                # print expected value that failed on
+        move    $a0, $s7                # print expected value that failed on
         li      $v0, 4
         syscall
 
@@ -104,6 +112,13 @@ clear_output:
         sw      $zero, 4($s5)
         sw      $zero, 8($s5)
         sw      $zero, 12($s5)
+        sw      $zero, 16($s5)
+        sw      $zero, 20($s5)
+        sw      $zero, 24($s5)
+        sw      $zero, 28($s5)
+        sw      $zero, 32($s5)
+        sw      $zero, 36($s5)
+        sw      $zero, 40($s5)
         jr      $ra
 
 # # Include your implementation here if you wish to run this from the MARS GUI.
