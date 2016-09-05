@@ -3,7 +3,7 @@
   "language": "MIPS Assembly",
   "repository": "https://github.com/exercism/xmips",
   "active": true,
-  "test_pattern": "TODO",
+  "test_pattern": "runner.mips",
   "problems": [
     "binary",
     "octal",
