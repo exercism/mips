@@ -1,0 +1,47 @@
+# Encode a string using the Atbash cipher
+#
+# $a0 - input, pointer to null-terminated input string
+# $a1 - input, pointer to output string
+
+.globl atbash_cipher
+
+atbash_cipher:
+
+        move    $t0, $a0                        # copy input address
+        move    $t1, $a1                        # copy output address
+        move    $t3, $zero                      # clear character written count
+
+loop:
+        lb      $t2, 0($t0)                     # load next input byte
+        beqz    $t2, done                       # if null, done
+
+        bgt     $t2, 'z', next_char             # if greater than 'z', ignore
+        bge     $t2, 'a', space_check           # if greater than or equal to 'a', proceed
+        bgt     $t2, 'Z', next_char             # if greater than 'Z', ignore
+        blt     $t2, 'A', next_char             # if less than 'A', ignore
+        addi    $t2, $t2, 32                    # convert to lower case
+
+space_check:
+        bne     $t3, 5, encode                  # if not written 5 characters yet, jump to encode
+
+        li      $t4, 32                         # write space to output
+        sb      $t4, 0($t1)
+        addi    $t1, $t1, 1                     # increment output address
+        move    $t3, $zero                      # reset character written count
+
+encode:
+        li      $t4, 'z'
+        subi    $t2, $t2, 'a'                   # calculate offset from 'a'
+        sub     $t2, $t4, $t2                   # calculate cipher character, subtract offset from 'z'
+
+        sb      $t2, 0($t1)                     # store cipher character
+        addi    $t1, $t1, 1
+        addi    $t3, $t3, 1                     # increment character written count
+
+next_char:
+        addi    $t0, $t0, 1                     # move to next input character
+        j       loop
+
+done:
+        sb      $zero, 0($t1)                   # write null terminator
+        jr $ra
