@@ -17,7 +17,8 @@
     "triangle",
     "atbash-cipher",
     "scrabble-score",
-    "raindrops"
+    "raindrops",
+    "nth-prime"
   ],
   "deprecated": [
 

@@ -6,6 +6,8 @@ primes: .word 2, 3, 5
 
 .text
 
+.globl  nth_prime
+
 nth_prime:
     addi    $sp, $sp, -4        #save return address to stack
     sw      $ra, 0($sp)
