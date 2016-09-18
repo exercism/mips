@@ -1,0 +1,93 @@
+
+.data
+
+primes: .word 2, 3, 5
+        .space 500
+
+.text
+
+.globl  nth_prime
+
+nth_prime:
+    addi    $sp, $sp, -4        #save return address to stack
+    sw      $ra, 0($sp)
+
+    move    $t4, $a0
+
+    addi    $t0, $a0, -1        #index of array
+
+    li      $t2, 4              #index * length of integer
+    mul     $t0, $t0, $t2
+	la		$t2, primes
+	add		$t0, $t0, $t2
+
+    lw      $v0, 0($t0)         #check if array index is null
+    la      $t0, primes          #array index, if v0 is null
+    beq     $v0, $zero, find_null
+
+    addi    $sp, $sp, 4
+    jr      $ra
+
+find_null:
+    lw      $t3, 0($t0)         #if null, start loop from here
+    beq     $t3, $zero, loop_primes
+
+    addi    $t0, $t0, 4         #increment the size of an integer
+    move    $t1,$t3             #save this, in case it's the last prime
+    j       find_null
+
+loop_primes:
+    addi    $t1, $t1, 2
+    move    $a0, $t1
+    jal     is_prime
+    bne     $v0, $zero, prime_found
+    
+    j		loop_primes
+
+prime_found:
+    sw      $t1, 0($t0)
+    addi    $t0, $t0, 4
+
+   	la		$t2, primes
+   	sub		$t2, $t0, $t2
+    div     $t2, $t2, 4 
+   
+    beq     $t2, $t4, done
+	
+    j       loop_primes
+
+done:
+    move    $v0, $t1
+    lw      $ra, 0($sp)         #restore stack
+    addi    $sp, $sp, 4
+    jr      $ra
+
+
+is_prime:
+    la      $t7, primes
+    move    $t6, $zero
+    
+is_prime_loop:
+    li      $t5, 4              #multiply index by int size
+    mul     $t5, $t6, $t5       
+    add     $t5, $t5, $t7       #add to address of primes
+    lw      $t5, 0($t5)         #load prime
+    
+    beq     $t5, $zero, isprime_true
+
+    rem     $t5, $a0, $t5       #check if factor of a0
+    beq     $t5, $zero, isprime_false
+    
+    addi    $t6, $t6, 1
+
+    j       is_prime_loop
+
+isprime_true:
+    li      $v0, 1
+    jr      $ra
+
+isprime_false:
+    li      $v0, 0
+    jr      $ra
+
+
