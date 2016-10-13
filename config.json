@@ -4,21 +4,77 @@
   "repository": "https://github.com/exercism/xmips",
   "active": true,
   "test_pattern": "runner.mips",
-  "problems": [
-    "binary",
-    "octal",
-    "trinary",
-    "hexadecimal",
-    "leap",
-    "difference-of-squares",
-    "hamming",
-    "rna-transcription",
-    "isogram",
-    "triangle",
-    "atbash-cipher",
-    "scrabble-score",
-    "raindrops",
-    "nth-prime"
+  "exercises": [
+    {
+      "slug": "binary",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "octal",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "trinary",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "hexadecimal",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "leap",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "difference-of-squares",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "hamming",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "rna-transcription",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "isogram",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "triangle",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "atbash-cipher",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "scrabble-score",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "raindrops",
+      "difficulty": 1,
+      "topics": []
+    },
+    {
+      "slug": "nth-prime",
+      "difficulty": 1,
+      "topics": []
+    }
   ],
   "deprecated": [
 
