@@ -4,22 +4,6 @@
   "repository": "https://github.com/exercism/xmips",
   "active": true,
   "test_pattern": "runner.mips",
-  "problems": [
-    "binary",
-    "octal",
-    "trinary",
-    "hexadecimal",
-    "leap",
-    "difference-of-squares",
-    "hamming",
-    "rna-transcription",
-    "isogram",
-    "triangle",
-    "atbash-cipher",
-    "scrabble-score",
-    "raindrops",
-    "nth-prime"
-  ],
   "exercises": [
     {
       "slug": "binary",
