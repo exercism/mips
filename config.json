@@ -1,7 +1,7 @@
 {
   "slug": "mips",
   "language": "MIPS Assembly",
-  "repository": "https://github.com/exercism/xmips",
+  "repository": "https://github.com/exercism/mips",
   "active": true,
   "test_pattern": "runner.mips",
   "deprecated": [
