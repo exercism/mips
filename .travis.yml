@@ -3,4 +3,4 @@ language: java
 script:
   - bin/test test-all
   - bin/fetch-configlet
-  - bin/configlet .
+  - bin/configlet lint .
