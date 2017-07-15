@@ -4,107 +4,146 @@
   "repository": "https://github.com/exercism/mips",
   "active": true,
   "test_pattern": "runner.mips",
-  "deprecated": [
-
-  ],
   "foregone": [
 
   ],
   "exercises": [
     {
-      "difficulty": 1,
+      "uuid": "5fd96880-6af2-415d-9b81-8c6eeffc3a38",
       "slug": "binary",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "9a3501ad-6f6f-4899-af8b-a42379928201",
       "slug": "octal",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "69464a1e-3da5-41ad-85fa-46e7cd009a1b",
       "slug": "trinary",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "4bb585a0-b217-4e97-87d2-ed573449a51a",
       "slug": "hexadecimal",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "d3026f71-47d0-44d1-92ac-204404d4e26e",
       "slug": "leap",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "9eee92a9-cae9-4388-88aa-6779f468e864",
       "slug": "difference-of-squares",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",
       "slug": "hamming",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
       "slug": "rna-transcription",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
       "slug": "isogram",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "50cacd4d-56c2-4331-b84f-7c91e4b12c35",
       "slug": "triangle",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",
       "slug": "atbash-cipher",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "42c7d965-c56c-437f-b513-19bcbcedef01",
       "slug": "scrabble-score",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "d294d722-8ea2-461e-86d8-0fecb6c5637a",
       "slug": "raindrops",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
     },
     {
-      "difficulty": 1,
+      "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
       "slug": "nth-prime",
+      "core": false,
+      "unlocked_by": null,
+      "difficulty": 1,
       "topics": [
 
       ]
