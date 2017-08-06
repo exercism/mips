@@ -71,7 +71,7 @@
       "slug": "hamming",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 3,
       "topics": [
 
       ]
@@ -81,7 +81,7 @@
       "slug": "rna-transcription",
       "core": false,
       "unlocked_by": "hamming",
-      "difficulty": 1,
+      "difficulty": 3,
       "topics": [
 
       ]
@@ -91,7 +91,7 @@
       "slug": "isogram",
       "core": false,
       "unlocked_by": "hamming",
-      "difficulty": 1,
+      "difficulty": 3,
       "topics": [
 
       ]
@@ -101,7 +101,7 @@
       "slug": "triangle",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 2,
       "topics": [
 
       ]
@@ -111,7 +111,7 @@
       "slug": "atbash-cipher",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 4,
       "topics": [
 
       ]
@@ -121,7 +121,7 @@
       "slug": "scrabble-score",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 5,
       "topics": [
 
       ]
@@ -131,7 +131,7 @@
       "slug": "raindrops",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 5,
       "topics": [
 
       ]
@@ -141,7 +141,7 @@
       "slug": "nth-prime",
       "core": true,
       "unlocked_by": null,
-      "difficulty": 1,
+      "difficulty": 7,
       "topics": [
 
       ]
