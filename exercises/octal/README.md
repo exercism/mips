@@ -1,15 +1,10 @@
 # Octal
 
-Convert an octal number, represented as a string (e.g. '1735263'), to its
-decimal equivalent using first principles (i.e. no, you may not use built-in or
-external libraries to accomplish the conversion).
-
-Implement octal to decimal conversion.  Given an octal input
-string, your program should produce a decimal output.
+Convert an octal number, represented as a string of ascii values (e.g. "1735263"), to its
+decimal equivalent using first principles. For instance, given the input "10", your program
+should return the integer 8.
 
 ## Note
-- Implement the conversion yourself.
-  Do not use something else to perform the conversion for you.
 - Treat invalid input as octal 0.
 
 ## About Octal (Base-8)
