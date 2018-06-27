@@ -123,6 +123,17 @@
       "unlocked_by": null,
       "difficulty": 5,
       "topics": []
+    },
+    {
+      "slug": "collatz-conjecture",
+      "uuid": "43278c5c-8a2d-4f0e-9fd2-9a1161f90638",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 2,
+      "topics": [
+          "functions",
+          "mathematics"
+      ]
     }
   ]
 }

@@ -1,0 +1,44 @@
+# Return number of steps it takes to get to 1 $v0
+# applying Collatz Conjecture to a number $a0
+#
+# $a0 - input number
+# $v0 - output number of steps
+
+        .globl       collatz_conjecture
+
+collatz_conjecture:
+        sub         $sp, $sp, 4
+        sw          $a0, ($sp)          # save a0
+
+        move        $v0, $zero          # reset $v0 to 0
+
+next_step:
+        ble         $a0, $zero, invalid_input
+        beq         $a0, 1, end_collatz_conjecture # if a0 is 1 return 0
+
+        addiu       $v0, $v0, 1         # increment counter
+
+        li          $t0, 2              # t0 is 2
+        divu        $a0, $t0            # divide a0 by 2
+        mfhi        $t0                 # t0 is 0 if a0 is even
+even:
+        bnez        $t0, odd
+        mflo        $a0                 # if a0 is even divide it by 2
+        j           next_step
+odd:
+        li          $t0, 3              # t0 is 3
+        multu       $a0, $t0            # multiply a0 by 3
+        mflo        $a0                 # rewrite a0 with the result
+        addiu       $a0, $a0, 1         # and add 1 to it
+        j           next_step
+
+end_collatz_conjecture:
+
+        lb          $a0, ($sp)
+        add         $sp, $sp, 4         # restore a0
+
+        jr          $ra
+
+invalid_input:
+        addi        $v0, $zero, -1      # output -1 for invalid input
+        j           end_collatz_conjecture
