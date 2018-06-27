@@ -1,0 +1,53 @@
+#
+# Test hello_world with some examples
+#
+# $s0 - copy of the pointer into the output
+# $s1 - pointer into the expected
+#
+# hello_world must:
+# - be named hello_world and declared as global
+# - follow the convention of using the t0-9 registers for temporary storage
+# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
+# - write a zero-terminated string representing the return value and return its address with $v0
+        .data
+
+expected_output: .asciiz "Hello, World!"
+errmsg: .asciiz     "expected 'Hello, World!' written at $v0"
+okmsg:  .asciiz     "all tests passed"
+
+
+        .text
+
+runner:
+        jal         hello_world         # call subroutine under test
+        move        $s0, $v0            # save address of the output to s0
+        la          $s1, expected_output# s1 points to the first byte of the expected output
+
+compare:
+        lb          $t0, ($s0)          # load test byte
+        lb          $t1, ($s1)          # load expected byte
+        bne         $t0, $t1, exit_fail # if bytes differ - fail
+        beqz        $t0, exit_ok        # reached null terminator and strings were equal so far
+        addiu       $s0, $s0, 1         # advance output address
+        addiu       $s1, $s1, 1         # advance expected's address
+        j compare
+
+exit_ok:
+        la          $a0, okmsg          # put address of okmsg into a0
+        li          $v0, 4              # 4 is print string
+        syscall
+
+        li          $v0, 10             # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la          $a0, errmsg
+        li          $v0, 4
+        syscall
+
+        li          $a0, 1              # set error code to 1
+        li          $v0, 17             # 17 is exit with error
+        syscall
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+# .include "impl.mips"

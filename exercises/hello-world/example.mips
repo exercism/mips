@@ -1,0 +1,44 @@
+        .globl      hello_world
+
+hello_world:
+        sub         $sp, $sp, 4
+        sw          $a0, ($sp)          # push a0 to stack since we modify it
+
+        li          $v0, 9              # allocate heap
+        li          $a0, 14             # length of "Hello, World!" including \0
+        syscall
+
+        li          $t0, 'H'
+        sb          $t0, 0($v0)
+        li          $t0, 'e'
+        sb          $t0, 1($v0)
+        li          $t0, 'l'
+        sb          $t0, 2($v0)
+        li          $t0, 'l'
+        sb          $t0, 3($v0)
+        li          $t0, 'o'
+        sb          $t0, 4($v0)
+        li          $t0, ','
+        sb          $t0, 5($v0)
+        li          $t0, ' '
+        sb          $t0, 6($v0)
+        li          $t0, 'W'
+        sb          $t0, 7($v0)
+        li          $t0, 'o'
+        sb          $t0, 8($v0)
+        li          $t0, 'r'
+        sb          $t0, 9($v0)
+        li          $t0, 'l'
+        sb          $t0, 10($v0)
+        li          $t0, 'd'
+        sb          $t0, 11($v0)
+        li          $t0, '!'
+        sb          $t0, 12($v0)
+        move        $t0, $zero          # terminate the string
+        sb          $t0, 13($v0)
+
+end_hello_world:
+        lw          $a0, ($sp)
+        add         $sp, $sp, 4         # restore a0 by popping it from the stack
+        jr          $ra
+
