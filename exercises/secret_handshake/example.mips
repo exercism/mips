@@ -1,0 +1,137 @@
+# 0x01 - wink
+# 0x02 - double blink
+# 0x04 - close your eyes
+# 0x08 - jump
+#
+# 0x10 - Reverse the order of the operations in the secret handshake.
+#
+# 0x03 = "wink, double blink"
+# 0x13 = "double blink, wink"
+#
+# $a0 - input pattern (for example 0x13)
+# $a1 - input, pointer to expected locaiton of transcribed string
+# $s0 - copy of the input pattern
+# $s1 - reverse order flag
+# $s2 - total of actions performed ("wink, double blink" - 2)
+
+
+        .globl      secret_handshake
+
+secret_handshake:
+        sub         $sp, $sp, 4
+        sw          $ra, ($sp)          # push $ra
+        sub         $sp, $sp, 4
+        sw          $a0, ($sp)          # push $a0
+        sub         $sp, $sp, 4
+        sw          $a1, ($sp)          # push $a1
+        sub         $sp, $sp, 4
+        sw          $s0, ($sp)          # push $s0
+        sub         $sp, $sp, 4
+        sw          $s1, ($sp)          # push $s1
+        sub         $sp, $sp, 4
+        sw          $s2, ($sp)          # push $s2
+
+
+        move        $s0, $a0            # $s0 is the input for secret_handshake
+        and         $s1, $s0, 0x10      # non zero if reverse
+        move        $s2, $zero          # handshake action count
+        bnez        $s1, write_jump     # if reverse - start from the last one
+
+
+write_wink:
+        and         $t0, $s0, 0x1       # compare pattern
+        beqz        $t0, end_write_wink #skip rest if pattern didn't match
+        la          $a0, wink           # write 
+        jal         write_word          # the word
+        move        $a1, $v0            # set output $a1 to the last byte written by the write_word
+        add         $s2, $s2, 1         # count in the action
+end_write_wink:
+        bnez        $s1, remove_trailing_comma_and_space # if reverse - first is last
+
+
+write_double_blink:
+        and         $t0, $s0, 0x2
+        beqz        $t0, end_write_double_blink
+        la          $a0, double_blink
+        jal         write_word
+        move        $a1, $v0
+        add         $s2, $s2, 1
+end_write_double_blink:
+        bnez        $s1, write_wink     # if reverse - previous is next
+
+
+write_close_your_eyes:
+        and         $t0, $s0, 0x4
+        beqz        $t0, end_write_close_your_eyes
+        la          $a0, close_your_eyes
+        jal         write_word
+        move        $a1, $v0
+        add         $s2, $s2, 1
+end_write_close_your_eyes:
+        bnez        $s1, write_double_blink # if reverse - previous is next
+
+
+write_jump:
+        and         $t0, $s0, 0x8
+        beqz        $t0, end_write_jump
+        la          $a0, jump
+        jal         write_word
+        move        $a1, $v0
+        add         $s2, $s2, 1
+end_write_jump:
+        bnez        $s1, write_close_your_eyes # if reverse - previous is next
+
+
+remove_trailing_comma_and_space:
+        beqz        $s2, end_secret_handshake
+        sub         $v0, $v0, 2         # backtrack a character
+        sb          $zero, ($v0)        # terminate string
+
+
+end_secret_handshake:
+        lw          $s2, ($sp)
+        add         $sp, $sp, 4         # pop $s2
+        lw          $s1, ($sp)
+        add         $sp, $sp, 4         # pop $s1
+        lw          $s0, ($sp)
+        add         $sp, $sp, 4         # pop $s0
+        lw          $a1, ($sp)
+        add         $sp, $sp, 4         # pop $a1
+        lw          $a0, ($sp)
+        add         $sp, $sp, 4         # pop $a0
+        lw          $ra, ($sp)
+        add         $sp, $sp, 4         # pop $ra
+        jr          $ra
+
+
+# $a1 - output first byte's location
+# $v0 - output last byte's location
+write_word:
+        sub         $sp, $sp, 4
+        sw          $a0, ($sp)          # push $a0
+        sub         $sp, $sp, 4
+        sw          $a1, ($sp)          # push $a1
+
+next_char:
+        lb          $t0, ($a0)          # load next char
+        beqz        $t0, end_write_word # stop on null
+
+        sb          $t0, ($a1)          # write to output
+
+        add         $a0, $a0, 1         # advance input
+        add         $a1, $a1, 1         # advance output
+        j           next_char
+
+end_write_word:
+        move        $v0, $a1
+        lw          $a1, ($sp)
+        add         $sp, $sp, 4         # pop $a1
+        lw          $a0, ($sp)
+        add         $sp, $sp, 4         # pop $a0
+        jr          $ra
+
+        .data
+wink:   .asciiz     "wink, "
+double_blink: .asciiz "double blink, "
+close_your_eyes: .asciiz "close your eyes, "
+jump:   .asciiz     "jump, "

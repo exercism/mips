@@ -115,6 +115,14 @@
       "unlocked_by": null,
       "difficulty": 7,
       "topics": []
+    },
+    {
+      "slug": "secret-handshake",
+      "uuid": "a77c7429-afa3-4783-b4bb-8cdbfc5a9505",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 5,
+      "topics": []
     }
   ]
 }
