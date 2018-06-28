@@ -1,140 +1,9 @@
 {
   "language": "MIPS Assembly",
   "active": true,
-  "blurb": "",
+  "blurb": "MIPS is a great way to learn computer architecture. MARS IDE used in this track is cross platform and makes learning MIPS easy.",
   "test_pattern": "runner.mips",
   "exercises": [
-    {
-      "slug": "binary",
-      "uuid": "5fd96880-6af2-415d-9b81-8c6eeffc3a38",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "octal",
-      "uuid": "9a3501ad-6f6f-4899-af8b-a42379928201",
-      "core": false,
-      "unlocked_by": "binary",
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "trinary",
-      "uuid": "69464a1e-3da5-41ad-85fa-46e7cd009a1b",
-      "core": false,
-      "unlocked_by": "binary",
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "hexadecimal",
-      "uuid": "4bb585a0-b217-4e97-87d2-ed573449a51a",
-      "core": false,
-      "unlocked_by": "binary",
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "leap",
-      "uuid": "d3026f71-47d0-44d1-92ac-204404d4e26e",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "difference-of-squares",
-      "uuid": "9eee92a9-cae9-4388-88aa-6779f468e864",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 1,
-      "topics": []
-    },
-    {
-      "slug": "hamming",
-      "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 3,
-      "topics": []
-    },
-    {
-      "slug": "rna-transcription",
-      "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
-      "core": false,
-      "unlocked_by": "hamming",
-      "difficulty": 3,
-      "topics": []
-    },
-    {
-      "slug": "isogram",
-      "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
-      "core": false,
-      "unlocked_by": "hamming",
-      "difficulty": 3,
-      "topics": []
-    },
-    {
-      "slug": "triangle",
-      "uuid": "50cacd4d-56c2-4331-b84f-7c91e4b12c35",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 2,
-      "topics": []
-    },
-    {
-      "slug": "atbash-cipher",
-      "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 4,
-      "topics": []
-    },
-    {
-      "slug": "scrabble-score",
-      "uuid": "42c7d965-c56c-437f-b513-19bcbcedef01",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 5,
-      "topics": []
-    },
-    {
-      "slug": "raindrops",
-      "uuid": "d294d722-8ea2-461e-86d8-0fecb6c5637a",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 5,
-      "topics": []
-    },
-    {
-      "slug": "nth-prime",
-      "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 7,
-      "topics": []
-    },
-    {
-      "slug": "secret-handshake",
-      "uuid": "a77c7429-afa3-4783-b4bb-8cdbfc5a9505",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 5,
-      "topics": []
-    },
-    {
-      "slug": "collatz-conjecture",
-      "uuid": "43278c5c-8a2d-4f0e-9fd2-9a1161f90638",
-      "core": true,
-      "unlocked_by": null,
-      "difficulty": 2,
-      "topics": [
-        "functions",
-        "mathematics"
-      ]
-    },
     {
       "slug": "hello-world",
       "uuid": "c7529bb3-db3f-4c8e-9e67-9a71c84bee3f",
@@ -143,7 +12,179 @@
       "unlocked_by": null,
       "difficulty": 1,
       "topics": [
+        "strings",
         "text_formatting"
+      ]
+    },
+    {
+      "slug": "binary",
+      "uuid": "5fd96880-6af2-415d-9b81-8c6eeffc3a38",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 1,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "octal",
+      "uuid": "9a3501ad-6f6f-4899-af8b-a42379928201",
+      "core": false,
+      "unlocked_by": "binary",
+      "difficulty": 1,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "trinary",
+      "uuid": "69464a1e-3da5-41ad-85fa-46e7cd009a1b",
+      "core": false,
+      "unlocked_by": "binary",
+      "difficulty": 1,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "hexadecimal",
+      "uuid": "4bb585a0-b217-4e97-87d2-ed573449a51a",
+      "core": false,
+      "unlocked_by": "binary",
+      "difficulty": 1,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "leap",
+      "uuid": "d3026f71-47d0-44d1-92ac-204404d4e26e",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 1,
+      "topics": [
+        "bitwise_operations"
+      ]
+    },
+    {
+      "slug": "difference-of-squares",
+      "uuid": "9eee92a9-cae9-4388-88aa-6779f468e864",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 1,
+      "topics": [
+        "algorithms",
+        "mathematics"
+      ]
+    },
+    {
+      "slug": "hamming",
+      "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 3,
+      "topics": [
+        "mathematics",
+        "strings"
+      ]
+    },
+    {
+      "slug": "rna-transcription",
+      "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
+      "core": false,
+      "unlocked_by": "hamming",
+      "difficulty": 3,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "isogram",
+      "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
+      "core": false,
+      "unlocked_by": "hamming",
+      "difficulty": 3,
+      "topics": [
+        "bitwise_operations",
+        "strings"
+      ]
+    },
+    {
+      "slug": "triangle",
+      "uuid": "50cacd4d-56c2-4331-b84f-7c91e4b12c35",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 2,
+      "topics": [
+        "bitwise_operations",
+        "mathematics"
+      ]
+    },
+    {
+      "slug": "atbash-cipher",
+      "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 4,
+      "topics": [
+        "cryptography"
+      ]
+    },
+    {
+      "slug": "scrabble-score",
+      "uuid": "42c7d965-c56c-437f-b513-19bcbcedef01",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 5,
+      "topics": [
+        "games"
+      ]
+    },
+    {
+      "slug": "raindrops",
+      "uuid": "d294d722-8ea2-461e-86d8-0fecb6c5637a",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 5,
+      "topics": [
+        "logic",
+        "strings"
+      ]
+    },
+    {
+      "slug": "nth-prime",
+      "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 7,
+      "topics": [
+        "mathematics",
+        "sequences"
+      ]
+    },
+    {
+      "slug": "secret-handshake",
+      "uuid": "a77c7429-afa3-4783-b4bb-8cdbfc5a9505",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 5,
+      "topics": [
+        "bitwise_operations"
+      ]
+    },
+    {
+      "slug": "collatz-conjecture",
+      "uuid": "43278c5c-8a2d-4f0e-9fd2-9a1161f90638",
+      "core": true,
+      "unlocked_by": null,
+      "difficulty": 2,
+      "topics": [
+        "mathematics"
       ]
     }
   ]
