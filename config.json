@@ -131,20 +131,20 @@
       "unlocked_by": null,
       "difficulty": 2,
       "topics": [
-          "functions",
-          "mathematics"
+        "functions",
+        "mathematics"
       ]
     },
     {
-        "slug": "hello-world",
-        "uuid": "c7529bb3-db3f-4c8e-9e67-9a71c84bee3f",
-        "core": true,
-        "auto_approve": true,
-        "unlocked_by": null,
-        "difficulty": 1,
-        "topics": [
-            "text_formatting"
-        ]
+      "slug": "hello-world",
+      "uuid": "c7529bb3-db3f-4c8e-9e67-9a71c84bee3f",
+      "core": true,
+      "auto_approve": true,
+      "unlocked_by": null,
+      "difficulty": 1,
+      "topics": [
+        "text_formatting"
+      ]
     }
   ]
 }
