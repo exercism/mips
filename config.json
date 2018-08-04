@@ -10,7 +10,9 @@
       "core": true,
       "unlocked_by": null,
       "difficulty": 1,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     },
     {
       "slug": "octal",
@@ -18,7 +20,9 @@
       "core": false,
       "unlocked_by": "binary",
       "difficulty": 1,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     },
     {
       "slug": "trinary",
@@ -26,7 +30,9 @@
       "core": false,
       "unlocked_by": "binary",
       "difficulty": 1,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     },
     {
       "slug": "hexadecimal",
@@ -34,7 +40,9 @@
       "core": false,
       "unlocked_by": "binary",
       "difficulty": 1,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     },
     {
       "slug": "leap",
@@ -50,7 +58,9 @@
       "core": true,
       "unlocked_by": null,
       "difficulty": 1,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     },
     {
       "slug": "hamming",
@@ -114,7 +124,9 @@
       "core": true,
       "unlocked_by": null,
       "difficulty": 7,
-      "topics": []
+      "topics": [
+        "math"
+      ]
     }
   ]
 }
