@@ -3,7 +3,7 @@
   "maintainers": [
     {
       "github_username": "ozan",
-      "alumnus": false,
+      "alumnus": true,
       "show_on_website": true,
       "name": "Ozan Onay",
       "link_text": "Bradfield School of Computer Science",
