@@ -61,8 +61,8 @@ exit_fail:
         li      $v0, 4                  # 4 is print string
         syscall
 
-        move    $a0, $s1                # print input that failed on
-        li      $v0, 4
+        lw      $a0, ($s1)              # print input that failed on
+        li      $v0, 1
         syscall
 
         li      $a0, 1                  # set error code to 1
