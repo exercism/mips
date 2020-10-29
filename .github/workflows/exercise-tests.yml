@@ -18,6 +18,12 @@ jobs:
         java-version: [ 1.6, 6.0.83, 7, 7.0.181, 8, 8.0.192, 9.0.x, 10, 11.0.x, 11.0.3, 12, 13 ]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
+        exclude:
+          - os: macOS-latest
+            java-version: 1.6
+          - os: macOS-latest
+            java-version: 6.0.83
+
     steps:
       - uses: actions/checkout@v2
 
