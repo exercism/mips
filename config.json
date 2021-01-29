@@ -2,6 +2,7 @@
   "language": "MIPS Assembly",
   "active": true,
   "blurb": "",
+  "version": 3,
   "test_pattern": "runner.mips",
   "exercises": [
     {
