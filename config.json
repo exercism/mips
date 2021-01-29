@@ -16,6 +16,7 @@
   },
   "test_pattern": "runner.mips",
   "exercises": {
+    "concept": [],
     "practice": [
       {
         "slug": "binary",
