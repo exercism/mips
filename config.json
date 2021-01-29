@@ -1,5 +1,6 @@
 {
   "language": "MIPS Assembly",
+  "slug": "mips",
   "active": true,
   "status": {
     "concept_exercises": false,
