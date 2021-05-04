@@ -1,3 +1,5 @@
+# Tests
+
 To run the tests, assemble and run the test runner file for a given exercise either via the MARS simulator GUI, or on the command line. To run on the command line,
 specify first the runner file and then your implementation, like so:
 
