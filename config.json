@@ -33,6 +33,17 @@
     "concept": [],
     "practice": [
       {
+        "slug": "hello-world",
+        "name": "Hello World",
+        "uuid": "2ce24465-23d6-4354-92e8-c8a7ddb6a2c8",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 1,
+        "topics": [
+          "strings"
+        ]
+      },
+      {
         "slug": "binary",
         "name": "Binary",
         "uuid": "5fd96880-6af2-415d-9b81-8c6eeffc3a38",
