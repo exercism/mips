@@ -8,7 +8,7 @@
     "representer": false,
     "analyzer": false
   },
-  "blurb": "",
+  "blurb": "MIPS assembly implements a RISC instruction set. It supports both 32- and 64-bit architectures. MIPS is often used in computer architecture courses in universities and schools.",
   "version": 3,
   "online_editor": {
     "indent_style": "space",
