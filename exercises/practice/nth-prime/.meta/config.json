@@ -1,0 +1,17 @@
+{
+  "blurb": "Given a number n, determine what the nth prime is.",
+  "authors": [],
+  "files": {
+    "solution": [
+      "impl.mips"
+    ],
+    "test": [
+      "runner.mips"
+    ],
+    "example": [
+      "example.mips"
+    ]
+  },
+  "source": "A variation on Problem 7 at Project Euler",
+  "source_url": "http://projecteuler.net/problem=7"
+}
