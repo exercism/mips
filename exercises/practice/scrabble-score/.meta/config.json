@@ -1,6 +1,11 @@
 {
   "blurb": "Given a word, compute the Scrabble score for that word.",
-  "authors": [],
+  "authors": [
+    "mpriestman"
+  ],
+  "contributors": [
+    "ozan"
+  ],
   "files": {
     "solution": [
       "impl.mips"
