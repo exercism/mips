@@ -1,12 +1,5 @@
 .globl hello
 
-#
-# The classical introductory exercise. Just say "Hello, World!".
-#
-# Variables:
-#
-# $v0 - output, pointer to null-terminated string of chars "Hello, World!"
-
 .data
 
 msg: .asciiz "Hello, World!"
