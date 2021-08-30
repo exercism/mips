@@ -14,7 +14,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "Inspired by the Extreme Startup game",

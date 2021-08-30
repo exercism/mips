@@ -14,7 +14,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "A variation on Problem 7 at Project Euler",
