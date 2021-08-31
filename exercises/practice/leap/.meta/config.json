@@ -11,7 +11,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "JavaRanch Cattle Drive, exercise 3",
