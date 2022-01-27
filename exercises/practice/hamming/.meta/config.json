@@ -1,6 +1,8 @@
 {
   "blurb": "Calculate the Hamming difference between two DNA strands.",
-  "authors": [],
+  "authors": [
+    "ozan"
+  ],
   "files": {
     "solution": [
       "impl.mips"
@@ -9,7 +11,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "The Calculating Point Mutations problem at Rosalind",

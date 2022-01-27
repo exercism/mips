@@ -1,6 +1,11 @@
 {
   "blurb": "Determine if a triangle is equilateral, isosceles, or scalene.",
-  "authors": [],
+  "authors": [
+    "ozan"
+  ],
+  "contributors": [
+    "sputnick1124"
+  ],
   "files": {
     "solution": [
       "impl.mips"
@@ -9,7 +14,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "The Ruby Koans triangle project, parts 1 & 2",

@@ -1,6 +1,11 @@
 {
   "blurb": "Given a word, compute the Scrabble score for that word.",
-  "authors": [],
+  "authors": [
+    "mpriestman"
+  ],
+  "contributors": [
+    "ozan"
+  ],
   "files": {
     "solution": [
       "impl.mips"
@@ -9,7 +14,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "Inspired by the Extreme Startup game",

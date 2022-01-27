@@ -1,4 +1,7 @@
-# xmips
+# MIPS
+
+[![Configlet Status](https://github.com/exercism/mips/workflows/Configlet%20CI/badge.svg)]
+[![Exercise Test Status](https://github.com/exercism/mips/workflows/Exercise%20tests/badge.svg)]
 
 Exercism problems in MIPS Assembly.
 

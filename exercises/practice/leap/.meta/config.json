@@ -1,6 +1,8 @@
 {
   "blurb": "Given a year, report if it is a leap year.",
-  "authors": [],
+  "authors": [
+    "ozan"
+  ],
   "files": {
     "solution": [
       "impl.mips"
@@ -9,7 +11,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "JavaRanch Cattle Drive, exercise 3",

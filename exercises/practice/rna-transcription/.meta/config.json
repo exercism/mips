@@ -1,6 +1,8 @@
 {
   "blurb": "Given a DNA strand, return its RNA Complement Transcription.",
-  "authors": [],
+  "authors": [
+    "ozan"
+  ],
   "files": {
     "solution": [
       "impl.mips"
@@ -9,7 +11,7 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ]
   },
   "source": "Hyperphysics",
