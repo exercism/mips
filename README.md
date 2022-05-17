@@ -1,4 +1,4 @@
-# MIPS
+# Exercism MIPS Assembly Track
 
 [![Configlet Status](https://github.com/exercism/mips/workflows/Configlet%20CI/badge.svg)]
 [![Exercise Test Status](https://github.com/exercism/mips/workflows/Exercise%20tests/badge.svg)]
