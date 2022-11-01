@@ -23,7 +23,7 @@
 n: .word 15
 # input values and expected output values (all null terminated)
 ins:  .word     1,       3,       5,       7,       6,       9,      10,      14,           15,           21,      25,           35,      49,   52,               105
-outs: .asciiz "1", "Pling", "Plang", "Plong", "Pling", "Pling", "Plang", "Plong", "PlingPlang", "PlingPlong", "Plang", "PlangPlong", "Plong", "52", "PlingPlangPlong"
+outs: .asciiz  "1", "Pling", "Plang", "Plong", "Pling", "Pling", "Plang", "Plong", "PlingPlang", "PlingPlong", "Plang", "PlangPlong", "Plong", "52", "PlingPlangPlong"
 
 failmsg: .asciiz "failed for test input: "
 expectedmsg: .asciiz ". expected "
@@ -46,15 +46,19 @@ runner:
 
 run_test:
         jal     clear_output            # zero out output location
-        lw      $a0, 0($s1)             # load input value into a0
+
+        lw      $a0, 0($s1)             # load input value into a0 -  MIPS calling convention
+        move    $a1, $s5                # load @ output location   -  MIPS calling convention
         jal     raindrops               # call subroutine under test
 
+        move    $t0, $s5                # set a temporary pointer to allocated memory 
+        move    $s7, $s2                # copy pointer to current expected output string
 scan:
         lb      $s3, 0($s2)             # load one byte of the expectation
-        lb      $s4, 0($a1)             # load one byte of the actual
+        lb      $s4, 0($t0)             # load one byte of the actual
         bne     $s3, $s4, exit_fail     # if the two differ, the test has failed
         addi    $s2, $s2, 1             # point to next expectation byte
-        addi    $a1, $a1, 1             # point to next actual byte
+        addi    $t0, $t0, 1             # point to next actual byte
         bne     $s3, $zero, scan        # if one char (and therefore the other) was not null, loop
 
 done_scan:
@@ -83,7 +87,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        move    $a0, $a1                # print actual that failed on
+        move    $a0, $s5                # print actual that failed on
         li      $v0, 4
         syscall
 
@@ -91,7 +95,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        move    $a0, $s2                # print expected value that failed on
+        move    $a0, $s7                # print expected value that failed on
         li      $v0, 4
         syscall
 
@@ -107,4 +111,4 @@ clear_output:
         jr      $ra
 
 # # Include your implementation here if you wish to run this from the MARS GUI.
-# .include "impl.mips"
+#.include "impl.mips"
