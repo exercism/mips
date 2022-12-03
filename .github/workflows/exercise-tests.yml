@@ -23,6 +23,7 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
+          distribution: microsoft
           java-version: ${{ matrix.java-version }}
 
       - name: Test exercises
