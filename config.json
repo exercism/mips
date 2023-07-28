@@ -187,7 +187,38 @@
     ]
   },
   "concepts": [],
-  "key_features": [],  
+  "key_features": [
+    {
+      "title": "Easy to Learn",
+      "content": "MIPS is a simple assembly language, used in university computer architecture courses.",
+      "icon": "easy"
+    },
+    {
+      "title": "Widely Used",
+      "content": "MIPS is at the core of billions of shipped products.",
+      "icon": "widely-used"
+    },
+    {
+      "title": "Extensive documentation",
+      "content": "MIPS is widely documented, particulaly in academic texts on computer architecture.",
+      "icon": "documentation"
+    },
+    {
+      "title": "Fast",
+      "content": "Fast execution speed, via compact instructions, has been a key feature since its inception.",
+      "icon": "fast"
+    },
+    {
+      "title": "Small",
+      "content": "As a RISC-based assembly language, it boasts a small, orthogonal instruction set.",
+      "icon": "small"
+    },
+    {
+      "title": "Stable",
+      "content": "MIPS first appeared in 1985, evolved to meet new challenges, and has been stable since 2014.",
+      "icon": "stable"
+    }
+  ],
   "tags": [
     "paradigm/imperative",
     "paradigm/procedural",
