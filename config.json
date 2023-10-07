@@ -183,6 +183,14 @@
         "prerequisites": [],
         "difficulty": 3,
         "topics": []
+      },
+      {
+        "slug": "rotational-cipher",
+        "name": "Rotational Cipher",
+        "uuid": "6442b4e8-9520-41a1-a7dd-0245e686a4c5",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
       }
     ]
   },

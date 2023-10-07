@@ -1,0 +1,47 @@
+# Perform Rotational Cipher encryption.
+#
+# $a0 - input text, pointer to null-terminated string
+# $a1 - input shift key
+# $a2 - output pointer
+# $t0 - 26, 'z' - 'a' + 1
+# $t1 - 32, 'a' - 'A'
+# $t2 - 97, 'a'
+# $t3 - ~32 (bitwise inverse)
+# $t4 - pointer into input text
+# $t5 - pointer into output text
+# $t6 - current character
+# $t7 - current letter as number, 0..25
+
+.globl rotate
+
+.text
+
+rotate:
+        li      $t0, 26
+        li      $t1, 32
+        li      $t2, 97
+        nor     $t3, $t1, $zero
+        move    $t4, $a0                # pointer into input text
+        move    $t5, $a2                # pointer into output text
+
+loop:
+        lb      $t6, 0($t4)             # Load byte
+        move    $t7, $t6
+        or      $t7, $t7, $t1           # Convert to lower case
+        blt     $t7, $t2, write         # Jump if below alphabet
+        sub     $t7, $t7, $t2           # Convert from letter to number
+        bge     $t7, $t0, write         # Jump if above alphabet
+        add     $t7, $t7, $a1           # Shift by shift key
+        div     $t7, $t0
+        mfhi    $t7
+        add     $t7, $t7, $t2           # Convert from number to letter
+
+        nor     $t6, $t6, $t3           # Determine if letter was uppercase
+        xor     $t6, $t7, $t6           # Convert to original case
+
+write:
+        sb      $t6, 0($t5)
+        addi    $t4, $t4, 1
+        addi    $t5, $t5, 1
+        bne     $t6, $zero, loop
+        jr      $ra
