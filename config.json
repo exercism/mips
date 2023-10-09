@@ -78,6 +78,14 @@
         ]
       },
       {
+        "slug": "isbn-verifier",
+        "name": "ISBN Verifier",
+        "uuid": "7961c852-c87a-44b0-b152-efea3ac8555c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2
+      },
+      {
         "slug": "hamming",
         "name": "Hamming",
         "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",
