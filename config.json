@@ -176,6 +176,17 @@
         "topics": []
       },
       {
+        "slug": "nucleotide-count",
+        "name": "Nucleotide Count",
+        "uuid": "38669990-e1e6-4486-a603-575a135d1f5c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2,
+        "topics": [
+          "strings"
+        ]
+      },
+      {
         "slug": "rna-transcription",
         "name": "RNA Transcription",
         "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
