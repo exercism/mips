@@ -112,6 +112,14 @@
         "topics": []
       },
       {
+        "slug": "luhn",
+        "name": "Luhn",
+        "uuid": "ddfc178a-f384-4639-b9e9-35766a27a2df",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
         "slug": "atbash-cipher",
         "name": "Atbash Cipher",
         "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",

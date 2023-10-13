@@ -1,0 +1,64 @@
+# Determine if input string is valid per the Luhn formula.
+#
+# $a0 - input, pointer to null-terminated string
+# $v0 - output boolean
+# $t0 - '0'
+# $t1 - 9
+# $t2 - 10
+# $t3 - ' '
+# $t4 - digit count
+# $t5 - LSB of digit count
+# $t6 - sum of digits
+# $t7 - pointer to current character
+# $t8 - current digit
+
+.globl valid
+
+valid:
+        li      $t0, '0'
+        li      $t1, 9
+        li      $t3, ' '
+        move    $t4, $zero              # Set digit count to 0
+        move    $t6, $zero              # Set sum of digits to 0
+        move    $t7, $a0                # Pointer to first character
+        j find_end
+
+advance:
+        addi    $t7, $t7, 1             # Increment pointer
+
+find_end:
+        lb      $t8, 0($t7)             # Load current character
+        bne     $t8, $zero, advance     # Iterate through string
+        j       retreat                 # We process the last digit first.
+
+update_digit_sum:
+        add $t6, $t6, $t8
+
+retreat:
+        beq     $t7, $a0, report
+        subi    $t7, $t7, 1
+        lb      $t8, 0($t7)
+        beq     $t8, $t3, retreat       # Skip space
+        blt     $t8, $t0, report_invalid # Reject if below '0'
+        sub     $t8, $t8, $t0           # Convert digit to value
+        bgt     $t8, $t1, report_invalid # Reject if above 9
+        addi    $t4, $t4, 1             # Increment digit count
+        andi    $t5, $t4, 1             # Determine if count is odd
+        bne     $t5, $zero, update_digit_sum
+        sll     $t8, $t8, 1             # Double digit value
+        ble     $t8, $t1, update_digit_sum
+        sub     $t8, $t8, $t1           # Subtract 9
+        j       update_digit_sum
+
+report:
+        li      $t2, 10
+        div     $t6, $t2                # Divide by 10
+        mfhi    $t6                     # Remainder
+        bne     $t6, $zero, report_invalid # Reject remainder other than 0
+        li      $v0, 1                  # Set result to true.
+        ble     $t4, $v0, report_invalid # Reject digit count <= 1
+        jr $ra
+
+report_invalid:
+        move    $v0, $zero              # Set result to false
+        jr $ra
