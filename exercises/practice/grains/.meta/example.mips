@@ -1,0 +1,32 @@
+# Convert square to number of grains
+#
+# Strategy: shift 1 left by (the square number minus 1)
+#
+# $a0 - input, square number in the range 1..64
+# $v0 - low 32 bits of output
+# $v1 - high 32 bits of output
+
+.globl square
+
+square:
+    move $v0, $zero
+    move $v1, $zero
+    li $t0, 1
+    blt $a0, $t0, invalid_square
+    sub $a0, $a0, $t0
+    li $t1, 32
+    blt $a0, $t1, low
+    sub $a0, $a0, $t1
+    blt $a0, $t1, high
+
+invalid_square:
+    jr $ra
+
+low:
+    sllv $v0, $t0, $a0
+    jr $ra
+
+high:
+    sllv $v1, $t0, $a0
+    jr $ra
+
