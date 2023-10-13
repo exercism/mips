@@ -183,6 +183,14 @@
         ]
       },
       {
+        "slug": "resistor-color",
+        "name": "Resistor Color",
+        "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3
+      },
+      {
         "slug": "isogram",
         "name": "Isogram",
         "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
