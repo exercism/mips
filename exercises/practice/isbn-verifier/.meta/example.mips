@@ -1,0 +1,63 @@
+# Determine if input string is valid ISBN.
+#
+# $a0 - input, pointer to null-terminated string
+# $v0 - output boolean
+
+# $t0 - 1
+# $t1 - initially 10, later 11
+# $t2 - '-'
+# $t3 - '0'
+# $t4 - 'X'
+# $t5 - weight
+# $t6 - pointer to current character
+# $t7 - current digit
+# $t8 - sum
+# $t9 - weighted sum
+
+.globl is_valid
+
+is_valid:
+        li      $t0, 1
+        li      $t1, 10
+        li      $t2, '-'
+        li      $t3, '0'
+        li      $t4, 'X'
+        move    $t5, $t1                # Initial weight
+        move    $t6, $a0                # Pointer to first character
+        move    $t8, $zero              # Set sum to 0
+        move    $t9, $zero              # Set weighted sum to 0
+        j load_byte
+
+found_x:
+       bne      $t5, $t0, report_invalid
+       move     $t7, $t1
+
+update_sums:
+        add $t8, $t8, $t7               # Update sum
+        add $t9, $t9, $t8               # Update weighted sum
+        subi $t5, $t5, 1                # Update weight
+
+advance:
+        addi    $t6, $t6, 1             # Increment pointer
+
+load_byte:
+        lb      $t7, 0($t6)             # Load current character
+        beq     $t7, $zero, report
+        beq     $t7, $t2, advance       # Ignore hyphen
+        beq     $t5, $zero, report_invalid # Too many characters
+        beq     $t7, $t4, found_x
+        blt     $t7, $t3, report_invalid # Reject if below '0'
+        sub     $t7, $t7, $t3           # Convert digit to value
+        blt     $t7, $t1, update_sums # Accept if below 10
+
+report_invalid:
+        move    $v0, $zero              # Set result to false
+        jr $ra
+
+report:
+        bne     $t5, $zero, report_invalid # Reject non-zero weight
+        li      $t1, 11
+        div     $t9, $t1                # Divide weighted sum by 11
+        mfhi    $t9                     # Remainder
+        seq     $v0, $t9, $zero         # 1 if remainder is zero, otherwise 0
+        jr $ra
