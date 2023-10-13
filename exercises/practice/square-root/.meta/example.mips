@@ -1,0 +1,25 @@
+#
+# Calculate integer square_root
+#
+# a0 - input radicand
+# t0 - current square number, n*n
+# t1 - next triangular number, 2n+1
+# v0 - output word
+
+.globl  square_root
+
+.text
+
+square_root:
+    move    $t0, $zero                  # 0*0 == 0
+    li      $t1, 1                      # 2*0+1 == 1
+    j       compare
+
+advance:
+    add     $t0, $t0, $t1               # n*n+2n+1 == (n+1)*(n+1)
+    addi    $t1, $t1, 2                 # 2n+1+2 == 2(n+1)+1
+
+compare:
+    blt     $t0, $a0, advance
+    srl     $v0, $t1, 1                 # Halve 2n+1, rounding down
+    jr      $ra

@@ -172,6 +172,17 @@
         ]
       },
       {
+        "slug": "square-root",
+        "name": "Square Root",
+        "uuid": "f2c63a16-4dbe-4994-a54a-b4113caab55c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2,
+        "topics": [
+          "math"
+        ]
+      },
+      {
         "slug": "trinary",
         "name": "Trinary",
         "uuid": "69464a1e-3da5-41ad-85fa-46e7cd009a1b",
