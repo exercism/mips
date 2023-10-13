@@ -1,0 +1,65 @@
+# Count nucleotides in strand
+#
+# $a0 - pointer to null-terminated input string
+# $a1 - pointer to output array (4 words)
+# $t0 - 'A'
+# $t1 - 'C'
+# $t2 - 'G'
+# $t3 - 'T'
+# $t4 - count 'A'
+# $t5 - count 'C'
+# $t6 - count 'G'
+# $t7 - count 'T'
+# $t8 - pointer into input text
+# $t9 - current character
+
+.globl nucleotide_counts
+
+nucleotide_counts:
+        li      $t0, 'A'
+        li      $t1, 'C'
+        li      $t2, 'G'
+        li      $t3, 'T'
+        move    $t4, $zero              # count 'A'
+        move    $t5, $zero              # count 'C'
+        move    $t6, $zero              # count 'G'
+        move    $t7, $zero              # count 'T'
+        move    $t8, $a0                # copy input address
+        j       read
+
+increment_a:
+        addi    $t4, $t4, 1
+        j       advance
+
+increment_c:
+        addi    $t5, $t5, 1
+        j       advance
+
+increment_g:
+        addi    $t6, $t6, 1
+        j       advance
+
+increment_t:
+        addi    $t7, $t7, 1
+
+advance:
+        addi    $t8, $t8, 1
+
+read:
+        lb      $t9, 0($t8)             # load next input byte
+        beq     $t9, $t0, increment_a
+        beq     $t9, $t1, increment_c
+        beq     $t9, $t2, increment_g
+        beq     $t9, $t3, increment_t
+        beqz    $t9, done               # if null, done
+        li      $t4, -1
+        li      $t5, -1
+        li      $t6, -1
+        li      $t7, -1
+
+done:
+        sw      $t4, 0($a1)
+        sw      $t5, 4($a1)
+        sw      $t6, 8($a1)
+        sw      $t7, 12($a1)
+        jr      $ra
