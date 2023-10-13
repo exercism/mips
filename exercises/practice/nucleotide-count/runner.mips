@@ -43,6 +43,9 @@ expectedmsg: .asciiz ". expected "
 tobemsg: .asciiz " to be "
 okmsg: .asciiz "all tests passed"
 
+listprefix: "["
+listseparator: ", "
+listsuffix: "]"
 
 .text
 
@@ -109,41 +112,15 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        lw      $a0, 0($s5)             # print actual A that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 4($s5)             # print actual C that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 8($s5)             # print actual G that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 12($s5)            # print actual T that failed on
-        li      $v0, 1
-        syscall
+        move    $a0, $s5                # address of actual counts
+        jal     print_list
 
         la      $a0, tobemsg
         li      $v0, 4
         syscall
 
-        lw      $a0, 0($s2)             # print expected A that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 4($s2)             # print expected C that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 8($s2)             # print expected G that failed on
-        li      $v0, 1
-        syscall
-
-        lw      $a0, 12($s2)            # print expected T that failed on
-        li      $v0, 1
-        syscall
+        move    $a0, $s2                # address of expected counts
+        jal     print_list
 
         li      $a0, 1                  # set error code to 1
         li      $v0, 17                 # 17 is exit with error
@@ -154,6 +131,47 @@ clear_output:
         sw      $zero, 4($s5)
         sw      $zero, 8($s5)
         sw      $zero, 12($s5)
+        jr      $ra
+
+print_list:
+        move    $t2, $a0
+
+        la      $a0, listprefix
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 0($t2)             # A count
+        li      $v0, 1
+        syscall
+
+        la      $a0, listseparator
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 4($t2)             # C count
+        li      $v0, 1
+        syscall
+
+        la      $a0, listseparator
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 8($t2)             # G count
+        li      $v0, 1
+        syscall
+
+        la      $a0, listseparator
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 12($t2)            # T count
+        li      $v0, 1
+        syscall
+
+        la      $a0, listsuffix
+        li      $v0, 4
+        syscall
+
         jr      $ra
 
 # # Include your implementation here if you wish to run this from the MARS GUI.
