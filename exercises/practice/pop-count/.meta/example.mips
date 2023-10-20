@@ -1,0 +1,26 @@
+#
+# Count 1 bits
+#
+# a0 - input number
+# t0 - copy of input number
+# t1 - least significant 1 bit in t0
+# v0 - output count
+
+.globl  egg_count
+
+.text
+
+egg_count:
+    move    $v0, $zero
+    beq     $a0, $zero, report
+    move    $t0, $a0
+
+advance:
+    addi    $v0, $v0, 1                 # Increment count
+    sub     $t1, $zero, $t0             # -$t0
+    and     $t1, $t0, $t1               # least significant 1 bit in t0
+    sub     $t0, $t0, $t1               # clear least significant 1 bit
+    bne     $t0, $zero, advance
+
+report:
+    jr      $ra
