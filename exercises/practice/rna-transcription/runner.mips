@@ -9,6 +9,7 @@
 # s3 - char byte of input
 # s4 - char byte of output
 # s5 - counter for clearing output
+# s6 - allocated output buffer
 #
 # transcribe_rna must:
 # - be named transcribe_rna and declared as global
@@ -41,13 +42,14 @@ runner:
         li      $v0, 9                  # code for allocating heap memory
         li      $a0, 16                 # specify 16 bytes - length of longest expected output
         syscall
-        move    $a1, $v0                # location of allocated memory is where callee writes result
+        move    $s6, $v0                # location of allocated memory is where callee writes result
 
 run_test:
         jal     clear_output            # zero out output location
         move    $a0, $s1                # move address of input str to a0
+        move    $a1, $s6                # place address for ouput str in a1
         jal     transcribe_rna          # call subroutine under test
-        move    $v1, $a1                # retain a copy of response from callee
+        move    $v1, $s6                # response from callee
 
 scan:
         lb      $s3, 0($s2)             # load one byte of the expectation
@@ -100,10 +102,10 @@ exit_fail:
         syscall
 
 clear_output:
-        sw      $zero, 0($a1)           # zero out output by storing 4 words (16 bytes) of zeros
-        sw      $zero, 4($a1)
-        sw      $zero, 8($a1)
-        sw      $zero, 12($a1)
+        sw      $zero, 0($s6)           # zero out output by storing 4 words (16 bytes) of zeros
+        sw      $zero, 4($s6)
+        sw      $zero, 8($s6)
+        sw      $zero, 12($s6)
         jr      $ra
 
 # # Include your implementation here if you wish to run this from the MARS GUI.

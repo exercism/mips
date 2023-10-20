@@ -41,15 +41,15 @@ runner:
         li      $v0, 9                  # code for allocating heap memory
         li      $a0, 44                 # specify 44 bytes - length of longest expected output
         syscall
-        move    $a1, $v0                # location of allocated memory is where callee writes result
-        move    $s5, $v0                # also keep a copy for ourselves
+        move    $s5, $v0                # location of allocated memory is where callee writes result
 
 run_test:
         jal     clear_output            # zero out output location
         move    $a0, $s1                # load input value into a0
-        move    $a1, $s5
+        move    $a1, $s5                # load destination address into a1
         jal     atbash_cipher           # call subroutine under test
-        move    $s6, $a1                # take copy of output value
+        move    $a1, $s5
+        move    $s6, $s5                # take copy of output value
         move    $s7, $s2
 
 scan:
