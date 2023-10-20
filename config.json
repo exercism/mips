@@ -112,6 +112,14 @@
         "topics": []
       },
       {
+        "slug": "pop-count",
+        "name": "Pop Count",
+        "uuid": "10258704-82ff-4a9e-ad73-70f8729fad24",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3
+      },
+      {
         "slug": "luhn",
         "name": "Luhn",
         "uuid": "ddfc178a-f384-4639-b9e9-35766a27a2df",
