@@ -54,23 +54,20 @@ run_test:
         bne     $s5, $s6, exit_fail     # if expected doesn't match actual, jump to fail
 
 first_scan:
-        addi    $s1, $s1, 1             # move first input address on byte forward
         lb      $s5, 0($s1)             # load byte
+        addi    $s1, $s1, 1             # move first input address on byte forward
         bne     $s5, $zero, first_scan  # if char not null, continue loop
 
 second_scan:
-        addi    $s2, $s2, 1             # move second input address on byte forward
         lb      $s5, 0($s2)             # load byte
+        addi    $s2, $s2, 1             # move second input address on byte forward
         bne     $s5, $zero, second_scan # if char not null, continue loop
 
 third_scan:
-        addi    $s3, $s3, 1             # move third input address on byte forward
         lb      $s5, 0($s3)             # load byte
+        addi    $s3, $s3, 1             # move third input address on byte forward
         bne     $s5, $zero, third_scan  # if char not null, continue loop
 
-        addi    $s1, $s1, 1             # move first input address on byte past null
-        addi    $s2, $s2, 1             # move second input address on byte past null
-        addi    $s3, $s3, 1             # move third input address on byte past null
         addi    $s4, $s4, 4             # move to next word in output
         sub     $s0, $s0, 1             # decrement num of tests left to run
         bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
