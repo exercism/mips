@@ -23,6 +23,8 @@ ins:  .word     1,  4,  25,  81,  196,  65025
 outs: .word     1,  2,  5,  9,  14,  255
 
 failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
 okmsg: .asciiz "all tests passed"
 
 
@@ -62,6 +64,22 @@ exit_fail:
         syscall
 
         lw      $a0, ($s1)              # print input that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $v1                # print actual that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s4                # print expected value that failed on
         li      $v0, 1
         syscall
 
