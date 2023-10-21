@@ -1,0 +1,100 @@
+# Convert color code strings to an integer
+#
+# Strategy: Calculate 10 * <value of first> + <value of second>.
+#
+# $a0 - first input, pointer to null-terminated color code string
+# $a1 - second input, pointer to null-terminated color code string
+# $a2 - third input, pointer to (possibly empty) null-terminated color code string
+# $t2 - return address
+# $t3 - color-code value of first input, times 10
+# $v0 - output, numeric value
+
+.globl value
+.globl color_code
+
+.text
+
+value:
+        move    $t2, $ra
+        jal     color_code              # puts color-code value of first input in $v0
+        li      $t3, 10
+        mult    $t3, $v0
+        mflo    $t3                     # color-code value of first input, times 10
+        move    $a0, $a1
+        jal     color_code              # puts color-code value of second input in $v0
+        add     $v0, $v0, $t3
+        jr      $t2
+
+# From resistor-color exercise:
+# $a0 - input, pointer to null-terminated color code string
+# $v0 - output, numeric value
+# $t0 - character from input string
+# $t1 - known color code character for comparison
+color_code:
+        lb      $t0, 0($a0)             # load first byte
+        li      $t1, 'b'
+        beq     $t0, $t1, black_brown_blue
+        li      $t1, 'g'
+        beq     $t0, $t1, green_grey
+        li      $t1, 'r'
+        ble     $t0, $t1, orange_red
+        li      $t1, 'v'
+        beq     $t0, $t1, violet
+        li      $t1, 'w'
+        beq     $t0, $t1, white
+
+yellow:
+        li      $v0, 4
+        jr      $ra
+
+black_brown_blue:
+        lb      $t0, 2($a0)             # load third byte
+        li      $t1, 'a'
+        beq     $t0, $t1, black
+        li      $t1, 'o'
+        beq     $t0, $t1, brown
+
+blue:
+        li      $v0, 6
+        jr      $ra
+
+green_grey:
+        lb      $t0, 3($a0)             # load fourth byte
+        li      $t1, 'e'
+        beq     $t0, $t1, green
+
+grey:
+        li      $v0, 8
+        jr      $ra
+
+orange_red:
+        li      $t1, 'o'
+        beq     $t0, $t1, orange
+
+red:
+        li      $v0, 2
+        jr      $ra
+
+violet:
+        li      $v0, 7
+        jr      $ra
+
+white:
+        li      $v0, 9
+        jr      $ra
+
+black:
+        li      $v0, 0
+        jr      $ra
+
+brown:
+        li      $v0, 1
+        jr      $ra
+
+green:
+        li      $v0, 5
+        jr      $ra
+
+orange:
+        li      $v0, 3
+        jr      $ra
