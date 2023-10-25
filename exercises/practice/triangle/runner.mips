@@ -28,6 +28,8 @@ cs:   .word 2, 10, 4, 4, 4, 7, 5, 12, 2, 2, 3, 0
 outs: .word 2,  2, 1, 1, 1, 1, 0,  0, 0, 3, 3, 3
 
 failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
 okmsg: .asciiz "all tests passed"
 comma: .asciiz ", "
 
@@ -90,6 +92,22 @@ exit_fail:
 
         lw      $a0, 0($s3)             # set arg of syscall to input that failed the test
         li      $v0, 1                  # 1 is print int
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $v1                # print actual that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s5                # print expected value that failed on
+        li      $v0, 1
         syscall
 
         li      $a0, 1                  # set exit code to 1
