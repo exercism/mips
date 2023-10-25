@@ -218,6 +218,14 @@
         "difficulty": 3
       },
       {
+        "slug": "resistor-color-duo",
+        "name": "Resistor Color Duo",
+        "uuid": "d1b59c94-2b34-4f4d-82c5-6291407dc77b",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "isogram",
         "name": "Isogram",
         "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
