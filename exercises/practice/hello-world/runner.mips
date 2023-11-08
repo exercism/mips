@@ -2,12 +2,6 @@
 # Test hello with some examples
 #
 # s1 - address of expected output word
-#
-# hello must:
-# - be named hello and declared as global
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write address of string result to v0
 
 .data
 
