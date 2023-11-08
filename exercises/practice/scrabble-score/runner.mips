@@ -6,13 +6,6 @@
 # s2 - address of expected output word
 # s3 - char byte
 # s4 - output word
-#
-# scrabble_score must:
-# - be named scrabble_score and declared as global
-# - read input address of string from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
 
 .data
 

@@ -6,13 +6,6 @@
 # s2 - address of expected output word
 # s3 - input word
 # s4 - output word
-#
-# difference_of_squares must:
-# - be named difference_of_squares and declared as global
-# - read input integer from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
 
 .data
 

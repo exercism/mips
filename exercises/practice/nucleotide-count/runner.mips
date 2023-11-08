@@ -10,14 +10,6 @@
 # s5 - copy of output location
 # t0 - actual output word
 # t1 - expected output word
-#
-# nucleotide_counts must:
-# - be named nucleotide_counts and declared as global
-# - read input string from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write counts for A,C,G,T to the word array with address given in a1
-# - write -1 values to the array if the input is invalid
 
 .data
 

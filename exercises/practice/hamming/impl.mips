@@ -1,0 +1,7 @@
+# hamming_distance must:
+# - be named hamming_distance and declared as global
+# - read input address of first string from a0
+# - read input address of second string from a1
+# - follow the convention of using the t0-9 registers for temporary storage
+# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
+# - write integer result to v0

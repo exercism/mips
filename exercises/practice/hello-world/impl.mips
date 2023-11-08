@@ -1,3 +1,6 @@
+# Implement the 'hello' function, which must:
+# - write address of string result to v0
+
 .globl hello
 
 .data
