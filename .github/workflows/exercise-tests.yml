@@ -10,12 +10,11 @@ on:
 
 jobs:
   test:
-    name: Java ${{ matrix.java-version }} - ${{ matrix.os }} - ${{ github.event_name }}
+    name: ${{ matrix.os }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        java-version: [ 7, 7.0.181, 8, 8.0.192, 9.0.x, 10, 11.0.x, 11.0.3, 12, 13 ]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -23,7 +22,7 @@ jobs:
 
       - uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: 17
 
       - name: Test exercises
         run: ./bin/test test-all
