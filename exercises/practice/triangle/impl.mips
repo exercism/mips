@@ -8,3 +8,8 @@
 #       1 - isoceles
 #       2 - equilateral
 #       3 - invalid triangle
+
+.globl triangle
+
+triangle:
+        jr $ra

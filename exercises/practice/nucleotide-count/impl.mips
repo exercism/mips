@@ -5,3 +5,8 @@
 # - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
 # - write counts for A,C,G,T to the word array with address given in a1
 # - write -1 values to the array if the input is invalid
+
+.globl nucleotide_counts
+
+nucleotide_counts:
+        jr $ra

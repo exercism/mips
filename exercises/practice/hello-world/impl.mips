@@ -10,6 +10,5 @@ msg: .asciiz "Goodbye, Mars!"
 .text
 
 hello:
-        la    $v0, msg
-
+        la $v0, msg
         jr $ra

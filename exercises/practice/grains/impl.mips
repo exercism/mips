@@ -5,3 +5,8 @@
 # - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
 # - write low word of integer result to v0
 # - write high word of integer result to v1
+
+.globl square
+
+square:
+        jr $ra
