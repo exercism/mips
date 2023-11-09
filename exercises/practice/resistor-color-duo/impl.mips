@@ -1,5 +1,4 @@
 # value must:
-# - be named value and declared as global
 # - read address of first input string from a0
 # - read address of second input string from a1
 # - read address of (possibly empty) third input string from a2
