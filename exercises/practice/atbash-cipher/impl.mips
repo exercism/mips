@@ -4,3 +4,8 @@
 # - follow the convention of using the t0-9 registers for temporary storage
 # - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
 # - write a zero-terminated string representing the return value to address given in a1
+
+.globl atbash_cipher
+
+atbash_cipher:
+        jr $ra
