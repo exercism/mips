@@ -13,7 +13,7 @@
   "online_editor": {
     "indent_style": "space",
     "indent_size": 4,
-    "highlightjs_language": "arm"
+    "highlightjs_language": "mips"
   },
   "test_runner": {
     "average_run_time": 2
