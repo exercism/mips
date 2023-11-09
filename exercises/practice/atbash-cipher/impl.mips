@@ -1,5 +1,4 @@
 # atbash_cipher must:
-# - be named atbash_cipher and declared as global
 # - read input string from a0
 # - follow the convention of using the t0-9 registers for temporary storage
 # - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)

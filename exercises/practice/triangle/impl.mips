@@ -1,5 +1,4 @@
 # triangle must:
-# - be named triangle and declared as global
 # - read input integers from a0, a1 and a2
 # - follow the convention of using the t0-9 registers for temporary storage
 # - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)

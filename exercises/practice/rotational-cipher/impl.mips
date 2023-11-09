@@ -1,5 +1,4 @@
 # rotate must:
-# - be named rotate and declared as global
 # - read input string from a0
 # - read shift key from a1
 # - follow the convention of using the t0-9 registers for temporary storage
