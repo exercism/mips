@@ -1,8 +1,8 @@
-# octal_convert must:
-# - read input address of string from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Description                           |
+# | -------- | --------- | ------- | ------------------------------------- |
+# | `$a0`    | input     | address | null-terminated string of octal chars |
+# | `$v0`    | output    | integer | decimal value of input string         |
+# | `$t0-9`  | temporary | any     | used for temporary storage            |
 
 .globl octal_convert
 

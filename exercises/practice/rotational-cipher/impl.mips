@@ -1,9 +1,9 @@
-# rotate must:
-# - read input string from a0
-# - read shift key from a1
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write a null-terminated string representing the return value to address given in a2
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | address | null-terminated input string  |
+# | `$a1`    | input        | integer | shift key                     |
+# | `$a2`    | input/output | address | null-terminated result string |
+# | `$t0-9`  | temporary    | any     | for temporary storage         |
 
 .globl rotate
 

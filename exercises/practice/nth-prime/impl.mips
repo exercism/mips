@@ -1,8 +1,8 @@
-# nth_prime must:
-# - read prime index from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Description                |
+# | -------- | --------- | ------- | -------------------------- |
+# | `$a0`    | input     | integer | prime index                |
+# | `$v0`    | output    | integer | nth prime value            |
+# | `$t0-9`  | temporary | any     | used for temporary storage |
 
 .globl  nth_prime
 

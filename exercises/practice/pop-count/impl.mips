@@ -1,8 +1,8 @@
-# egg_count must:
-# - read input integer from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Description                |
+# | -------- | --------- | ------- | -------------------------- |
+# | `$a0`    | input     | integer | input number               |
+# | `$v0`    | output    | integer | number of eggs             |
+# | `$t0-9`  | temporary | any     | used for temporary storage |
 
 .globl egg_count
 

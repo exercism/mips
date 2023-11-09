@@ -1,9 +1,8 @@
-# nucleotide_counts must:
-# - read input string from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write counts for A,C,G,T to the word array with address given in a1
-# - write -1 values to the array if the input is invalid
+# | Register | Usage        | Type    | Description                             |
+# | -------- | ------------ | ------- | --------------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string            |
+# | `$a1`    | input/output | address | null-terminated result string (4 words) |
+# | `$t0-9`  | temporary    | any     | for temporary storage                   |
 
 .globl nucleotide_counts
 

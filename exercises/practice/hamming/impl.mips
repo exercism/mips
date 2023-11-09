@@ -1,9 +1,9 @@
-# hamming_distance must:
-# - read input address of first string from a0
-# - read input address of second string from a1
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Description                    |
+# | -------- | --------- | ------- | ------------------------------ |
+# | `$a0`    | input     | address | first, null-terminated, string |
+# | `$a1`    | input     | address | first, null-terminated, string |
+# | `$v0`    | output    | integer | hamming distance               |
+# | `$t0-9`  | temporary | any     | for temporary storage          |
 
 .globl hamming_distance
 

@@ -1,10 +1,10 @@
-# value must:
-# - read address of first input string from a0
-# - read address of second input string from a1
-# - read address of (possibly empty) third input string from a2
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it uses s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Description                                            |
+# | -------- | --------- | ------- | ------------------------------------------------------ |
+# | `$a0`    | input     | address | first color as null-terminated string                  |
+# | `$a1`    | input     | address | second color as null-terminated string                 |
+# | `$a2`    | input     | address | third color as null-terminated string (possibly empty) |
+# | `$v0`    | input     | integer | resistor value                                         |
+# | `$t0-9`  | temporary | any     | for temporary storage                                  |
 
 .globl value
 .globl color_code

@@ -1,0 +1,11 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage     | Type    | Description                                                                        |
+| -------- | --------- | ------- | ---------------------------------------------------------------------------------- |
+| `$a0`    | input     | integer | side a                                                                             |
+| `$a1`    | input     | integer | side b                                                                             |
+| `$a2`    | input     | integer | side c                                                                             |
+| `$v0`    | output    | integer | type of triangle (`0` = scalene, `1` = isoceles, `2` = equilateral, `3` = invalid) |
+| `$t0-9`  | temporary | any     | used for temporary storage                                                         |

@@ -1,0 +1,9 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage     | Type    | Description                |
+| -------- | --------- | ------- | -------------------------- |
+| `$a0`    | input     | integer | input number               |
+| `$v0`    | output    | integer | number of eggs             |
+| `$t0-9`  | temporary | any     | used for temporary storage |
