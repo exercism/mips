@@ -1,0 +1,10 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage        | Type    | Description                   |
+| -------- | ------------ | ------- | ----------------------------- |
+| `$a0`    | input        | address | null-terminated input string  |
+| `$a1`    | input        | integer | shift key                     |
+| `$a2`    | input/output | address | null-terminated result string |
+| `$t0-9`  | temporary    | any     | for temporary storage         |
