@@ -1,8 +1,8 @@
-# difference_of_squares must:
-# - read input integer from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write integer result to v0
+# | Register | Usage     | Type    | Purpose                    |
+# | -------- | --------- | ------- | -------------------------- |
+# | `$a0`    | input     | integer | given value                |
+# | `$v0`    | output    | integer | difference of squares      |
+# | `$t0-9`  | temporary | any     | used for temporary storage |
 
 .globl difference_of_squares
 

@@ -1,5 +1,6 @@
-# Implement the 'hello' function, which must:
-# - write address of string result to v0
+# | Register | Usage  | Type    | Description            |
+# | -------- | ------ | ------- | ---------------------- |
+# | `$v0`    | output | address | null-terminated string |
 
 .globl hello
 

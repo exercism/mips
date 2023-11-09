@@ -1,9 +1,9 @@
-# square must:
-# - read input integer from a0
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write low word of integer result to v0
-# - write high word of integer result to v1
+# | Register | Usage     | Type    | Description                      |
+# | -------- | --------- | ------- | -------------------------------- |
+# | `$a0`    | input     | integer | square number in the range 1..64 |
+# | `$v0`    | output    | integer | low 32 bits of output            |
+# | `$10`    | output    | integer | high 32 bits of output           |
+# | `$t0-9`  | temporary | any     | for temporary storage            |
 
 .globl square
 

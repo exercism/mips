@@ -1,12 +1,10 @@
-# triangle must:
-# - read input integers from a0, a1 and a2
-# - follow the convention of using the t0-9 registers for temporary storage
-# - (if it wants to use s0-7 then it is responsible for pushing existing values to the stack then popping them back off before returning)
-# - write result to v0 as:
-#       0 - scalene
-#       1 - isoceles
-#       2 - equilateral
-#       3 - invalid triangle
+# | Register | Usage     | Type    | Description                                                                        |
+# | -------- | --------- | ------- | ---------------------------------------------------------------------------------- |
+# | `$a0`    | input     | integer | side a                                                                             |
+# | `$a1`    | input     | integer | side b                                                                             |
+# | `$a2`    | input     | integer | side c                                                                             |
+# | `$v0`    | output    | integer | type of triangle (`0` = scalene, `1` = isoceles, `2` = equilateral, `3` = invalid) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                                                         |
 
 .globl triangle
 
