@@ -18,8 +18,8 @@ nth_prime:
 
     li      $t2, 4              #index * length of integer
     mul     $t0, $t0, $t2
-	la		$t2, primes
-	add		$t0, $t0, $t2
+    la      $t2, primes
+    add     $t0, $t0, $t2
 
     lw      $v0, 0($t0)         #check if array index is null
     la      $t0, primes          #array index, if v0 is null
@@ -42,18 +42,18 @@ loop_primes:
     jal     is_prime
     bne     $v0, $zero, prime_found
     
-    j		loop_primes
+    j       loop_primes
 
 prime_found:
     sw      $t1, 0($t0)
     addi    $t0, $t0, 4
 
-   	la		$t2, primes
-   	sub		$t2, $t0, $t2
+    la      $t2, primes
+    sub     $t2, $t0, $t2
     div     $t2, $t2, 4 
-   
+
     beq     $t2, $t4, done
-	
+
     j       loop_primes
 
 done:

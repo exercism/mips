@@ -27,7 +27,7 @@ runner:
         lw      $s0, n
         la      $s1, ins
         la      $s2, outs
-        j	run_test
+        j       run_test
 
 run_test:
         lw      $a0, 0($s1)             # move input number to a0

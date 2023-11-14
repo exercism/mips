@@ -13,7 +13,7 @@
 n: .word 10
 # input values (null terminated) & expected output values (word sized ints)
 ins:  .word     1,  2,  4,  7,   10,  47,   50,   57,   100,  101
-outs: .word		2,  3,  7,  17,  29,  211,  229,  269,  541,  547
+outs: .word     2,  3,  7,  17,  29,  211,  229,  269,  541,  547
 
 failmsg: .asciiz "failed for test input: "
 expectedmsg: .asciiz ". expected "
@@ -27,7 +27,7 @@ runner:
         lw      $s0, n
         la      $s1, ins
         la      $s2, outs
-        j	run_test
+        j       run_test
 
 run_test:
         lw      $a0, 0($s1)             # move input number to a0
