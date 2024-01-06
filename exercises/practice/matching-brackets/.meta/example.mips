@@ -1,0 +1,55 @@
+# Determine if the given string has matching brackets.
+#
+# Strategy: use the stack to store open brackets.
+#
+# $a0 - input, pointer to null-terminated string
+# $v0 - output, boolean indicating if brackets match
+# $t0 - original stack pointer
+# $t1 - an encountered character
+# $t2 - expected matching character
+
+.globl is_paired
+
+is_paired:
+        move    $t0, $sp
+        j       read
+
+loop:
+        li      $t2, '['                # '[' is the expected opening character
+        beq     $t1, ']', close         # when closing character ']' is found
+
+        li      $t2, '{'                # '{' is the expected opening character
+        beq     $t1, '}', close         # when closing character '}' is found
+
+        li      $t2, '('                # '(' is the expected opening character
+        beq     $t1, ')', close         # when closing character ')' is found
+
+        beq     $t1, '[', open
+        beq     $t1, '{', open
+        bne     $t1, '(', increment
+
+open:
+        sub     $sp, $sp, 4             # Push character $t1 onto the stack
+        sw      $t1, 0($sp)
+
+increment:
+        addi    $a0, $a0, 1             # Finally, increment the pointer
+
+read:
+        lb      $t1, 0($a0)             # Load a character,
+        bne     $t1, $zero, loop        # if not end of string, continue loop.
+
+restore:
+        seq     $v0, $sp, $t0           # Check if all brackets have matched.
+        move    $sp, $t0                # Restore original stack pointer.
+return:
+        jr      $ra
+
+close:
+        sne     $v0, $sp, $t0           # Set $v0 to 1 if there are open brackets, otherwise 0.
+        beq     $v0, $zero, return      # If there are no open brackets, return.
+
+        lw      $t1, 0($sp)             # Read the top opening bracket.
+        bne     $t1, $t2, restore       # If different from expected, restore stack and report no match.
+        addi    $sp, $sp, 4             # Pop opening character from stack.
+        j       increment
