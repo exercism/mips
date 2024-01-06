@@ -1,0 +1,39 @@
+# Determine if the given string is an pangram, meaning that every letter appears at least once.
+#
+# Strategy: use the bits of a single word to represent set of encountered letters
+#
+# $a0 - input, pointer to null-terminated string
+# $v0 - output, boolean representing is or is not pangram
+# $t0 - set of bits
+# $t1 - 1
+# $t2 - an encountered character
+# $t3 - 'a'
+# $t4 - 'z'
+
+.globl is_pangram
+
+is_pangram:
+        move    $t0, $zero              # Reset set to 0.
+        li      $t1, 1
+        li      $t3, 'a'
+        li      $t4, 'z'
+        j       load
+
+loop:
+        ori     $t2, 32                 # downcase
+        blt     $t2, $t3, increment     # If less than 'a', continue to next letter.
+        bgt     $t2, $t4, increment     # If greater than 'z', continue to next letter.
+        sub     $t2, $t2, $t3           # Calculate letter's position in alphabet.
+        sllv    $t2, $t1, $t2           # Create bit mask
+        or      $t0, $t0, $t2           # Apply to set.
+
+increment:
+        addi    $a0, $a0, 1             # Finally, increment the pointer
+
+load:
+        lb      $t2, 0($a0)             # Load a character,
+        bne     $t2, $zero, loop        # if not end of string, continue.
+
+        li      $t2, 0x3ffffff          # (2 ** 26) - 1
+        seq     $v0, $t0, $t2           # Does $t0 have all 26 letter bits set?
+        jr      $ra
