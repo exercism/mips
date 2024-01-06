@@ -1,0 +1,33 @@
+# Reverse a string
+#
+# $a0 - input, pointer to null-terminated input string
+# $a1 - input, pointer to null-terminated output string
+# $t0 - pointer into input string
+# $t1 - pointer into output string
+# $t2 - input byte
+
+.globl reverse
+
+reverse:
+        move    $t0, $a0                        # copy input address
+        move    $t1, $a1                        # copy output address
+        j       end_check
+
+scan:
+        addi    $t0, $t0, 1                     # increment input address
+
+end_check:
+        lb      $t2, 0($t0)                     # load next input byte
+        bne     $t2, $zero, scan                # repeat until end of string
+        j       begin_check
+
+copy:
+        subi    $t0, $t0, 1                     # decrement input address
+        lb      $t2, 0($t0)                     # load next input byte
+        sb      $t2, 0($t1)                     # store byte
+        addi    $t1, $t1, 1                     # increment output address
+
+begin_check:
+        bne     $t0, $a0, copy
+        sb      $zero, 0($t1)                   # write null terminator
+        jr $ra
