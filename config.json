@@ -188,6 +188,14 @@
         ]
       },
       {
+        "slug": "darts",
+        "name": "Darts",
+        "uuid": "bff5891d-19ac-4029-a451-bdcf812c4fd5",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2
+      },
+      {
         "slug": "square-root",
         "name": "Square Root",
         "uuid": "f2c63a16-4dbe-4994-a54a-b4113caab55c",

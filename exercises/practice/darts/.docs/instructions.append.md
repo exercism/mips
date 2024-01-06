@@ -1,0 +1,10 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage     | Type    | Description                |
+| -------- | --------- | ------- | -------------------------- |
+| `$a0`    | input     | integer | x                          |
+| `$a1`    | input     | integer | y                          |
+| `$v0`    | output    | integer | points earned              |
+| `$t0-9`  | temporary | any     | used for temporary storage |
