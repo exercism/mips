@@ -1,0 +1,56 @@
+#
+# Determine if a given number is an Armstrong number.
+#
+# $a0 - input number
+# $v0 - final value - is $a0 an Armstrong number?
+# $t0 - 10
+# $t1 - original stack pointer
+# $t2 - number of digits
+# $t3 - remaining exponent
+# $t4 - quotient, input number with lowest digits removed
+# $t5 - individual digit
+# $t6 - digit raised to a power
+# $t7 - lowest bit of exponent
+
+.globl  is_armstrong_number
+
+.text
+
+is_armstrong_number:
+        move    $t1, $sp                # preserve stack pointer
+        li      $t0, 10                 # prepare to extract decimal digits
+        move    $t4, $a0                # copy input number
+
+extract_digit:
+        divu    $t4, $t0
+        mfhi    $t5                     # Remainder is last decimal digit
+        subi    $sp, $sp, 4             # Push digit $t5 onto the stack
+        sw      $t5, 0($sp)
+        mflo    $t4                     # Quotient represents leading digits
+        bne     $t4, $zero, extract_digit
+
+        sub     $t2, $t1, $sp           # Calculate number of digits pushed on stack
+        srl     $t2, $t2, 2             # by dividing byte count by 4
+
+raise_digit:
+        lw      $t5, 0($sp)             # Pop digit off the stack
+        addi    $sp, $sp, 4
+        move    $t3, $t2                # num digits
+        li      $t6, 1
+
+multiply:
+        andi    $t7, $t3, 1             # Check if the exponent is odd
+        beq     $t7, $zero, square
+        mul     $t6, $t6, $t5
+
+square:
+        mul     $t5, $t5, $t5           # Square the base
+        srl     $t3, $t3, 1             # Halve the exponent
+        bne     $t3, $zero, multiply
+
+        sub     $a0, $a0, $t6           # Subtract digit power from original number
+        bne     $sp, $t1, raise_digit   # Repeat until all digits removed from stack.
+
+        seq     $v0, $a0, $zero         # We have an Armstrong number if subtracting
+                                        # the digit powers cancels the original number.
+        jr      $ra                     # Return
