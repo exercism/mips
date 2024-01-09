@@ -86,6 +86,14 @@
         "difficulty": 2
       },
       {
+        "slug": "armstrong-numbers",
+        "name": "Armstrong Numbers",
+        "uuid": "1a5daac4-6572-4cb0-8cd7-ad27e69dd2c6",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3
+      },
+      {
         "slug": "hamming",
         "name": "Hamming",
         "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",

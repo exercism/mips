@@ -1,0 +1,10 @@
+# | Register | Usage     | Type    | Description                                       |
+# | -------- | --------- | ------- | ------------------------------------------------- |
+# | `$a0`    | input     | address | number                                            |
+# | `$v0`    | output    | boolean | is armstrong number (`0` = `false`, `1` = `true`) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                        |
+
+.globl is_armstrong_number
+
+is_armstrong_number:
+        jr $ra
