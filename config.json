@@ -287,6 +287,14 @@
         "topics": []
       },
       {
+        "slug": "matching-brackets",
+        "name": "Matching Brackets",
+        "uuid": "06250540-e3ee-445d-a0b7-9c3e11a282ed",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
         "slug": "rotational-cipher",
         "name": "Rotational Cipher",
         "uuid": "6442b4e8-9520-41a1-a7dd-0245e686a4c5",
