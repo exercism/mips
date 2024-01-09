@@ -111,6 +111,14 @@
         "difficulty": 2
       },
       {
+        "slug": "reverse-string",
+        "name": "Reverse String",
+        "uuid": "0e03cb80-b443-45ba-9bd7-e74690fb5faf",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2
+      },
+      {
         "slug": "triangle",
         "name": "Triangle",
         "uuid": "50cacd4d-56c2-4331-b84f-7c91e4b12c35",
