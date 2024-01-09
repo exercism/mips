@@ -1,0 +1,32 @@
+#
+# Calculate points earned by dart
+#
+# Variables:
+#
+# $a0 - x
+# $a1 - y
+# $v0 - points earned
+# $t0 - x * x
+# $t1 - y * y
+# $t2 - x * x + y * y
+
+.globl score
+
+score:
+        mul     $t0, $a0, $a0
+        mul     $t1, $a1, $a1
+        add     $t2, $t0, $t1           # squared distance from center
+
+        li      $v0, 10                 # player earns 10 points
+        ble     $t2, 1, return          # if dart lands in the inner circle
+
+        li      $v0, 5                  # player earns 5 points
+        ble     $t2, 25, return         # if dart lands in the middle circle
+
+        li      $v0, 1                  # player earns 1 points
+        ble     $t2, 100, return        # if dart lands in the outer circle
+
+        move    $v0, $zero              # player earns 0 points
+
+return:
+        jr      $ra
