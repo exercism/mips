@@ -36,7 +36,7 @@ end:
 ```
 
 This approach performs three boolean tests in sequence, using the _remainder_ of a division to check if the year is evenly divisible by certain numbers.
-Contrarily to the traditional boolean chain approach however, it tests the outlier conditions first.
+Contrarily to the [traditional boolean chain](../boolean-chain) approach however, it tests the outlier conditions first.
 
 - First, it checks if the year is evenly divisible by `400`.
   - If it is, it returns `1` (leap) immediately, "short circuiting" the chain.
