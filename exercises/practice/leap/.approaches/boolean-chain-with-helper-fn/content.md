@@ -43,7 +43,7 @@ is_divisible_by:
 ```
 
 This approach performs three boolean tests in sequence, using the _remainder_ of a division to check if the year is evenly divisible by certain numbers,
-just like the [traditional boolean chain](../boolean-chain) approach, but with a twist: it uses a helper function `is_divisible_by` to determine if the year is evenly divisible.
+just like the [traditional boolean chain][approach-boolean-chain] approach, but with a twist: it uses a helper function `is_divisible_by` to determine if the year is evenly divisible.
 It calls the helper function with the `jal` (jump and link) instruction; but in order to do this, it needs to push the `$ra` register, which holds the return
 address passed to the `is_leap_year` function, onto the stack to save it. Since there are no `push`/`pop` instructions on MIPS, this must be done by manually
 manipulating the `$sp` (stack pointer) register.
@@ -59,3 +59,5 @@ int is_leap_year(int year) {
     return is_divisible_by(year, 4) && !is_divisible_by(year, 100) || is_divisible_by(year, 400);
 }
 ```
+
+[approach-boolean-chain]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain

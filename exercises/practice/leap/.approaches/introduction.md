@@ -195,7 +195,7 @@ For more information, check the [Bitwise operations approach][approach-bitwise].
 - The bitwise operations approach always needs to perform the three checks, so it can be considered less efficient.
 
 [mips-green-sheet]: https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_Green_Sheet.pdf
-[approach-boolean-chain]: https://exercism.org/tracks/misp/exercises/leap/approaches/boolean-chain
-[approach-boolean-chain-reverse]: https://exercism.org/tracks/misp/exercises/leap/approaches/boolean-chain-reverse
-[approach-boolean-chain-with-helper-fn]: https://exercism.org/tracks/misp/exercises/leap/approaches/boolean-chain-with-helper-fn
-[approach-bitwise]: https://exercism.org/tracks/misp/exercises/leap/approaches/bitwise
+[approach-boolean-chain]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain
+[approach-boolean-chain-reverse]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain-reverse
+[approach-boolean-chain-with-helper-fn]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain-with-helper-fn
+[approach-bitwise]: https://exercism.org/tracks/mips/exercises/leap/approaches/bitwise
