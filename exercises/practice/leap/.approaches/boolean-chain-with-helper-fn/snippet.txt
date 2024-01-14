@@ -1,13 +1,3 @@
-## Registers
-
-# | Register | Usage     | Type    | Description                                      |
-# | -------- | --------- | ------- | ------------------------------------------------ |
-# | `$a0`    | input     | integer | year to check                                    |
-# | `$v0`    | output    | boolean | input is leap year (`0` = `false`, `1` = `true`) |
-# | `$t0-9`  | temporary | any     | used for temporary storage                       |
-
-.globl is_leap_year
-
 is_leap_year:
         addi    $sp, $sp, -4
         sw      $ra, 0($sp)
@@ -16,24 +6,3 @@ is_leap_year:
         li      $a1, 4
         jal     is_divisible_by
         beqz    $v1, end
-
-        li      $a1, 100
-        jal     is_divisible_by
-        beqz    $v1, set_leap
-
-        li      $a1, 400
-        jal     is_divisible_by
-        beqz    $v1, end
-
-set_leap:
-        li      $v0, 1
-end:
-        lw      $ra, 0($sp)
-        addi    $sp, $sp, 4
-        jr      $ra
-
-is_divisible_by:
-        div     $a0, $a1
-        mfhi    $t0
-        slti    $v1, $t0, 1
-        jr      $ra
