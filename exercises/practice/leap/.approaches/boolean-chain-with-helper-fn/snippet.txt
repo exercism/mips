@@ -17,11 +17,11 @@ is_leap_year:
         jal     is_divisible_by
         beqz    $v1, end
 
-        li      $t0, 100
+        li      $a1, 100
         jal     is_divisible_by
         beqz    $v1, set_leap
 
-        li      $t0, 400
+        li      $a1, 400
         jal     is_divisible_by
         beqz    $v1, end
 
@@ -33,7 +33,7 @@ end:
         jr      $ra
 
 is_divisible_by:
-        div     $a0, $t0
+        div     $a0, $a1
         mfhi    $t0
         slti    $v1, $t0, 1
         jr      $ra
