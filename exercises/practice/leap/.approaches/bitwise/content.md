@@ -62,5 +62,5 @@ int is_leap_year(int year) {
 }
 ```
 
-Since this approach always has to perform the three checks, it cannot "short circuit" like the traditional
-boolean chain approach and can be considered less efficient.
+Since this approach always has to perform the three checks, it cannot "short circuit" like the
+[traditional boolean chain](../boolean-chain) approach and can be considered less efficient.
