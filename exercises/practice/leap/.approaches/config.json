@@ -1,0 +1,45 @@
+{
+  "introduction": {
+    "authors": [
+      "clechasseur"
+    ]
+  },
+  "approaches": [
+    {
+      "uuid": "816aabe8-4b78-40b2-934e-053bf103dc3c",
+      "slug": "boolean-chain",
+      "title": "Boolean chain",
+      "blurb": "Use a chain of boolean expressions.",
+      "authors": [
+        "clechasseur"
+      ]
+    },
+    {
+      "uuid": "ec048669-97c3-4fd8-885c-002b008bd49b",
+      "slug": "boolean-chain-reverse",
+      "title": "Reverse boolean chain",
+      "blurb": "Use a chain of boolean expressions, but in reverse.",
+      "authors": [
+        "clechasseur"
+      ]
+    },
+    {
+      "uuid": "cfd620c5-91b5-42ce-906f-ce12cd7438e0",
+      "slug": "boolean-chain-with-helper-fn",
+      "title": "Boolean chain with helper function",
+      "blurb": "Use a chain of boolean expressions with a helper function.",
+      "authors": [
+        "clechasseur"
+      ]
+    },
+    {
+      "uuid": "931f82e1-4e31-4eda-a84d-21704e9631f7",
+      "slug": "bitwise",
+      "title": "Bitwise operations",
+      "blurb": "Use bitwise operations as boolean operators.",
+      "authors": [
+        "clechasseur"
+      ]
+    }
+  ]
+}
