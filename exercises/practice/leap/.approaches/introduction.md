@@ -92,7 +92,7 @@ end:
 
 For more information, check the [approach using `rem`][approach-using-rem].
 
-## Approach: Using the `andi` instruction
+## Approach: Using a "divisible by" macro
 
 ```asm
 ## Registers
@@ -163,11 +163,7 @@ end:
 ```
 
 For more information, check the [approach using `andi`][approach-using-andi].
-
-
-## Which approach to use?
-
-- 
+ 
 
 [mips-instructions-ref]: https://pages.cs.wisc.edu/~markhill/cs354/Fall2008/notes/MAL.instructions.html
 [mips-green-sheet]: https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_Green_Sheet.pdf
