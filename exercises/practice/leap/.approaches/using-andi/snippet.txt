@@ -1,0 +1,5 @@
+is_leap_year:
+        li      $v0, 0
+
+        andi    $t0, $a0, 3
+        bnez    $t0, end

@@ -1,0 +1,6 @@
+.macro if_divisible_by($divisor, $then_jump)
+        li      $t0, $divisor
+        div     $a0, $t0
+        mfhi    $t0
+        beqz    $t0, $then_jump
+.end_macro

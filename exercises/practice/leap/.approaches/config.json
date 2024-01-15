@@ -1,0 +1,50 @@
+{
+  "introduction": {
+    "authors": [
+      "clechasseur",
+      "keiravillekode"
+    ]
+  },
+  "approaches": [
+    {
+      "uuid": "816aabe8-4b78-40b2-934e-053bf103dc3c",
+      "slug": "using-div",
+      "title": "Using the div instruction",
+      "blurb": "Use the div instruction to get a division's remainder.",
+      "authors": [
+        "clechasseur",
+        "keiravillekode"
+      ]
+    },
+    {
+      "uuid": "11fe5497-f748-4b9e-912e-38ae0e93b9da",
+      "slug": "using-rem",
+      "title": "Using the rem instruction",
+      "blurb": "Use the rem instruction to get a division's remainder.",
+      "authors": [
+        "clechasseur",
+        "keiravillekode"
+      ]
+    },
+    {
+      "uuid": "39f6b092-e400-4ba1-a0d1-4cd2ca2a78ba",
+      "slug": "using-macro",
+      "title": "Using a \"divisible by\" macro",
+      "blurb": "Define a macro to avoid repeating code too often.",
+      "authors": [
+        "clechasseur",
+        "keiravillekode"
+      ]
+    },
+    {
+      "uuid": "92f9310c-041d-46ed-b06f-0496edb5cabc",
+      "slug": "using-andi",
+      "title": "Using the andi instruction",
+      "blurb": "Use the andi instruction to determine if a number is divisible by 4.",
+      "authors": [
+        "clechasseur",
+        "keiravillekode"
+      ]
+    }
+  ]
+}
