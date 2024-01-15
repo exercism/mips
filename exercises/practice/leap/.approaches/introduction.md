@@ -1,24 +1,26 @@
 # Introduction
 
 Although MIPS assembly is more limited because it does not provide access to actual date/time functions,
-there are still multiple approaches to solve Leap. You can use a chain of boolean operators to test
-the conditions, in traditional or reverse order. You can also check all conditions and then use bitwise
-operators to compute the result. It is also possible to use a helper function to check if the year
-is evenly divisible by a certain number.
+there are still multiple approaches to solve Leap that involve different MIPS instructions.
 
 ## General guidance
 
 The key to solving Leap is to know if the year is evenly divisible by `4`, `100` and `400`.
-For determining that, we need to use the _remainder_ of the division. MIPS does not have a remainder
-instruction, however: instead, the `div` instruction computes _both_ the quotient and the remainder
-of the division and stores them in the `lo` and `hi` registers, respectively.
+There are several instructions that can be used to help us determine this, like `div` (divide),
+`rem` (modulo) and `andi` (bitwise AND immediate). Once a check has been made, we can use
+instructions like `bnez` (branch if not equal zero) to short circuit the other checks:
 
-Also, the `lo` and `hi` registers cannot be accessed directly by most instructions. To get their
-values, we need to _move_ them to another register with the help of instructions like `mfhi` (move from high).
+| year | year divisible by 4 | year divisible by 100 | year divisible by 400 | is leap year |
+| ---- | ------------------- | --------------------- | --------------------- | ------------ |
+| 2020 | true                | false                 | not evaluated         | true         |
+| 2019 | false               | not evaluated         | not evaluated         | false        |
+| 2000 | true                | true                  | true                  | true         |
+| 1900 | true                | true                  | false                 | false        |
 
-For a reference of MIPS instructions, check out the [MIPS green sheet][mips-green-sheet].
+For more information on the MIPS instructions used, you can refer to this [MIPS instructions reference][mips-instructions-ref]
+or to this [MIPS green sheet][mips-green-sheet].
 
-## Approach: Chain of Boolean expressions
+## Approach: Using the `div` instruction
 
 ```asm
 ## Registers
@@ -55,9 +57,9 @@ end:
         jr      $ra
 ```
 
-For more information, check the [Boolean chain approach][approach-boolean-chain].
+For more information, check the [approach using `div`][approach-using-div].
 
-## Approach: Reverse chain of boolean expressions
+## Approach: Using the `rem` instruction
 
 ```asm
 ## Registers
@@ -73,19 +75,13 @@ For more information, check the [Boolean chain approach][approach-boolean-chain]
 is_leap_year:
         li      $v0, 0
 
-        li      $t0, 400
-        div     $a0, $t0
-        mfhi    $t0
-        beqz    $t0, set_leap
+        rem     $t0, $a0, 4
+        bnez    $t0, end
 
-        li      $t0, 100
-        div     $a0, $t0
-        mfhi    $t0
-        beqz    $t0, end
+        rem     $t0, $a0, 100
+        bnez    $t0, set_leap
 
-        li      $t0, 4
-        div     $a0, $t0
-        mfhi    $t0
+        rem     $t0, $a0, 400
         bnez    $t0, end
 
 set_leap:
@@ -94,9 +90,9 @@ end:
         jr      $ra
 ```
 
-For more information, check the [Reverse boolean chain approach][approach-boolean-chain-reverse].
+For more information, check the [approach using `rem`][approach-using-rem].
 
-## Approach: Chain of boolean expressions with helper function
+## Approach: Using the `andi` instruction
 
 ```asm
 ## Registers
@@ -109,40 +105,30 @@ For more information, check the [Reverse boolean chain approach][approach-boolea
 
 .globl is_leap_year
 
+.macro if_divisible_by($divisor, $then_jump)
+        li      $t0, $divisor
+        div     $a0, $t0
+        mfhi    $t0
+        beqz    $t0, $then_jump
+.end_macro
+
 is_leap_year:
-        addi    $sp, $sp, -4
-        sw      $ra, 0($sp)
+        if_divisible_by(400, set_leap)
+        if_divisible_by(100, not_leap)
+        if_divisible_by(4, set_leap)
+
+not_leap:
         li      $v0, 0
-
-        li      $a1, 4
-        jal     is_divisible_by
-        beqz    $v1, end
-
-        li      $a1, 100
-        jal     is_divisible_by
-        beqz    $v1, set_leap
-
-        li      $a1, 400
-        jal     is_divisible_by
-        beqz    $v1, end
+        jr      $ra
 
 set_leap:
         li      $v0, 1
-end:
-        lw      $ra, 0($sp)
-        addi    $sp, $sp, 4
-        jr      $ra
-
-is_divisible_by:
-        div     $a0, $a1
-        mfhi    $t0
-        slti    $v1, $t0, 1
         jr      $ra
 ```
 
-For more information, check the [Boolean chain with helper function approach][approach-boolean-chain-with-helper-fn].
+For more information, check the [approach using a macro][approach-using-macro].
 
-## Approach: Bitwise operations
+## Approach: Using the `andi` instruction
 
 ```asm
 ## Registers
@@ -156,25 +142,19 @@ For more information, check the [Boolean chain with helper function approach][ap
 .globl is_leap_year
 
 is_leap_year:
-        li      $t0, 4
-        div     $a0, $t0
-        mfhi    $t1
-        slti    $t1, $t1, 1
+        li      $v0, 0
+
+        andi    $t0, $a0, 3
+        bnez    $t0, end
 
         li      $t0, 100
         div     $a0, $t0
-        mfhi    $t2
-        li      $t7, 0
-        slt     $t2, $t7, $t2
+        mfhi    $t0
+        bnez    $t0, set_leap
 
-        li      $t0, 400
-        div     $a0, $t0
-        mfhi    $t3
-        slti    $t3, $t3, 1
-
-        and     $v0, $t1, $t2
-        or      $v0, $v0, $t3
-        beqz    $v0, end
+        mflo    $t0
+        andi    $t0, $t0, 3
+        bnez    $t0, end
 
 set_leap:
         li      $v0, 1
@@ -182,20 +162,16 @@ end:
         jr      $ra
 ```
 
-For more information, check the [Bitwise operations approach][approach-bitwise].
+For more information, check the [approach using `andi`][approach-using-andi].
+
 
 ## Which approach to use?
 
-- The chain of boolean expressions is most efficient, as it proceeds from the most likely to least likely conditions.
-  It has a maximum of three checks.
-- The reverse chain of boolean expressions also has a maximum of three checks, but proceeds from the least likely conditions
-  and can be considered less efficient.
-- Using a helper function with a chain of boolean expressions is similar but could perhaps make the code more readable, at
-  the cost of additional jumps when executing it.
-- The bitwise operations approach always needs to perform the three checks, so it can be considered less efficient.
+- 
 
+[mips-instructions-ref]: https://pages.cs.wisc.edu/~markhill/cs354/Fall2008/notes/MAL.instructions.html
 [mips-green-sheet]: https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_Green_Sheet.pdf
-[approach-boolean-chain]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain
-[approach-boolean-chain-reverse]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain-reverse
-[approach-boolean-chain-with-helper-fn]: https://exercism.org/tracks/mips/exercises/leap/approaches/boolean-chain-with-helper-fn
-[approach-bitwise]: https://exercism.org/tracks/mips/exercises/leap/approaches/bitwise
+[approach-using-div]: https://exercism.org/tracks/mips/exercises/leap/approaches/using-div
+[approach-using-rem]: https://exercism.org/tracks/mips/exercises/leap/approaches/using-rem
+[approach-using-macro]: https://exercism.org/tracks/mips/exercises/leap/approaches/using-macro
+[approach-using-andi]: https://exercism.org/tracks/mips/exercises/leap/approaches/using-andi

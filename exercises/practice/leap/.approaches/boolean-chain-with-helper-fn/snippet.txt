@@ -1,8 +1,0 @@
-is_leap_year:
-        addi    $sp, $sp, -4
-        sw      $ra, 0($sp)
-        li      $v0, 0
-
-        li      $a1, 4
-        jal     is_divisible_by
-        beqz    $v1, end
