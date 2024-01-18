@@ -234,6 +234,17 @@
         ]
       },
       {
+        "slug": "acronym",
+        "name": "Acronym",
+        "uuid": "8418ec28-8365-4e80-ae24-a82d5219d897",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3,
+        "topics": [
+          "strings"
+        ]
+      },
+      {
         "slug": "resistor-color",
         "name": "Resistor Color",
         "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
