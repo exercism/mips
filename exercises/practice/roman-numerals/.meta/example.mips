@@ -1,0 +1,96 @@
+# Converts number to Roman Numerals.
+#
+# $a0 - input value of integer in question
+# $a1 - input, pointer to expected location of transcribed string
+# $t0 - address of fives
+# $t1 - address of ones
+# $t2 - return address
+# $t3 - low digits of input
+# $t4 - current digit value (0..9)
+# $t5 - current digit place (0 for units, 1 for tens, 2 for hundreds, 3 for thousands)
+# $t6 - divisor
+# $t7 - character for roman numeral, in {I, V, X, L, C, D, M}
+
+.globl roman
+
+.data
+
+ones: .asciiz  "IXCM"
+fives: .asciiz  "VLD"
+
+.text
+
+roman:
+        move    $t2, $ra                # make a copy of return address
+        la      $t1, ones               # address of ones
+        la      $t0, fives              # address of fives
+
+        li      $t6, 1000
+        div     $a0, $t6
+        mfhi    $t3                     # input % 1000
+        mflo    $t4                     # thousands digit
+        li      $t5, 3                  # thousands place
+        jal     convert_digit
+
+        li      $t6, 100
+        div     $t3, $t6
+        mfhi    $t3                     # input % 100
+        mflo    $t4                     # hundreds digit
+        li      $t5, 2                  # hundreds place
+        jal     convert_digit
+
+        li      $t6, 10
+        div     $t3, $t6
+        mfhi    $t3                     # input % 10
+        mflo    $t4                     # tens digit
+        li      $t5, 1                  # tens place
+        jal     convert_digit
+
+        move    $t4, $t3                # units digit
+        li      $t5, 0                  # units place
+        jal     convert_digit
+
+        sb      $zero, 0($a1)           # write '\0' terminator
+
+        jr      $t2                     # return to caller
+
+convert_digit:
+                                        # subroutine that converts current digit
+                                        # (with value $t4, place $t5) to roman numerals.
+        li      $t6, 5
+        rem     $t6, $t4, $t6
+        bne     $t6, 4, simple          # jump forward if the digit is not 4 (mod 5)
+
+        add     $t7, $t1, $t5           # address of character for digit 1
+        lb      $t7, 0($t7)             # read character for digit 1
+        sb      $t7, 0($a1)             # write character for digit 1
+        addi    $a1, $a1, 1             # increment output address
+
+        addi    $t4, $t4, 1             # increment digit by 1
+        bne     $t4, 10, simple         # jump forward if the digit has not become 10
+
+        li      $t4, 1                  # replace 10 with digit 1
+        addi    $t5, $t5, 1             # with increased place value
+
+simple:
+        blt     $t4, 5, while_ones      # jump forward if the digit is below 5
+
+        add     $t7, $t0, $t5           # address of character for digit 5
+        lb      $t7, 0($t7)             # read character for digit 5
+        sb      $t7, 0($a1)             # write character for digit 5
+        addi    $a1, $a1, 1             # increment output address
+
+        subi    $t4, $t4, 5             # decrease digit by 5
+        j       while_ones              # check if we need to write digit 1
+
+do_ones:
+        add     $t7, $t1, $t5           # address of character for digit 1
+        lb      $t7, 0($t7)             # read character for digit 1
+        sb      $t7, 0($a1)             # write character for digit 1
+        addi    $a1, $a1, 1             # increment output address
+
+        subi    $t4, $t4, 1             # decrease digit by 1
+
+while_ones:
+        bne     $t4, $zero, do_ones     # loop until digit is 0
+        jr      $ra                     # return to caller (roman)
