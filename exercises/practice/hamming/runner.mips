@@ -69,7 +69,15 @@ exit_fail:
         li      $v0, 4                  # 4 is print string
         syscall
 
-        move    $a0, $s1                # print input that failed on
+        move    $a0, $s1                # print input that failed on, first strand
+        li      $v0, 4
+        syscall
+
+        la      $a0, comma              # put address of comma into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s2                # print input that failed on, second strand
         li      $v0, 4
         syscall
 
