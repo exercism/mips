@@ -1,0 +1,376 @@
+#
+# Test rebase with some examples
+#
+# | Register | Type    | Description                                       |
+# | -------- | ------- | ------------------------------------------------- |
+# | `$a0`    | integer | number of input digits, for callee                |
+# | `$a1`    | integer | base for input digits, for callee                 |
+# | `$a2`    | integer | base for output digits, for callee                |
+# | `$a3`    | address | overwritable array of digit words                 |
+# | `$v0`    | integer | number of output digits, -1 if input invalid      |
+# | `$v1`    | integer | copy of v0                                        |
+# | `$s0`    | integer | number of tests remaining                         |
+# | `$s1`    | address | address of input digits                           |
+# | `$s2`    | address | address for number of input digits                |
+# | `$s3`    | address | address for input bases                           |
+# | `$s4`    | address | address for heap allocated memory                 |
+# | `$s5`    | address | address for expected output digits                |
+# | `$s6`    | address | address for number of output digits expected      |
+# | `$s7`    | address | address for output bases                          |
+# | `$t5`    | integer | expected number of output digits                  |
+
+.data
+
+# number of test cases
+n:  .word 21
+numinputdigits:  .word
+        1,
+        3,
+        1,
+        6,
+        2,
+        4,
+        2,
+        3,
+        0,
+        1,
+        3,
+        3,
+        1,
+        0,
+        1,
+        6,
+        6,
+        6,
+        1,
+        1,
+        1
+inputbases:  .word
+        2,
+        2,
+        10,
+        2,
+        10,
+        3,
+        16,
+        97,
+        2,
+        10,
+        10,
+        7,
+        1,
+        0,
+        -2,
+        2,
+        2,
+        2,
+        10,
+        2,
+        -2
+outputbases:  .word
+        10,
+        10,
+        2,
+        10,
+        2,
+        16,
+        3,
+        73,
+        10,
+        2,
+        2,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        1,
+        0,
+        -7,
+        -7
+inputdigits:  .word
+        1,
+        1, 0, 1,
+        5,
+        1, 0, 1, 0, 1, 0,
+        4, 2,
+        1, 1, 2, 0,
+        2, 10,
+        3, 46, 60,
+        # none,
+        0,
+        0, 0, 0,
+        0, 6, 0,
+        0,
+        # none,
+        1,
+        1, -1, 1, 0, 1, 0,
+        1, 2, 1, 0, 1, 0,
+        1, 0, 1, 0, 1, 0,
+        7,
+        1,
+        1,
+        0, 0, 0, 0, 0, 0 # padding
+numoutputdigits:  .word
+        1,
+        1,
+        3,
+        2,
+        6,
+        2,
+        4,
+        3,
+        1,
+        1,
+        1,
+        2,
+        0, # The input is invalid, we expect rebase to return -1
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+outputdigits:  .word
+        1,
+        5,
+        1, 0, 1,
+        4, 2,
+        1, 0, 1, 0, 1, 0,
+        2, 10,
+        1, 1, 2, 0,
+        6, 10, 45,
+        0,
+        0,
+        0,
+        4, 2
+        # input base must be >= 2,
+        # input base must be >= 2,
+        # input base must be >= 2,
+        # all digits must satisfy 0 <= d < input base,
+        # all digits must satisfy 0 <= d < input base,
+        # output base must be >= 2,
+        # output base must be >= 2,
+        # output base must be >= 2,
+        # input base must be >= 2
+
+failmsg: .asciiz "failed rebase from input base "
+spacemsg: .asciiz " "
+tomsg: .asciiz " to output base "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+prefix: .asciiz "["
+comma: .asciiz ", "
+suffix: .asciiz "]"
+
+
+.text
+
+runner:
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, 24                 # specify 24 bytes - length of longest expected input or output
+        syscall
+        move    $s4, $v0                # location of allocated memory for digits input/output
+
+        lw      $s0, n
+        la      $s1, inputdigits
+        la      $s2, numinputdigits
+        la      $s3, inputbases
+        la      $s5, outputdigits
+        la      $s6, numoutputdigits
+        la      $s7, outputbases
+
+run_test:
+                                        # Copy 6 digits from input digits to input/output location
+        move    $a0, $s1
+        li      $a1, 6
+        move    $a2, $s4
+        jal     copy_words
+
+        lw      $a0, 0($s2)             # load num input digits into a0
+        lw      $a1, 0($s3)             # load input base into a1
+        lw      $a2, 0($s7)             # load output base into a2
+        move    $a3, $s4                # load input/output address into a3
+        jal     rebase                  # call subroutine under test
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
+        lw      $t5, 0($s6)             # load expected number of digits
+        bne     $t5, $zero, check_output_list
+        li      $t5, -1
+        bne     $v1, $t5, exit_fail     # if the actual output is not -1, the test has failed
+        j       done_check
+
+check_output_list:
+        move    $a0, $s4                # actual output digits address
+        move    $a1, $v1                # actual number of output digits
+        move    $a2, $s5                # expected output digits address
+        move    $a3, $t5                # expected number of output digits
+        jal     check_list_match
+        bnez    $v0, exit_fail
+
+done_check:
+        lw      $t0, 0($s2)             # load num input digits
+        sll     $t0, $t0, 2             # number of bytes occupied by input digits
+        add     $s1, $s1, $t0           # input digits for next test case
+        addi    $s2, $s2, 4             # increment num input digits pointer
+        addi    $s3, $s3, 4             # increment input bases pointer
+        sll     $t0, $t5, 2             # number of bytes for output digits
+        add     $s5, $s5, $t0           # address of next output digits
+        addi    $s6, $s6, 4             # increment num output digits pointer
+        addi    $s7, $s7, 4             # increment output bases pointer
+        subi    $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s3)             # load input base value that failed on
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # input digits
+        lw      $a1, 0($s2)             # number of input digits
+        jal     print_array
+
+        la      $a0, tomsg              # put address of tomsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s7)             # load output base value that failed on
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, expectedmsg        # put address of expectedmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s4                # actual output digits
+        move    $a1, $v1                # actual number of output digits
+        jal     print_array
+
+        la      $a0, tobemsg            # put address of tobemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s5                # expected output digits
+        move    $a1, $t5                # expected number of output digits
+        jal     print_array
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+check_list_match:
+                                        # checks if list with address $a0, word count $a1
+                                        # exact match for list with address $a2, word count $a3
+                                        # return 0 in $v0 iff the lists match
+        bne     $a1, $a3, no_match      # if the actual output length differs, the lists do not match
+        beqz    $a3, confirm_match
+
+        move    $t1, $a1
+        sll     $t1, $t1, 2             # number of bytes occupied by each list
+        add     $t1, $a2, $t1           # end of second list
+
+compare_digits:
+        lw      $t0, 0($a0)             # load element from first list
+        lw      $t2, 0($a2)             # load element from second list
+        bne     $t0, $t2, no_match
+        addi    $a0, $a0, 4             # advance pointer into first list
+        addi    $a2, $a2, 4             # advance pointer into second list
+        bne     $a2, $t1, compare_digits # repeat while there are more list elements
+
+confirm_match:
+        li      $v0, 0
+        jr      $ra
+
+no_match:
+        li      $v0, 1
+        jr      $ra
+
+
+copy_words:
+                                        # copy array with address $a0, word count $a1
+                                        # to destination $a2
+        beqz    $a1, copy_done
+        lw      $t0, 0($a0)
+        sw      $t0, 0($a2)
+        addi    $a0, $a0, 4             # advance input pointer
+        addi    $a2, $a2, 4             # advance output pointer
+        addi    $a1, $a1, -1            # decrement word count
+        bnez    $a1, copy_words
+
+copy_done:
+        jr      $ra
+
+
+print_array:
+                                        # print array with address $a0, word count $a1
+                                        # local variable s0 points to current element
+                                        # local variable s1 point to end of array
+
+        bltz    $a1, negative_count
+
+        addi    $sp, $sp, -8            # Save existing values of $s0 and $s1
+        sw      $s0, 4($sp)
+        sw      $s1, 0($sp)
+
+        move    $s0, $a0                # first element of array
+        sll     $s1, $a1, 2             # length of array, in bytes
+        add     $s1, $a0, $s1           # pointer to end of array
+
+        la      $a0, prefix             # print prefix
+        li      $v0, 4
+        syscall
+
+        beq     $s0, $s1, output_suffix # jump ahead if array is empty
+        j       output_element          # first element is not preceeded by comma
+
+output_comma:
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+output_element:
+        lw      $a0, 0($s0)             # load element value
+        addi    $s0, $s0, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        bne     $s0, $s1, output_comma  # repeat until we reach end of array
+
+output_suffix:
+        la      $a0, suffix
+        li      $v0, 4
+        syscall
+
+        lw      $s1, 0($sp)             # Restore original values of $s0 and $s1
+        lw      $s0, 4($sp)
+        addi    $sp, $sp, 8
+        jr      $ra
+
+negative_count:
+        move    $a0, $a1
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+#.include "impl.mips"

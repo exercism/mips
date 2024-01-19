@@ -377,6 +377,19 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 4
+      },
+      {
+        "slug": "all-your-base",
+        "name": "All Your Base",
+        "uuid": "74f61478-1f08-4578-97a3-b3da0a271158",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 8,
+        "topics": [
+          "arrays",
+          "loops",
+          "math"
+        ]
       }
     ]
   },
