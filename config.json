@@ -162,6 +162,15 @@
         "topics": []
       },
       {
+        "slug": "roman-numerals",
+        "name": "Roman Numerals",
+        "uuid": "fa283d1e-2005-40d3-9a30-252d06d98523",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4,
+        "topics": []
+      },
+      {
         "slug": "scrabble-score",
         "name": "Scrabble Score",
         "uuid": "42c7d965-c56c-437f-b513-19bcbcedef01",
