@@ -1,0 +1,12 @@
+# | Register | Usage        | Type    | Description                    |
+# | -------- | ------------ | ------- | ------------------------------ |
+# | `$a0`    | input        | address | array elements                 |
+# | `$a1`    | input        | integer | size of array, in words        |
+# | `$a2`    | input        | integer | value being searched for       |
+# | `$v0`    | output       | integer | index of value in array, or -1 |
+# | `$t0-9`  | temporary    | any     | for temporary storage          |
+
+.globl find
+
+find:
+        jr $ra

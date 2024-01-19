@@ -25,35 +25,34 @@ or to this [MIPS green sheet][mips-green-sheet].
 ```asm
 ## Registers
 
-# | Register | Usage     | Type    | Description                                      |
-# | -------- | --------- | ------- | ------------------------------------------------ |
-# | `$a0`    | input     | integer | year to check                                    |
-# | `$v0`    | output    | boolean | input is leap year (`0` = `false`, `1` = `true`) |
-# | `$t0-9`  | temporary | any     | used for temporary storage                       |
+# | Register | Usage     | Type    | Description                                           |
+# | -------- | --------- | ------- | ----------------------------------------------------- |
+# | `$a0`    | input     | integer | year to check                                         |
+# | `$v0`    | output    | boolean | input is leap year (`0` = `false`, `1` = `true`)      |
+# | `$t0`    | temporary | boolean | year is multiple of 4 (`0` = `false`, `1` = `true`)   |
+# | `$t1`    | temporary | boolean | year is multiple of 100 (`0` = `false`, `1` = `true`) |
+# | `$t2`    | temporary | boolean | year is multiple of 400 (`0` = `false`, `1` = `true`) |
 
 .globl is_leap_year
 
 is_leap_year:
-        li      $v0, 0
-
         li      $t0, 4
         div     $a0, $t0
         mfhi    $t0
-        bnez    $t0, end
+        seq     $t0, $t0, $zero
 
-        li      $t0, 100
-        div     $a0, $t0
-        mfhi    $t0
-        bnez    $t0, set_leap
+        li      $t1, 100
+        div     $a0, $t1
+        mfhi    $t1
+        seq     $t1, $t1, $zero
 
-        li      $t0, 400
-        div     $a0, $t0
-        mfhi    $t0
-        bnez    $t0, end
+        li      $t2, 400
+        div     $a0, $t2
+        mfhi    $t2
+        seq     $t2, $t2, $zero
 
-set_leap:
-        li      $v0, 1
-end:
+        sub     $v0, $t0, $t1
+        add     $v0, $v0, $t2
         jr      $ra
 ```
 

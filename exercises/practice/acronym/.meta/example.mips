@@ -1,0 +1,32 @@
+# | Register | Usage        | Type      | Description                   |
+# | -------- | ------------ | --------- | ----------------------------- |
+# | `$a0`    | input        | address   | null-terminated input string  |
+# | `$a1`    | input/output | address   | null-terminated output string |
+# | `$t0`    | temporary    | character | current byte                  |
+
+.globl abbreviate
+
+abbreviate:
+        lb      $t0, 0($a0)             # read input byte
+        addi    $a0, $a0, 1             # increment input address
+        beq     $t0, $zero, terminate   # check for null terminator
+
+        andi    $t0, 0xdf               # convert to upper case
+        blt     $t0, 'A', abbreviate    # if less than 'A', ignore
+        bgt     $t0, 'Z', abbreviate    # if greater than 'Z', ignore
+
+        sb      $t0, 0($a1)             # write output byte
+        addi    $a1, $a1, 1             # increment output address
+
+within_word:
+        lb      $t0, 0($a0)             # read input byte
+        addi    $a0, $a0, 1             # increment input address
+        beq     $t0, $zero, terminate   # check for null terminator
+
+        beq     $t0, ' ', abbreviate    # if we have a space, we are no longer in a word
+        beq     $t0, '-', abbreviate    # if we have a hyphen, we are no longer in a word
+        j       within_word
+
+terminate:
+        sb      $zero, 0($a1)
+        jr      $ra

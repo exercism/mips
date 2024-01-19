@@ -153,6 +153,15 @@
         "topics": []
       },
       {
+        "slug": "binary-search",
+        "name": "Binary Search",
+        "uuid": "25145170-d7d4-4f72-8a4f-a44b6f3880da",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4,
+        "topics": []
+      },
+      {
         "slug": "roman-numerals",
         "name": "Roman Numerals",
         "uuid": "fa283d1e-2005-40d3-9a30-252d06d98523",
@@ -240,6 +249,17 @@
         "difficulty": 1,
         "topics": [
           "math"
+        ]
+      },
+      {
+        "slug": "acronym",
+        "name": "Acronym",
+        "uuid": "8418ec28-8365-4e80-ae24-a82d5219d897",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3,
+        "topics": [
+          "strings"
         ]
       },
       {
