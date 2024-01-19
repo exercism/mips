@@ -1,4 +1,4 @@
-# Using the `andi` instruction
+# Using a "divisible by" macro
 
 ```asm
 ## Registers

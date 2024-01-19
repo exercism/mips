@@ -27,7 +27,6 @@ set_leap:
         li      $v0, 1
 end:
         jr      $ra
-
 ```
 
 Equivalent C code:
