@@ -2,8 +2,6 @@
 
 ## Registers
 
-## Registers
-
 | Register | Usage     | Type    | Description                                      |
 | -------- | --------- | ------- | ------------------------------------------------ |
 | `$a0`    | input     | integer | year to check                                    |
