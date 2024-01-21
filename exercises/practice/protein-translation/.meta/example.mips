@@ -1,0 +1,112 @@
+# | Register | Usage        | Type    | Description                    |
+# | -------- | ------------ | ------- | ------------------------------ |
+# | `$a0`    | input        | address | null-terminated input string   |
+# | `$a1`    | input/output | address | null-terminated output string  |
+# | `$t0`    | temporary    | address | null-terminated protein string |
+# | `$t1`    | temporary    | address | output pointer                 |
+# | `$t2`    | temporary    | byte    | input or protein               |
+# | `$t3`    | temporary    | integer | current input codon (3 bytes)  |
+
+.globl proteins
+
+.eqv AUG 0x00475541
+.eqv UUU 0x00555555
+.eqv UUC 0x00435555
+.eqv UUA 0x00415555
+.eqv UUG 0x00475555
+.eqv UCU 0x00554355
+.eqv UCC 0x00434355
+.eqv UCA 0x00414355
+.eqv UCG 0x00474355
+.eqv UAU 0x00554155
+.eqv UAC 0x00434155
+.eqv UGU 0x00554755
+.eqv UGC 0x00434755
+.eqv UGG 0x00474755
+.eqv UAA 0x00414155
+.eqv UAG 0x00474155
+.eqv UGA 0x00414755
+
+.data
+
+methionine:    .asciiz "Methionine\n"
+phenylalanine: .asciiz "Phenylalanine\n"
+leucine:       .asciiz "Leucine\n"
+serine:        .asciiz "Serine\n"
+tyrosine:      .asciiz "Tyrosine\n"
+cysteine:      .asciiz "Cysteine\n"
+tryptophan:    .asciiz "Tryptophan\n"
+
+
+.text
+
+proteins:
+        move    $t1, $a1                # copy destination address
+        sb      $zero, 0($t1)           # output is null terminated
+        j       read_codon
+
+copy_string:
+                                        # copy string from source $t0 to destination $t1
+        lb      $t2, 0($t0)             # load source byte
+        sb      $t2, 0($t1)             # write byte to destination
+        addi    $t0, $t0, 1             # increment souce pointer
+        addi    $t1, $t1, 1             # increment destination pointer
+        bne     $t2, $zero, copy_string # repeat until we have reached null terminator
+
+        addi    $t1, $t1, -1            # decrement destination pointer, in case
+                                        # we later need to append proteins
+
+       addi     $a0, $a0, 3             # advance input pointer to next codon
+
+read_codon:
+        lb      $t2, 0($a0)             # read first byte of codon
+        beq     $t2, $zero, stop        # no more codons
+
+        lb      $t2, 1($a0)             # read second byte of codon
+        beq     $t2, $zero, invalid     # incomplete codon
+
+        lb      $t2, 2($a0)             # read third byte of codon
+        beq     $t2, $zero, invalid     # incomplete codon
+
+        ulw     $t3, 0($a0)             # read unaligned word of codon input
+        andi    $t3, $t3, 0x00ffffff    # clear high byte (it contains start of the next codon)
+
+        la      $t0, methionine
+        beq     $t3, AUG, copy_string
+
+        la      $t0, phenylalanine
+        beq     $t3, UUU, copy_string
+        beq     $t3, UUC, copy_string
+
+        la      $t0, leucine
+        beq     $t3, UUA, copy_string
+        beq     $t3, UUG, copy_string
+
+        la      $t0, serine
+        beq     $t3, UCU, copy_string
+        beq     $t3, UCC, copy_string
+        beq     $t3, UCA, copy_string
+        beq     $t3, UCG, copy_string
+
+        la      $t0, tyrosine
+        beq     $t3, UAU, copy_string
+        beq     $t3, UAC, copy_string
+
+        la      $t0, cysteine
+        beq     $t3, UGU, copy_string
+        beq     $t3, UGC, copy_string
+
+        la      $t0, tryptophan
+        beq     $t3, UGG, copy_string
+
+        beq     $t3, UAA, stop
+        beq     $t3, UAG, stop
+        beq     $t3, UGA, stop
+
+                                        # we have an unknown codon
+
+invalid:
+        sb      $zero, 0($a1)           # replace any output with empty string
+
+stop:
+        jr      $ra

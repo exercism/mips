@@ -1,0 +1,18 @@
+{
+  "authors": [
+    "keiravillekode"
+  ],
+  "files": {
+    "solution": [
+      "impl.mips"
+    ],
+    "test": [
+      "runner.mips"
+    ],
+    "example": [
+      ".meta/example.mips"
+    ]
+  },
+  "blurb": "Translate RNA sequences into proteins.",
+  "source": "Tyler Long"
+}
