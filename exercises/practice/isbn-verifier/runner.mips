@@ -76,10 +76,14 @@ run_test:
         bne     $v1, $s4, exit_fail     # if expected doesn't match actual, jump to exit_fail
 
 scan:
+        lb      $s3, 0($s1)             # Load byte at current address
+        beq     $s3,  $zero, post_scan  # if it's already null, jump: we've reached the end
+
         addi    $s1, $s1, 1             # move input address on byte forward
         lb      $s3, 0($s1)             # load byte
-        bne     $s3, $zero, scan        # until char null, continue loop
+        j       scan                    # loop
 
+post_scan:
         addi    $s1, $s1, 1             # move input address on byte past null
 
         addi    $s2, $s2, 4             # move to next word in output
