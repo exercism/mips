@@ -81,7 +81,7 @@ input_scan:
         bne     $s3, $zero, input_scan  # until char null, continue loop
 
 done_scan:
-        addi $s2, $s2, 4                # move to next word in output
+        addi    $s2, $s2, 4             # move to next word in output
         sub     $s0, $s0, 1             # decrement num of tests left to run
         bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
 
