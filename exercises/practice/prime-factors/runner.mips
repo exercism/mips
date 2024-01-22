@@ -1,0 +1,205 @@
+#
+# Test factors with some examples
+#
+# a0 - input number, for callee
+# a1 - pointer to output array of factors, for callee
+# s0 - num of tests left to run
+# s1 - address of input number
+# s2 - address of expected factors
+# s3 - address of expected number of factors
+# s4 - copy of output location
+# t0 - address of expected factor
+# t1 - expected factor
+# t2 - address of actual factor
+# t3 - actual factor
+# t4 - address at end of expected factors
+
+.data
+
+# number of test cases
+n:  .word 12
+ins:  .word
+        1,
+        2,
+        3,
+        9,
+        4,
+        8,
+        27,
+        625,
+        6,
+        12,
+        901255,
+        4292665319 # factors include a large prime
+outs:  .word
+        # none,
+        2,
+        3,
+        3, 3,
+        2, 2,
+        2, 2, 2,
+        3, 3, 3,
+        5, 5, 5, 5,
+        2, 3,
+        2, 2, 3,
+        5, 17, 23, 461,
+        4801, 894119
+numouts:  .word
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        2,
+        3,
+        4,
+        2
+
+failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+prefix: .asciiz "["
+comma: .asciiz ", "
+suffix: .asciiz "]"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, ins
+        la      $s2, outs
+        la      $s3, numouts
+
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, 16                 # specify 16 bytes - length of longest expected output
+        syscall
+        move    $s4, $v0                # location of allocated memory is where callee writes result
+
+run_test:
+        jal     clear_output            # zero out output location
+
+        lw      $a0, 0($s1)             # load input value into a0
+        move    $a1, $s4                # load output location
+        jal     factors                 # call subroutine under test
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
+        lw      $t5, 0($s3)             # expected number of factors
+        bne     $v1, $t5, exit_fail     # check if we have the expected number of factors
+
+        move    $t0, $s2                # address of expected factor
+        move    $t2, $s4                # address of actual factor
+        sll     $t4, $t5, 2             # number of bytes occupied by factors
+        add     $t4, $t4, $s2           # address at end of expected factors
+        beq     $t5, $zero, done_scan
+
+scan:
+        lw      $t1, 0($t0)             # load expected factor
+        lw      $t3, 0($t2)             # load actual factor
+        bne     $t1, $t3, exit_fail     # check if we have the expected factor
+        addi    $t0, $t0, 4             # advance to next expected factor
+        addi    $t2, $t2, 4             # advance to next actual factor
+        bne     $t0, $t4, scan          # repeat until all factors have been compared
+
+done_scan:
+        addi    $s1, $s1, 4             # point to next input word
+        move    $s2, $t4                # point to next expected factors
+        addi    $s3, $s3, 4             # point to next expected number of factors
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s1)             # print input that failed on
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $v1                # actual number of factors
+        move    $a1, $s4                # address of actual factors
+        jal     print_array
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 0($s3)             # expected number of factors
+        move    $a1, $s2                # address of expected factors
+        jal     print_array
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+clear_output:
+        sw      $zero, 0($s4)           # zero out output by storing 4 words (16 bytes) of zeros
+        sw      $zero, 4($s4)
+        sw      $zero, 8($s4)
+        sw      $zero, 12($s4)
+        jr      $ra
+
+
+print_array:
+                                        # print array with word count $a0, address $a1
+                                        # local variable s0 points to current element
+                                        # local variable s1 point to end of array
+
+        addi    $sp, $sp, -8            # Save existing values of $s0 and $s1
+        sw      $s0, 4($sp)
+        sw      $s1, 0($sp)
+
+        move    $s0, $a1                # first element of array
+        sll     $s1, $a0, 2             # length of array, in bytes
+        add     $s1, $s1, $a1           # pointer to end of array
+
+        la      $a0, prefix             # print prefix
+        li      $v0, 4
+        syscall
+
+        beq     $s0, $s1, output_suffix # jump ahead if array is empty
+        j       output_element          # first element is not preceeded by comma
+
+output_comma:
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+output_element:
+        lw      $a0, 0($s0)             # load element value
+        addi    $s0, $s0, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        bne     $s0, $s1, output_comma  # repeat until we reach end of array
+
+output_suffix:
+        la      $a0, suffix
+        li      $v0, 4
+        syscall
+
+        lw      $s1, 0($sp)             # Restore original values of $s0 and $s1
+        lw      $s0, 4($sp)
+        addi    $sp, $sp, 8
+
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+#.include "impl.mips"

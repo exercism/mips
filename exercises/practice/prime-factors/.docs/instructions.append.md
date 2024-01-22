@@ -1,0 +1,10 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage        | Type    | Description                         |
+| -------- | ------------ | ------- | ----------------------------------- |
+| `$a0`    | input        | integer | natural number to be factorized     |
+| `$a1`    | input/output | address | destination array for prime factors |
+| `$v0`    | output       | integer | number of factors                   |
+| `$t0-9`  | temporary    | any     | used for temporary storage          |

@@ -1,0 +1,42 @@
+# | Register | Usage        | Type    | Description                         |
+# | -------- | ------------ | ------- | ----------------------------------- |
+# | `$a0`    | input        | integer | natural number to be factorized     |
+# | `$a1`    | input/output | address | destination array for prime factors |
+# | `$v0`    | output       | integer | number of factors                   |
+# | `$t0`    | temporary    | integer | candidate factor                    |
+# | `$t1`    | temporary    | integer | step to next candidate factor       |
+
+.globl factors
+
+.text
+
+factors:
+        move    $v0, $a1                # copy of output pointer
+        li      $t0, 2                  # first candidate factor is 2
+        li      $t1, 1                  # next candidate factor is 1 more, i.e. 3
+        j       square
+
+extract:
+        sw      $t0, 0($a1)             # we have a prime factor
+        addi    $a1, $a1, 4             # advance output pointer
+        mflo    $a0                     # number is replaced by quotient
+
+divide:
+        divu    $a0, $t0                # divide number by candidate factor
+        mfhi    $t2
+        beq     $t2, $zero, extract     # if remainder is 0, we have found a factor
+        add     $t0, $t0, $t1           # advance to next candidate factor (an odd number)
+        li      $t1, 2                  # subsequent factors are also odd
+
+square:
+        multu   $t0, $t0                # square the candidate factor
+        mflo    $t2
+        bleu    $t2, $a0, divide        # loop until candidate factor, squared, exceeds number
+        beq     $a0, 1, return
+        sw      $a0, 0($a1)             # number must itself be prime
+        addi    $a1, $a1, 4             # advance output pointer
+
+return:
+        sub     $v0, $a1, $v0           # length of output, in bytes
+        srl     $v0, $v0, 2             # number of factors words
+        jr      $ra
