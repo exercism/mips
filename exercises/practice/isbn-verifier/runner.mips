@@ -75,13 +75,12 @@ run_test:
         lw      $s4, 0($s2)             # read expected output from memory
         bne     $v1, $s4, exit_fail     # if expected doesn't match actual, jump to exit_fail
 
-scan:
-        addi    $s1, $s1, 1             # move input address on byte forward
-        lb      $s3, 0($s1)             # load byte
-        bne     $s3, $zero, scan        # until char null, continue loop
-
+input_scan:
+        lb      $s3, 0($s1)
         addi    $s1, $s1, 1             # move input address on byte past null
+        bne     $s3, $zero, input_scan  # until char null, continue loop
 
+done_scan:
         addi    $s2, $s2, 4             # move to next word in output
         sub     $s0, $s0, 1             # decrement num of tests left to run
         bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
