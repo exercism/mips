@@ -1,0 +1,9 @@
+# | Register | Usage        | Type    | Description                            |
+# | -------- | ------------ | ------- | -------------------------------------- |
+# | `$a0`    | input/output | address | phone number as null-terminated string |
+# | `$t0-9`  | temporary    | any     | used for temporary storage             |
+
+.globl clean
+
+clean:
+        jr $ra
