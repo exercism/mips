@@ -1,0 +1,9 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage     | Type    | Description                                       |
+| -------- | --------- | ------- | ------------------------------------------------- |
+| `$a0`    | input     | integer | starting number                                   |
+| `$v0`    | output    | integer | expected number of steps, -1 if number is invalid |
+| `$t0-9`  | temporary | any     | used for temporary storage                        |

@@ -78,6 +78,17 @@
         ]
       },
       {
+        "slug": "collatz-conjecture",
+        "name": "Collatz Conjecture",
+        "uuid": "6835fea3-35e9-4401-a8f2-c71e85256ad1",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2,
+        "topics": [
+          "math"
+        ]
+      },
+      {
         "slug": "isbn-verifier",
         "name": "ISBN Verifier",
         "uuid": "ed90c7a2-5d52-425b-8faa-e59d9516369f",
