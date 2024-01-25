@@ -1,0 +1,81 @@
+# | Register | Usage        | Type    | Description                     |
+# | -------- | ------------ | ------- | ------------------------------- |
+# | `$a0`    | input        | integer | number between 1 and 31         |
+# | `$a1`    | input/output | address | null-terminated output string   |
+# | `$t0`    | temporary    | address | copy of return address          |
+# | `$t1`    | temporary    | address | output pointer                  |
+# | `$t2`    | temporary    | address | null-terminated action string   |
+# | `$t3`    | temporary    | integer | number place for action         |
+# | `$t4`    | temporary    | integer | non-zero if action is requested |
+# | `$t5`    | temporary    | byte    | character being copied          |
+
+.globl commands
+
+.eqv WINK 0x01
+.eqv DOUBLE_BLINK 0x02
+.eqv CLOSE_YOUR_EYES 0x04
+.eqv JUMP 0x08
+.eqv REVERSE 0x10
+
+.macro consider (%place, %action)
+        la      $t2, %action
+        li      $t3, %place
+        jal     consider_action
+.end_macro              
+
+
+.data
+
+wink:            .asciiz "wink, "
+double_blink:    .asciiz "double blink, "
+close_your_eyes: .asciiz "close your eyes, "
+jump:            .asciiz "jump, "
+
+
+.text
+
+commands:
+        move    $t0, $ra                # save return address
+        move    $t1, $a1                # output pointer
+        andi    $t4, $a0, REVERSE       # check if reverse if requested
+        bnez    $t4, reverse
+
+        consider (WINK, wink)
+        consider (DOUBLE_BLINK, double_blink)
+        consider (CLOSE_YOUR_EYES, close_your_eyes)
+        consider (JUMP, jump)
+        j       end
+
+reverse:
+        consider (JUMP, jump)
+        consider (CLOSE_YOUR_EYES, close_your_eyes)
+        consider (DOUBLE_BLINK, double_blink)
+        consider (WINK, wink)
+
+end:
+        beq     $t1, $a1, terminate     # jump ahead if no actions have been output
+        addi    $t1, $t1, -2            # drop comma and space from last action
+
+terminate:
+        sb      $zero, 0($t1)           # write null terminator
+        jr      $t0                     # return to original caller
+
+
+consider_action:
+                                        # $a0 - number between 1 and 31
+                                        # $t1 - output pointer, to be modified
+                                        # $t2 - action string
+                                        # $t3 - number place for action
+        and     $t4, $a0, $t3
+        beqz    $t4, return
+
+loop:
+        lb      $t5, 0($t2)             # read byte from action
+        addi    $t2, $t2, 1             # increment action pointer
+        sb      $t5, 0($t1)             # write byte to output
+        addi    $t1, $t1, 1             # increment output pointer
+        bnez    $t5, loop               # repeat until null terminator is copied
+        addi    $t1, $t1, -1            # point to null terminator
+
+return:
+        jr      $ra
