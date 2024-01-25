@@ -1,0 +1,157 @@
+#
+# Test clean with some examples
+#
+# a0 - phone number as null-terminated string, for callee and caller
+# s0 - num of tests left to run
+# s1 - address of input string
+# s2 - address of expected output string
+# s3 - char byte of input
+# s4 - char byte of output
+# s5 - copy of buffer location
+
+.data
+
+# number of test cases
+n:  .word 18
+# input values (null terminated)
+ins:  .asciiz
+        "(223) 456-7890",
+        "223.456.7890",
+        "223 456   7890   ",
+        "123456789",
+        "22234567890",
+        "12234567890",
+        "+1 (223) 456-7890",
+        "321234567890",
+        "523-abc-7890",
+        "523-@:!-7890",
+        "(023) 456-7890",
+        "(123) 456-7890",
+        "(223) 056-7890",
+        "(223) 156-7890",
+        "1 (023) 456-7890",
+        "1 (123) 456-7890",
+        "1 (223) 056-7890",
+        "1 (223) 156-7890"
+# expected output values (null terminated)
+outs:  .asciiz
+        "2234567890",
+        "2234567890",
+        "2234567890",
+        "", # must not be fewer than 10 digits
+        "", # 11 digits must start with 1
+        "2234567890",
+        "2234567890",
+        "", # must not be greater than 11 digits
+        "", # letters not permitted
+        "", # punctuations not permitted
+        "", # area code cannot start with zero
+        "", # area code cannot start with one
+        "", # exchange code cannot start with zero
+        "", # exchange code cannot start with one
+        "", # area code cannot start with zero
+        "", # area code cannot start with one
+        "", # exchange code cannot start with zero
+        ""  # exchange code cannot start with one
+
+failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, ins
+        la      $s2, outs
+
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, 20                 # specify 20 bytes - length of longest expected input
+        syscall
+        move    $s5, $v0                # location of allocated memory
+
+run_test:
+        jal     clear_output            # zero out output location
+        move    $a0, $s1                # load input value into a0
+        move    $a1, $s5                # load destination address into a1
+        jal     string_copy             # copy to allocated memory
+        move    $a0, $s5                # load destination address into a0
+        jal     clean                   # call subroutine under test
+        move    $a0, $s5
+        move    $s7, $s2                # take copy of expected output
+
+scan:
+        lb      $s3, 0($s2)             # load one byte of the expectation
+        lb      $s4, 0($a0)             # load one byte of the actual
+        bne     $s3, $s4, exit_fail     # if the two differ, the test has failed
+        addi    $s2, $s2, 1             # point to next expectation byte
+        addi    $a0, $a0, 1             # point to next actual byte
+        bne     $s3, $zero, scan        # if one char (and therefore the other) was not null, loop
+
+input_scan:
+        lb      $s3, 0($s1)
+        addi    $s1, $s1, 1
+        bne     $s3, $zero, input_scan
+
+done_scan:
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # print input that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s5                # print actual that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s7                # print expected value that failed on
+        li      $v0, 4
+        syscall
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+clear_output:
+        sw      $zero, 0($s5)           # zero out output by storing 5 words (20 bytes) of zeros
+        sw      $zero, 4($s5)
+        sw      $zero, 8($s5)
+        sw      $zero, 12($s5)
+        sw      $zero, 16($s5)
+        jr      $ra
+
+string_copy:
+                                        # copy null-terminated string from $a0 to $a1
+        lb      $t0, 0($a0)             # read byte from source
+        addi    $a0, $a0, 1             # increment source pointer
+        sb      $t0, 0($a1)             # write byte to destination
+        addi    $a1, $a1, 1             # increment destination pointer
+        bne     $t0, $zero, string_copy # repeat until null terminator
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+# .include "impl.mips"

@@ -327,6 +327,15 @@
         "topics": []
       },
       {
+        "slug": "phone-number",
+        "name": "Phone Number",
+        "uuid": "60bcccb4-589f-4465-a7d8-c84b22494306",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4,
+        "topics": []
+      },
+      {
         "slug": "matching-brackets",
         "name": "Matching Brackets",
         "uuid": "06250540-e3ee-445d-a0b7-9c3e11a282ed",

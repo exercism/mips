@@ -1,0 +1,51 @@
+# | Register | Usage        | Type      | Description                               |
+# | -------- | ------------ | --------- | ----------------------------------------- |
+# | `$a0`    | input/output | address   | phone number as null-terminated string    |
+# | `$t0`    | temporary    | character | the digit '0'                             |
+# | `$t1`    | temporary    | character | the digit '1'                             |
+# | `$t2`    | temporary    | address   | input pointer for current digit           |
+# | `$t3`    | temporary    | address   | output pointer for current digit          |
+# | `$t4`    | temporary    | character | current digit                             |
+# | `$t5`    | temporary    | boolean   | indicates if input contained country code |
+# | `$t9`    | temporary    | boolean   | the digit '9'                             |
+
+.globl clean
+
+clean:
+        li      $t0, '0'
+        li      $t1, '1'
+        move    $t2, $a0                # input pointer
+        move    $t3, $a0                # output pointer
+        move    $t5, $zero              # country code has not been seen
+        li      $t9, '9'
+
+read:
+        lb      $t4, 0($t2)             # read input digit
+        addi    $t2, $t2, 1             # increment input pointer
+        beq     $t4, $zero, terminate
+        blt     $t4, $t0, read          # ignore characters below '0'
+        bgt     $t4, $t9, read          # or above '9'
+        bne     $t5, $zero, write       # write digit if country code has appeared
+        bne     $t3, $a0, write         # write if other digits have already appeared
+        bne     $t4, $t1, write         # write digit other than '1'
+        li      $t5, 1                  # record that we have seen the country code
+        j       read
+
+write:
+        sb      $t4, 0($t3)             # output digit
+        addi    $t3, $t3, 1             # increment output pointer
+        j       read
+
+terminate:
+        sb      $zero, 0($t3)           # write null terminator
+        sub     $t3, $t3, $a0           # calculate number of digits
+        bne     $t3, 10, invalid        # phone number must have 10 digits
+        lb      $t4, 0($a0)             # first digit of area code
+        ble     $t4, $t1, invalid       # must not be '0' or '1'
+        lb      $t4, 3($a0)             # first digit of exchange code
+        ble     $t4, $t1, invalid       # must not be '0' or '1'
+        jr      $ra
+
+invalid:
+        sb      $zero, 0($a0)           # write an empty string
+        jr      $ra
