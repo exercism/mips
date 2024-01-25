@@ -301,6 +301,14 @@
         "difficulty": 5
       },
       {
+        "slug": "secret-handshake",
+        "name": "Secret Handshake",
+        "uuid": "23dcb4a5-7057-4531-a59e-5bb47c29d8bf",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "isogram",
         "name": "Isogram",
         "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",

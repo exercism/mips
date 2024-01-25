@@ -1,0 +1,10 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | integer | number between 1 and 31       |
+# | `$a1`    | input/output | address | null-terminated output string |
+# | `$t0-9`  | temporary    | any     | used for temporary storage    |
+
+.globl commands
+
+commands:
+        jr $ra
