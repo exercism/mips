@@ -173,6 +173,17 @@
         "topics": []
       },
       {
+        "slug": "prime-factors",
+        "name": "Prime Factors",
+        "uuid": "a54a2049-99d2-4819-bd71-e68c0bfeb7f2",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4,
+        "topics": [
+          "math"
+        ]
+      },
+      {
         "slug": "roman-numerals",
         "name": "Roman Numerals",
         "uuid": "fa283d1e-2005-40d3-9a30-252d06d98523",
