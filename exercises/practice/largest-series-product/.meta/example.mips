@@ -1,0 +1,65 @@
+# | Register | Usage     | Type    | Description                   |
+# | -------- | --------- | ------- | ----------------------------- |
+# | `$a0`    | input     | address | null-terminated digits string |
+# | `$a1`    | input     | integer | span                          |
+# | `$v0`    | output    | integer | largest series product        |
+# | `$t0`    | temporary | byte    | the digit '0'                 |
+# | `$t1`    | temporary | address | input pointer                 |
+# | `$t2`    | temporary | number  | input digit                   |
+# | `$t3`    | temporary | address | pointer to end of digits      |
+# | `$t4`    | temporary | integer | product in span so far        |
+# | `$t5`    | temporary | address | pointer to end of span        |
+# | `$t6`    | temporary | integer | length of input               |
+# | `$t9`    | temporary | byte    | the digit '9'                 |
+
+.globl largest_product
+
+largest_product:
+        bltz    $a1, invalid            # check for negative span
+
+        li      $t0, '0'
+        li      $t9, '9'
+        move    $t1, $a0
+
+input_scan:
+        lb      $t2, 0($t1)             # load digit byte
+        addi    $t1, $t1, 1             # increment input pointer
+        bgt     $t2, $t9, invalid
+        bge     $t2, $t0, input_scan    # only '0'..'9' are valid digits
+        bnez    $t2, invalid
+
+        addi    $t3, $t1, -1            # point to end of digits
+        sub     $t6, $t3, $a0           # length of input
+        blt     $t6, $a1, invalid       # check for string length smaller than span
+
+        beqz    $a1, empty_span         # empty spans have product 1
+        move    $v0, $zero              # largest product so far
+
+next_span:
+        move    $t1, $a0                # pointer into span
+        add     $t5, $t1, $a1           # pointer to end of span
+        addi    $a0, $a0, 1             # point to start of next span
+        li      $t4, 1                  # product of digits in span
+
+next_digit:
+        lb      $t2, 0($t1)             # load digit
+        addi    $t1, $t1, 1             # increment pointer
+        sub     $t2, $t2, $t0           # convert '0'..'9' to numeric value 0..9
+        multu   $t4, $t2
+        mflo    $t4
+        bne     $t1, $t5, next_digit
+
+        ble     $t4, $v0, check_if_last # jump ahead if product is not larger
+        move    $v0, $t4                # update largest product
+
+check_if_last:
+        blt     $t5, $t3, next_span     # repeat until we have reached of digits 
+        jr      $ra
+
+empty_span:
+        li      $v0, 1
+        jr      $ra
+
+invalid:
+        li      $v0, -1
+        jr      $ra
