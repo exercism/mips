@@ -244,6 +244,14 @@
         ]
       },
       {
+        "slug": "bob",
+        "name": "Bob",
+        "uuid": "51ce0d00-817f-4b6d-94c5-3622d2fb7777",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3
+      },
+      {
         "slug": "darts",
         "name": "Darts",
         "uuid": "bff5891d-19ac-4029-a451-bdcf812c4fd5",
