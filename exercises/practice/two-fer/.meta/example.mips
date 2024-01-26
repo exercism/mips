@@ -1,0 +1,49 @@
+# Two Fer
+#
+# $a0 - input, then pointer to string being copied
+# $a1 - input, pointer to null-terminated output string
+# $t0 - name pointer
+# $t1 - return address
+# $t2 - input byte
+
+.globl two_fer
+
+.data
+
+prefix: .asciiz "One for "
+you:    .asciiz "you"
+suffix: .asciiz ", one for me."
+
+
+.text
+
+two_fer:
+        move    $t0, $a0                # copy name pointer
+        move    $t1, $ra                # preserve return address
+
+        la      $a0, prefix             # Output "One for "
+        jal     copy_string
+
+        move    $a0, $t0
+        bnez    $a0, copy_name          # If input name is not a null pointer, jump ahead
+        la      $a0, you
+
+copy_name:
+        jal     copy_string             # Output name, or "you"
+
+        la      $a0, suffix             # Output ", one for me."
+        jal     copy_string
+
+        jr      $t1                     # Return to original caller
+
+copy_string:
+                                        # copy string from source $a0 to destination $a1
+        lb      $t2, 0($a0)             # load source byte
+        sb      $t2, 0($a1)             # write byte to destination
+        addi    $a0, $a0, 1             # increment souce pointer
+        addi    $a1, $a1, 1             # increment destination pointer
+        bne     $t2, $zero, copy_string # repeat until we have reached null terminator
+
+        addi    $a1, $a1, -1            # decrement destination pointer,
+                                        # ready to append other strings
+        jr      $ra

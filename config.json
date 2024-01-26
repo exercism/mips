@@ -274,6 +274,17 @@
         ]
       },
       {
+        "slug": "two-fer",
+        "name": "Two Fer",
+        "uuid": "cbf9d422-ad22-4919-ac3f-6ff13dfaea23",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 2,
+        "topics": [
+          "strings"
+        ]
+      },
+      {
         "slug": "acronym",
         "name": "Acronym",
         "uuid": "8418ec28-8365-4e80-ae24-a82d5219d897",
