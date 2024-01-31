@@ -1,0 +1,83 @@
+# | Register | Usage        | Type    | Description                                           |
+# | -------- | ------------ | ------- | ----------------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string                          |
+# | `$a1`    | input/output | address | null-terminated output string                         |
+# | `$t0`    | temporary    | address | required output message                               |
+# | `$t1`    | temporary    | byte    | most recent non-whitespace character                  |
+# | `$t2`    | temporary    | byte    | current character                                     |
+# | `$t3`    | temporary    | boolean | contains upper case (`0` = `false`, `1` = `true`)     |
+# | `$t4`    | temporary    | boolean | contains lower case (`0` = `false`, `1` = `true`)     |
+# | `$t5`    | temporary    | boolean | ends with question mark (`0` = `false`, `1` = `true`) |
+
+.globl response
+
+.data
+
+calm_down: .asciiz "Calm down, I know what I'm doing!"
+fine:      .asciiz "Fine. Be that way!"
+sure:      .asciiz "Sure."
+whatever:  .asciiz "Whatever."
+whoa:      .asciiz "Whoa, chill out!"
+
+.text
+
+response:
+        move    $t1, $zero              # no non-whitespace yet
+        move    $t3, $zero              # no upper case letters yet
+        move    $t4, $zero              # no lower case letters yet
+        j       scan_input
+
+found_upper:
+        li      $t3, 1                  # input contains an upper case letter
+
+scan_input:
+        lb      $t2, 0($a0)             # read character
+        addi    $a0, $a0, 1             # increment input pointer
+        beqz    $t2, select_response    # if we have reached null terminator, jump ahead
+        ble     $t2, ' ', scan_input    # on whitespace, continue loop
+        move    $t1, $t2                # store most recent non-whitespace character
+        blt     $t2, 'A', scan_input    # on punctuation, continue loop
+        ble     $t2, 'Z', found_upper
+        blt     $t2, 'a', scan_input    # on punctuation, continue loop
+        bgt     $t2, 'z', scan_input    # on punctuation, continue loop
+
+found_lower:
+        li      $t4, 1                  # input contains a lower case letter
+        j       scan_input
+
+select_response:
+        seq     $t5, $t1, '?'           # does input end with question mark?
+
+        beqz    $t1, silence
+
+        bnez    $t4, not_yell           # does the input contain lower case letters?
+        beqz    $t3, not_yell           # does the input contain no upper case letters?
+
+        bnez    $t5, yell_question
+        la      $t0, whoa
+        j       copy_string
+
+yell_question:
+        la      $t0, calm_down
+        j       copy_string
+
+not_yell:
+        bnez    $t5, question
+        la      $t0, whatever
+        j       copy_string
+
+question:
+        la      $t0, sure
+        j       copy_string
+
+silence:
+        la      $t0, fine
+
+copy_string:
+                                        # copy string from source $t0 to destination $a1
+        lb      $t2, 0($t0)             # load source byte
+        sb      $t2, 0($a1)             # write byte to destination
+        addi    $t0, $t0, 1             # increment souce pointer
+        addi    $a1, $a1, 1             # increment destination pointer
+        bne     $t2, $zero, copy_string # repeat until we have reached null terminator
+        jr      $ra
