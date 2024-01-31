@@ -271,6 +271,14 @@
         ]
       },
       {
+        "slug": "largest-series-product",
+        "name": "Largest Series Product",
+        "uuid": "48d2f645-3973-49dc-a63b-3a20dddba61c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "trinary",
         "name": "Trinary",
         "uuid": "69464a1e-3da5-41ad-85fa-46e7cd009a1b",

@@ -1,0 +1,149 @@
+#
+# Test largest_product with some examples
+#
+# a0 - digits string, for callee
+# a1 - span, for callee
+# v0 - actual output
+# v1 - copy of actual output
+# s0 - num of tests left to run
+# s1 - address of digits string
+# s2 - address of span
+# s3 - address of expected output
+# s4 - expected output
+
+.data
+
+# number of test cases
+n:  .word 15
+# digits values (null terminated)
+digits:  .asciiz
+        "29",
+        "0123456789",
+        "576802143",
+        "0123456789",
+        "1027839564",
+        "0123456789",
+        "73167176531330624919225119674426574742355349194934",
+        "0000",
+        "99099",
+        "123",
+        "",
+        "123",
+        "",
+        "1234a5",
+        "12345"
+# span values (word sized ints)
+spans:  .word
+        2,
+        2,
+        2,
+        3,
+        3,
+        5,
+        6,
+        2,
+        3,
+        4,
+        0,
+        0,
+        1,
+        2,
+        -1
+# expected output values (word sized ints)
+outs:  .word
+        18,
+        72,
+        48,
+        504,
+        270,
+        15120,
+        23520,
+        0,
+        0,
+        -1, # span must be smaller than string length,
+        1,
+        1,
+        -1, # span must be smaller than string length,
+        -1, # digits input must only contain digits,
+        -1, # span must not be negative
+
+failmsg: .asciiz "failed for test input: "
+spanmsg: .asciiz " with span "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, digits
+        la      $s2, spans
+        la      $s3, outs
+
+run_test:
+        move    $a0, $s1                # load digits address into a0
+        lw      $a1, 0($s2)             # load span into a1
+        jal     largest_product         # call subroutine under test
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
+        lw      $s4, 0($s3)             # read expected output from memory
+        bne     $v1, $s4, exit_fail     # if expected doesn't match actual, jump to fail
+
+input_scan:
+        lb      $t0, 0($s1)             # load digit byte
+        addi    $s1, $s1, 1             # advance digits pointer
+        bne     $t0, $zero, input_scan  # repeat until we reach null terminator
+
+        addi    $s2, $s2, 4             # move to next span in input
+        addi    $s3, $s3, 4             # move to next output
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # load digits address into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        la      $a0, spanmsg            # put address of spanmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, ($s2)              # print input that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $v1                # print actual that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s4                # print expected value that failed on
+        li      $v0, 1
+        syscall
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+# .include "impl.mips"
