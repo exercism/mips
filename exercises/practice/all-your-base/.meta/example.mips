@@ -1,0 +1,68 @@
+# | Register | Usage        | Type    | Description                                  |
+# | -------- | ------------ | ------- | -------------------------------------------- |
+# | `$a0`    | input        | integer | number of input digits                       |
+# | `$a1`    | input        | integer | base for input digits                        |
+# | `$a2`    | input        | integer | base for output digits                       |
+# | `$a3`    | input/output | address | overwritable array of digit words            |
+# | `$v0`    | output       | integer | number of output digits, -1 if input invalid |
+# | `$t0`    | temporary    | integer | number represented by digits                 |
+# | `$t1`    | temporary    | address | pointer to current digit                     |
+# | `$t2`    | temporary    | address | end of input digits                          |
+# | `$t3`    | temporary    | integer | individual digit                             |
+# | `$t4`    | temporary    | integer | individual digit (during final reverse)      |
+
+
+.globl rebase
+
+rebase:
+        ble     $a1, 1, invalid         # input base must be at least 2
+        ble     $a2, 1, invalid         # output base must be at least 2
+
+        move    $t0, $zero              # number before any digits seen
+        move    $t1, $a3                # pointer to input digit
+        sll     $t2, $a0, 2             # num bytes occupied by input digits
+        add     $t2, $a3, $t2           # end of input digits
+        beq     $t1, $t2, end_input     # if there are no input digits, jump ahead
+
+read_input:
+        lw      $t3, 0($t1)             # read current digit
+        blt     $t3, $zero, invalid     # each digit must be non-negative
+        bge     $t3, $a1, invalid       # and must be smaller than the input base
+        mulu    $t0, $t0, $a1           # number *= input base
+        add     $t0, $t0, $t3           # number += digit
+        addi    $t1, $t1, 4             # advance input pointer
+        bne     $t1, $t2, read_input    # repeat while there are more digits
+
+end_input:
+        move    $t1, $a3                # prepare to overwrite digits
+
+                                        # We initially generate the digits in reverse order.
+generate:
+        div     $t0, $a2                # divide number by output base
+        mfhi    $t3                     # remainder becomes an output digit
+        sw      $t3, 0($t1)             # store digit
+        addi    $t1, $t1, 4             # advance output pointer
+        mflo    $t0                     # overwrite number with quotient 
+        bne     $t0, $zero, generate    # repeat while there are more digits
+
+        sub     $v0, $t1, $a3           # num bytes occupied by output digits
+        srl     $v0, $v0, 2             # number of output digits
+
+reverse:
+        subi    $t1, $t1, 4             # last digit not yet reversed
+        beq     $a3, $t1, return        # when pointers meet, we are done
+
+        lw      $t3, 0($a3)             # swap the digits
+        lw      $t4, 0($t1)
+        sw      $t3, 0($t1)
+        sw      $t4, 0($a3)
+
+        addi    $a3, $a3, 4             # first digit not yet reversed
+        bne     $a3, $t1, reverse       # when pointers meet, we are done
+
+return:
+        jr      $ra
+
+invalid:
+        li      $v0, -1                 # report the input invalid
+        jr      $ra

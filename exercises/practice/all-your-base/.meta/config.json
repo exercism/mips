@@ -1,0 +1,17 @@
+{
+  "authors": [
+    "keiravillekode"
+  ],
+  "files": {
+    "solution": [
+      "impl.mips"
+    ],
+    "test": [
+      "runner.mips"
+    ],
+    "example": [
+      ".meta/example.mips"
+    ]
+  },
+  "blurb": "Convert a number, represented as a sequence of digits in one base, to any other base."
+}
