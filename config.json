@@ -184,6 +184,14 @@
         ]
       },
       {
+        "slug": "sublist",
+        "name": "Sublist",
+        "uuid": "b50cb286-1d93-4480-83ef-b39439a7ba5b",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
         "slug": "roman-numerals",
         "name": "Roman Numerals",
         "uuid": "fa283d1e-2005-40d3-9a30-252d06d98523",
