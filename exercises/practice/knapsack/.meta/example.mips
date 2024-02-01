@@ -1,0 +1,63 @@
+# | Register | Usage     | Type    | Description                                    |
+# | -------- | --------- | ------- | ---------------------------------------------- |
+# | `$a0`    | input     | address | array of item weights                          |
+# | `$a1`    | input     | address | array of item values                           |
+# | `$a2`    | input     | integer | number of items, becomes address end of values |
+# | `$a3`    | input     | integer | maximum weight                                 |
+# | `$v0`    | output    | integer | maximum value                                  |
+# | `$t0`    | temporary | integer | number of bytes occupied by table              |
+# | `$t1`    | temporary | address | address of end of table                        |
+# | `$t2`    | temporary | address | iterator into table                            |
+# | `$t4`    | temporary | integer | item weight                                    |
+# | `$t5`    | temporary | integer | item value                                     |
+# | `$t6`    | temporary | address | pointer into table, for writing                |
+# | `$t7`    | temporary | address | pointer into table, for reading                |
+
+.globl maximum_value
+
+.text
+
+maximum_value:
+        addi    $t0, $a3, 1             # number of entries in the table
+        sll     $t0, $t0, 2             # number of bytes occupied by table
+        move    $t1, $sp                # address at end of table
+        sub     $sp, $sp, $t0           # address of table
+        move    $t2, $sp
+
+write_zero:
+        sw      $zero, 0($t2)
+        addi    $t2, $t2, 4
+        bne     $t2, $t1, write_zero    # repeat until table has been filled with 0 values
+
+        sll     $a2, $a2, 2             # number of bytes occupied by values
+        add     $a2, $a1, $a2           # address at end of values
+        j       check_end_of_values
+
+next_value:
+        lw      $t4, 0($a0)             # load item weight
+        lw      $t5, 0($a1)             # load item value
+        addi    $a0, $a0, 4             # increment weight pointer
+        addi    $a1, $a1, 4             # increment item pointer
+        bgt     $t4, $a3, check_end_of_values # disregard any item with weight greater than max knapsack weight
+
+        move    $t6, $t1                # pointer past final table element
+        sll     $t7, $t4, 2
+        sub     $t7, $t6, $t7           # pointer to table element, item-weight words ahead
+
+next_table_entry:
+        addi    $t6, $t6, -4            # decrement pointer
+        addi    $t7, $t7, -4            # decrement pointer
+        lw      $t8, 0($t7)
+        add     $t8, $t8, $t5           # value achievable using current element
+        lw      $t9, 0($t6)             # value achievable without using current element
+        ble     $t8, $t9, no_improvement_found
+        sw      $t8, 0($t6)             # store value achievable using current element
+
+no_improvement_found:
+        bne     $t7, $sp, next_table_entry
+
+check_end_of_values:
+        bne     $a1, $a2, next_value
+        lw      $v0, -4($t1)
+        move    $sp, $t1
+        jr      $ra

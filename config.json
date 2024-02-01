@@ -336,6 +336,14 @@
         "difficulty": 5
       },
       {
+        "slug": "knapsack",
+        "name": "Knapsack",
+        "uuid": "79e48619-beb7-4493-9a21-9581022f4ded",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "secret-handshake",
         "name": "Secret Handshake",
         "uuid": "23dcb4a5-7057-4531-a59e-5bb47c29d8bf",

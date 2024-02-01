@@ -1,0 +1,13 @@
+# | Register | Usage     | Type    | Description                |
+# | -------- | --------- | ------- | -------------------------- |
+# | `$a0`    | input     | address | array of item weights      |
+# | `$a1`    | input     | address | array of item values       |
+# | `$a2`    | input     | integer | number of items            |
+# | `$a3`    | input     | integer | maximum weight             |
+# | `$v0`    | output    | integer | maximum value              |
+# | `$t0-9`  | temporary | any     | used for temporary storage |
+
+.globl maximum_value
+
+maximum_value:
+        jr      $ra
