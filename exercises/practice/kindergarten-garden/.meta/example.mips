@@ -1,0 +1,104 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | address | garden diagram                |
+# | `$a1`    | input        | address | student's name                |
+# | `$a2`    | input/output | address | null-terminated output string |
+# | `$t1`    | temporary    | address | pointer into garden diagram   |
+# | `$t2`    | temporary    | integer | line length in garden diagram |
+# | `$t3`    | temporary    | address | saved return address          |
+# | `$t4`    | temporary    | byte    | letter indicating plant       |
+
+.globl plants
+
+.data
+
+grass:    .asciiz "grass, "
+clover:   .asciiz "clover, "
+radishes: .asciiz "radishes, "
+violets:  .asciiz "violets, "
+
+
+.text
+
+plants:
+        move $t3, $ra                   # Save return address
+
+        lb      $t1, 0($a1)             # load first letter of student name
+        addi    $t1, $t1, -65           # 0-based index of letter in alphabet
+        sll     $t1, $t1, 1             # index into garden of student's first plant
+
+        li      $a1, '\n'
+        jal     index_of
+        move    $t2, $v0                # garden line length
+
+        move    $a1, $a2
+        add     $t1, $a0, $t1           # Student's first plant
+        jal     output_plant
+
+        addi    $t1, $t1, 1             # Student's second plant
+        jal     output_plant
+
+        add     $t1, $t1, $t2           # Student's third plant
+        jal     output_plant
+
+        addi    $t1, $t1, 1             # Student's fourth plant
+        jal     output_plant
+
+        sb      $zero, -2($a1)          # discard trailing ", "
+        jr      $t3
+
+
+output_plant:
+                                        # appends to $a1 the plant indicated by address $t1
+        lb      $t4, 0($t1)
+        beq     $t4, 'G', output_grass
+        beq     $t4, 'C', output_clover
+        beq     $t4, 'R', output_radishes
+        beq     $t4, 'V', output_violets
+        jr      $ra
+
+output_grass:
+        la      $a0, grass
+        j       string_copy
+
+output_clover:
+        la      $a0, clover
+        j       string_copy
+
+output_radishes:
+        la      $a0, radishes
+        j       string_copy
+
+output_violets:
+        la      $a0, violets
+
+
+string_copy:
+                                        # copy null-terminated string from $a0 to $a1
+                                        # return pointers to null terminator at end of output
+        lb      $v0, 0($a0)             # read byte from source
+        addi    $a0, $a0, 1             # increment source pointer
+        sb      $v0, 0($a1)             # write byte to destination
+        addi    $a1, $a1, 1             # increment destination pointer
+        bnez    $v0, string_copy        # repeat until null terminator
+        addi    $a1, $a1, -1            # return pointer to null terminator at end of output
+        move    $v0, $a1
+        jr      $ra
+
+
+index_of:
+                                        # Finds index of needle byte $a1
+                                        # in haystack string with address $a0
+        move    $v0, $a0                # address of start of string
+
+check_byte:
+        lb      $t0, 0($v0)             # load current byte
+        beq     $t0, $a1, needle_found
+        addi    $v0, $v0, 1             # increment pointer
+        bnez    $t0, check_byte         # repeat until end of string
+        li      $v0, -1                 # needle not found
+        jr      $ra
+
+needle_found:
+        sub     $v0, $v0, $a0           # distance from start of string
+        jr      $ra
