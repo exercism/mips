@@ -1,0 +1,64 @@
+# | Register | Usage        | Type    | Description                         |
+# | -------- | ------------ | ------- | ----------------------------------- |
+# | `$a0`    | input        | integer | size                                |
+# | `$a1`    | input/output | address | matrix of words, in row-major order |
+# | `$v0`    | output       | integer | last value written in matrix        |
+# | `$t0`    | temporary    | any     | size * 4                            |
+# | `$t1`    | temporary    | any     | (size + 1) * 4                      |
+# | `$t2`    | temporary    | any     | side length minus 1                 |
+# | `$t3`    | temporary    | any     | loop index                          |
+
+.globl spiral_matrix
+
+spiral_matrix:
+        move    $v0, $zero
+        sll     $t0, $a0, 2             # size * 4
+        addi    $t1, $t0, 4             # (size + 1) * 4
+        subi    $t2, $a0, 1             # side length minus 1
+        blt     $t2, 1, innermost
+
+next_spiral_loop:
+        move    $t3, $t2
+
+top:
+        addi    $v0, $v0, 1
+        sw      $v0, 0($a1)             # write matrix element
+        addi    $a1, $a1, 4             # address of next element along top
+        subi    $t3, $t3, 1             # decrement loop index
+        bne     $t3, $zero, top
+
+        move    $t3, $t2
+right:
+        addi    $v0, $v0, 1
+        sw      $v0, 0($a1)             # write matrix element
+        add     $a1, $a1, $t0           # address of next element along right
+        subi    $t3, $t3, 1             # decrement loop index
+        bne     $t3, $zero, right
+
+        move    $t3, $t2
+bottom:
+        addi    $v0, $v0, 1
+        sw      $v0, 0($a1)             # write matrix element
+        subi    $a1, $a1, 4             # address of next element along bottom
+        subi    $t3, $t3, 1             # decrement loop index
+        bne     $t3, $zero, bottom
+
+        move    $t3, $t2
+left:
+        addi    $v0, $v0, 1
+        sw      $v0, 0($a1)             # write matrix element
+        sub     $a1, $a1, $t0           # address of next element along left
+        subi    $t3, $t3, 1             # decrement loop index
+        bne     $t3, $zero, left
+
+        add     $a1, $a1, $t1           # address of element in next spiral loop
+        subi    $t2, $t2, 2             # decrease side length by 2
+        bge     $t2, 1, next_spiral_loop
+
+innermost:
+        bnez    $t2, return
+        addi    $v0, $v0, 1
+        sw      $v0, 0($a1)             # write innermost element
+
+return:
+        jr      $ra
