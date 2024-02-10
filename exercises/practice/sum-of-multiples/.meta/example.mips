@@ -1,0 +1,43 @@
+# | Register | Usage     | Type    | Description                   |
+# | -------- | --------- | ------- | ----------------------------- |
+# | `$a0`    | input     | address | array of factor words         |
+# | `$a1`    | input     | integer | number of factors             |
+# | `$a2`    | input     | integer | limit                         |
+# | `$v0`    | output    | integer | sum of multiples within limit |
+# | `$t0`    | temporary | address | end of array of factor words  |
+# | `$t1`    | temporary | integer | candidate multiple            |
+# | `$t2`    | temporary | address | pointer into array of factors |
+# | `$t3`    | temporary | integer | factor                        |
+# | `$t4`    | temporary | integer | remainder                     |
+
+.globl sum
+
+sum:
+        move    $v0, $zero
+        beqz    $a1, return
+        sll     $t0, $a1, 2             # size of factor array, in bytes
+        add     $t0, $a0, $t0           # end of array of factor words
+        move    $t1, $zero
+        j       next_candidate
+
+check_factor:
+        lw      $t3, 0($t2)             # load factor value
+        beqz    $t3, next_factor        # avoid division by 0
+        rem     $t4, $t1, $t3
+        beqz    $t4, found_multiple     # if the remainder is 0, t1 is a multiple of the factor
+
+next_factor:
+        addi    $t2, $t2, 4             # advance to next factor
+        bne     $t2, $t0, check_factor  # repeat until there are no more factors
+
+next_candidate:
+        addi    $t1, $t1, 1             # advance to next candidate multiple
+        move    $t2, $a0                # start with the first factor
+        blt     $t1, $a2, check_factor  # repeat until we reach limit
+
+return:
+        jr      $ra
+
+found_multiple:
+        addu    $v0, $v0, $t1           # include t1 in the sum of factors
+        j       next_candidate
