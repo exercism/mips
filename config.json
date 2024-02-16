@@ -369,6 +369,14 @@
         "difficulty": 3
       },
       {
+        "slug": "sum-of-multiples",
+        "name": "Sum Of Multiples",
+        "uuid": "74765ef9-de2c-488a-8152-e608e4f12e3a",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 3
+      },
+      {
         "slug": "nucleotide-count",
         "name": "Nucleotide Count",
         "uuid": "53d459dc-c557-4a45-828c-4933a7f020c7",
