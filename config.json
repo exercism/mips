@@ -155,6 +155,14 @@
         "difficulty": 4
       },
       {
+        "slug": "perfect-numbers",
+        "name": "Perfect Numbers",
+        "uuid": "5474e989-71a1-4126-be17-235a115257ba",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
         "slug": "atbash-cipher",
         "name": "Atbash Cipher",
         "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",

@@ -1,0 +1,16 @@
+# | Register | Usage     | Type    | Description                                                                           |
+# | -------- | --------- | ------- | ------------------------------------------------------------------------------------- |
+# | `$a0`    | input     | integer | number                                                                                |
+# | `$v0`    | output    | integer | classification (`1` = `perfect`, `2` = `abundant`, `3` = `deficient`, `-1` = `error`) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                                                            |
+
+.eqv PERFECT    1
+.eqv ABUNDANT   2
+.eqv DEFICIENT  3
+.eqv ERROR     -1
+
+.globl classify
+
+classify:
+        li      $v0, PERFECT
+        jr      $ra
