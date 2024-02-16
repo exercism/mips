@@ -1,0 +1,11 @@
+# | Register | Usage        | Type    | Description                         |
+# | -------- | ------------ | ------- | ----------------------------------- |
+# | `$a0`    | input        | integer | size                                |
+# | `$a1`    | input/output | address | matrix of words, in row-major order |
+# | `$v0`    | output       | integer | number of words in matrix           |
+# | `$t0-9`  | temporary    | any     | for temporary storage               |
+
+.globl spiral_matrix
+
+spiral_matrix:
+        jr $ra

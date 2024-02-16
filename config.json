@@ -227,6 +227,14 @@
         "topics": []
       },
       {
+        "slug": "spiral-matrix",
+        "name": "Spiral Matrix",
+        "uuid": "e68b3ce5-9d55-4a63-9ac3-74c2132f3c4b",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "nth-prime",
         "name": "Nth Prime",
         "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
