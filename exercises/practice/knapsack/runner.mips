@@ -1,0 +1,200 @@
+#
+# Test maximum_value with some examples
+#
+# s0 - num of tests left to run
+# s1 - address of weights
+# s2 - address of values
+# s3 - address of numitems
+# s4 - address of maxweights
+# s5 - address of expected output
+# s6 - number of items
+# s7 - expected output
+
+.data
+
+# number of test cases
+n:  .word 7
+weights:  .word
+        # none,
+        100,
+        2, 2, 2, 2, 10,
+        2, 2, 2, 2, 10,
+        5, 4, 6, 4,
+        25, 35, 45, 5, 25, 3, 2, 2,
+        70, 73, 77, 80, 82, 87, 90, 94, 98, 106, 110, 113, 115, 118, 120
+values:  .word
+        # none,
+        1,
+        5, 5, 5, 5, 21,
+        20, 20, 20, 20, 50,
+        10, 40, 30, 50,
+        350, 400, 450, 20, 70, 8, 5, 5,
+        135, 139, 149, 150, 156, 163, 173, 184, 192, 201, 210, 214, 221, 229, 240
+numitems:  .word
+        0,
+        1,
+        5,
+        5,
+        4,
+        8,
+        15
+maxweights:  .word
+        100,
+        10,
+        10,
+        10,
+        10,
+        104,
+        750
+outs:  .word
+        0,
+        0,
+        21,
+        80,
+        90,
+        900,
+        1458
+
+
+failmsg: .asciiz "failed for test with item weights "
+valuesmsg: .asciiz ", item values "
+maxweightmsg: .asciiz ", maximum weight "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+prefix: .asciiz "["
+comma: .asciiz ", "
+suffix: .asciiz "]"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, weights
+        la      $s2, values
+        la      $s3, numitems
+        la      $s4, maxweights
+        la      $s5, outs
+
+run_test:
+        move    $a0, $s1                # weights
+        move    $a1, $s2                # values
+        lw      $s6, 0($s3)             # read numitems from memory
+        move    $a2, $s6                # move it to a2
+        lw      $a3, 0($s4)             # read maxweights from memory
+        jal     maximum_value           # call subroutine under test
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
+        lw      $s7, 0($s5)             # read expected output from memory
+        bne     $v1, $s7, exit_fail     # if expected doesn't match actual, jump to fail
+
+done_check:
+        sll     $t0, $s6, 2             # number of bytes for item weights, item values
+        add     $s1, $s1, $t0           # move to next test case weights
+        add     $s2, $s2, $t0           # move to next test case values
+        addi    $s3, $s3, 4             # move to next word in numitems
+        addi    $s4, $s4, 4             # move to next word in maxweights
+        addi    $s5, $s5, 4             # move to next word in expected output
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # weights
+        move    $a1, $s6                # number of items
+        jal print_array
+
+        la      $a0, valuesmsg          # put address of valuesmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s2                # values
+        move    $a1, $s6                # number of items
+        jal print_array
+
+        la      $a0, maxweightmsg       # put address of maxweightmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s4)             # print maxweight value that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, expectedmsg       # put address of expectedmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $v1                # print actual that failed on
+        li      $v0, 1
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s7                # print expected value that failed on
+        li      $v0, 1
+        syscall
+
+        li      $a0, 1                  # set exit code to 1
+        li      $v0, 17                 # terminate with the exit code in $a0
+        syscall
+
+
+print_array:
+                                        # print array with address $a0, word count $a1
+                                        # local variable s0 points to current element
+                                        # local variable s1 points to end of array
+
+        addi    $sp, $sp, -8            # Save existing values of $s0 and $s1
+        sw      $s0, 4($sp)
+        sw      $s1, 0($sp)
+
+        move    $s0, $a0                # first element of array
+        sll     $s1, $a1, 2             # length of array, in bytes
+        add     $s1, $a0, $s1           # pointer to end of array
+
+        la      $a0, prefix             # print prefix
+        li      $v0, 4
+        syscall
+
+        beq     $s0, $s1, output_suffix # jump ahead if array is empty
+        j       output_element          # first element is not preceeded by comma
+
+output_comma:
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+output_element:
+        lw      $a0, 0($s0)             # load element value
+        addi    $s0, $s0, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        bne     $s0, $s1, output_comma  # repeat until we reach end of array
+
+output_suffix:
+        la      $a0, suffix
+        li      $v0, 4
+        syscall
+
+        lw      $s1, 0($sp)             # Restore original values of $s0 and $s1
+        lw      $s0, 4($sp)
+        addi    $sp, $sp, 8
+
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+#.include "impl.mips"
