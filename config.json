@@ -397,6 +397,15 @@
         "topics": []
       },
       {
+        "slug": "kindergarten-garden",
+        "name": "Kindergarten Garden",
+        "uuid": "bc580dd5-6a6b-48ce-84b3-6f60b9da2db2",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4,
+        "topics": []
+      },
+      {
         "slug": "phone-number",
         "name": "Phone Number",
         "uuid": "60bcccb4-589f-4465-a7d8-c84b22494306",
