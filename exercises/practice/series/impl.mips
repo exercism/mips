@@ -1,0 +1,11 @@
+# | Register | Usage        | Type    | Description                    |
+# | -------- | ------------ | ------- | ------------------------------ |
+# | `$a0`    | input        | address | null-terminated series string  |
+# | `$a1`    | input        | integer | slice length                   |
+# | `$a2`    | input/output | address | null-terminated output string  |
+# | `$t0-9`  | temporary    | any     | used for temporary storage     |
+
+.globl slices
+
+slices:
+        jr $ra

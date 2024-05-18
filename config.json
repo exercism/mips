@@ -352,6 +352,17 @@
         "difficulty": 5
       },
       {
+        "slug": "series",
+        "name": "Series",
+        "uuid": "00a61fa6-308a-4b63-af24-fb7849c4191b",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5,
+        "topics": [
+          "strings"
+        ]
+      },
+      {
         "slug": "knapsack",
         "name": "Knapsack",
         "uuid": "79e48619-beb7-4493-9a21-9581022f4ded",
