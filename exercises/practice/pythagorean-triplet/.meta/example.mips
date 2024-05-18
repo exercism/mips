@@ -1,0 +1,59 @@
+# | Register | Usage        | Type    | Description                                  |
+# | -------- | ------------ | ------- | -------------------------------------------- |
+# | `$a0`    | input        | integer | N, sum of sides of triangle                  |
+# | `$a1`    | input/output | address | a values                                     |
+# | `$a2`    | input/output | address | b values                                     |
+# | `$a3`    | input/output | address | c values                                     |
+# | `$v0`    | output       | integer | number of triplets                           |
+# | `$t0`    | temporary    | address | start of a values                            |
+# | `$t1`    | temporary    | integer | a                                            |
+# | `$t2`    | temporary    | integer | b                                            |
+# | `$t3`    | temporary    | integer | c                                            |
+# | `$t5`    | temporary    | integer | remainder                                    |
+# | `$t6`    | temporary    | integer | numerator                                    |
+# | `$t7`    | temporary    | integer | denominator                                  |
+
+# For every Pythagorean triplet with total a + b + c = N,
+# a² + b² = c²
+# <=> a² + b² = (N - a - b)², substituting c
+# <=> 0 = N² - 2*N*a - 2*N*b + 2*a*b
+# <=> (2*N - 2*a) b = (N² - 2*N*a)
+# <=> b = (N² - 2*N*a) / (2*N - 2*a)
+#
+# The denominator is never 0, as N exceeds a side length.
+
+.globl triplets_with_sum
+
+triplets_with_sum:
+        move    $t0, $a1                # start of a values
+        blt     $a0, 2, return          # Stop immediately if N < 2
+        move    $t1, $zero              # Initialize a
+        j       increment_a
+
+check_remainder:
+        mfhi    $t5                     # remainder
+        bnez    $t5, increment_a
+        sub     $t3, $a0, $t1
+        sub     $t3, $t3, $t2           # c = N - a - b
+
+        sw      $t1, 0($a1)
+        sw      $t2, 0($a2)
+        sw      $t3, 0($a3)
+        addi    $a1, $a1, 4             # Increment pointer for a
+        addi    $a2, $a2, 4             # Increment pointer for b
+        addi    $a3, $a3, 4             # Increment pointer for c
+
+increment_a:
+        addi    $t1, $t1, 1
+        sub     $t7, $a0, $t1           # N - a
+        sub     $t6, $t7, $t1           # N - 2*a
+        sll     $t7, $t7, 1             # denominator = 2*N - 2*a
+        mulu    $t6, $a0, $t6           # numerator = N² - 2*N*a
+        div     $t6, $t7
+        mflo    $t2                     # b
+        bgt     $t2, $t1, check_remainder # loop while b > a
+
+return:
+        sub     $v0, $a1, $t0           # compute number of triplets
+        srl     $v0, $v0, 2
+        jr      $ra

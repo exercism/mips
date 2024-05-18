@@ -1,0 +1,253 @@
+#
+# Test triplets_with_sum with some examples
+#
+# a0 - input number, for callee
+# a1 - pointer to output array a, for callee
+# a2 - pointer to output array b, for callee
+# a3 - pointer to output array c, for callee
+# s0 - num of tests left to run
+# s1 - address of input number
+# s2 - address of expected a values
+# s3 - address of expected b values
+# s4 - address of expected c values
+# s5 - address of expected number of triplets
+# s6 - buffer location
+# t0 - pointer into expected a
+# t1 - pointer into expected b
+# t2 - pointer into expected c
+# t4 - pointer into actual a
+# t5 - pointer into actual b
+# t6 - pointer into actual c
+# t7 - expected number of triplets
+# t8 - pointer into end of test case's expected a
+# v1 - saved return value, i.e. number of triplets returned
+
+.eqv BUFFER_SIZE 96
+.eqv BUFFER_SECTION_SIZE 32
+
+.data
+
+# number of test cases
+n:  .word 7
+# input values
+ins:  .word
+        12,
+        108,
+        1000,
+        1001,
+        90,
+        840,
+        30000
+# expected output values
+# a values
+a:  .word
+        3,
+        27,
+        200,
+        # none,
+        9, 15,
+        40, 56, 105, 120, 140, 168, 210, 240,
+        1200, 1875, 5000, 6000, 7500
+# b values
+b:  .word
+        4,
+        36,
+        375,
+        # none,
+        40, 36,
+        399, 390, 360, 350, 336, 315, 280, 252,
+        14375, 14000, 12000, 11250, 10000
+# c values
+c:  .word
+        5,
+        45,
+        425,
+        # none,
+        41, 39,
+        401, 394, 375, 370, 364, 357, 350, 348,
+        14425, 14125, 13000, 12750, 12500
+numouts:  .word
+        1,
+        1,
+        1,
+        0,
+        2,
+        8,
+        5
+
+failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected\n"
+tobemsg: .asciiz "\nto be\n"
+okmsg: .asciiz "all tests passed"
+prefix: .asciiz "  {"
+comma: .asciiz ", "
+suffix: .asciiz "}"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, ins
+        la      $s2, a
+        la      $s3, b
+        la      $s4, c
+        la      $s5, numouts
+
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, BUFFER_SIZE        # specify length of longest expected output
+        syscall
+        move    $s6, $v0                # location of allocated memory is where callee writes result
+
+run_test:
+        jal     clear_output            # zero out output location
+        lw      $a0, 0($s1)             # load input value into a0
+        move    $a1, $s6                # output location a
+        addi    $a2, $a1, BUFFER_SECTION_SIZE # output location b
+        addi    $a3, $a2, BUFFER_SECTION_SIZE # output location c
+        jal     triplets_with_sum       # call subroutine under test
+        move    $v1, $v0                # move return value in v0 to v1 because we need v0 for syscall
+        lw      $t7, 0($s5)             # expected number of triplets
+        bne     $v1, $t7, exit_fail     # check if we have the expected number of triplets
+        beq     $t7, $zero, skip_scan
+
+        move    $t0, $s2                # address of expected a
+        move    $t1, $s3                # address of expected b
+        move    $t2, $s4                # address of expected c
+        move    $t3, $s6                # address of actual a
+        addi    $t4, $t3, BUFFER_SECTION_SIZE # address of actual b
+        addi    $t5, $t4, BUFFER_SECTION_SIZE # address of actual c
+
+        sll     $t8, $t7, 2             # number of bytes occupied by a
+        add     $t8, $s2, $t8           # address at end of expected a
+
+scan:
+        lw      $a0, 0($t0)             # load expected a
+        lw      $a1, 0($t3)             # load actual a
+        bne     $a0, $a1, exit_fail     # check if we have the expected a
+        addi    $t0, $t0, 4             # advance to next expected a
+        addi    $t3, $t3, 4             # advance to next actual a
+        lw      $a0, 0($t1)             # load expected b
+        lw      $a1, 0($t4)             # load actual b
+        bne     $a0, $a1, exit_fail     # check if we have the expected b
+        addi    $t1, $t1, 4             # advance to next expected b
+        addi    $t4, $t4, 4             # advance to next actual b
+        lw      $a0, 0($t2)             # load expected c
+        lw      $a1, 0($t5)             # load actual c
+        bne     $a0, $a1, exit_fail     # check if we have the expected c
+        addi    $t2, $t2, 4             # advance to next expected c
+        addi    $t5, $t5, 4             # advance to next actual c
+        bne     $t0, $t8, scan          # repeat until all a have been compared
+
+        move    $s2, $t0                # point to next expected a
+        move    $s3, $t1                # point to next expected b
+        move    $s4, $t2                # point to next expected c
+
+skip_scan:
+        addi    $s5, $s5, 4             # point to next expected number of triplets
+        addi    $s1, $s1, 4             # point to next input word
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s1)             # print input that failed on
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $v1
+        move    $a1, $s6
+        addi    $a2, $a1, BUFFER_SECTION_SIZE
+        addi    $a3, $a2, BUFFER_SECTION_SIZE
+        jal     print_triplets
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $t7
+        move    $a1, $s2
+        move    $a2, $s3
+        move    $a3, $s4
+        jal     print_triplets
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+clear_output:
+                                        # zero out output by storing zeros
+        addi    $t0, $s6, BUFFER_SIZE   # pointer to end of output buffer
+
+clear:
+        subi    $t0, $t0, 4             # decrement pointer
+        sw      $zero, 0($t0)           # store a 0 word
+        bne     $t0, $s6, clear         # repeat util we have reached the start of the buffer
+        jr      $ra
+
+
+print_triplets:
+                                        # print triplets with triplet count $a0,
+                                        # a address $a1, b address $a2, c address $a3
+        move    $t0, $a0
+        move    $t1, $a1
+        move    $t2, $a2
+        move    $t3, $a3
+        beqz    $t0, done
+
+print_next:
+        la      $a0, prefix
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 0($t1)
+        addi    $t1, $t1, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 0($t2)
+        addi    $t2, $t2, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+        lw      $a0, 0($t3)
+        addi    $t3, $t3, 4             # increment pointer
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+
+        la      $a0, suffix
+        li      $v0, 4
+        syscall
+
+        subi    $t0, $t0, 1
+        bnez    $t0, print_next
+
+done:
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+#.include "impl.mips"

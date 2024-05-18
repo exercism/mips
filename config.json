@@ -494,6 +494,17 @@
         "difficulty": 4
       },
       {
+        "slug": "pythagorean-triplet",
+        "name": "Pythagorean Triplet",
+        "uuid": "548fa68b-98ff-4c3f-87ae-ef3a0cc605c1",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6,
+        "topics": [
+          "math"
+        ]
+      },
+      {
         "slug": "all-your-base",
         "name": "All Your Base",
         "uuid": "74f61478-1f08-4578-97a3-b3da0a271158",

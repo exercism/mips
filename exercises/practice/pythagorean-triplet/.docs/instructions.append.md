@@ -1,0 +1,12 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage        | Type    | Description                  |
+| -------- | ------------ | ------- | ---------------------------- |
+| `$a0`    | input        | integer | N, sum of sides of triangle  |
+| `$a1`    | input/output | address | a values                     |
+| `$a2`    | input/output | address | b values                     |
+| `$a3`    | input/output | address | c values                     |
+| `$v0`    | output       | integer | number of triplets           |
+| `$t0-9`  | temporary    | any     | for temporary storage        |
