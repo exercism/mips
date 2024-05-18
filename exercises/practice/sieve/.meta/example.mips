@@ -1,0 +1,58 @@
+# | Register | Usage        | Type    | Description                         |
+# | -------- | ------------ | ------- | ----------------------------------- |
+# | `$a0`    | input        | integer | limit                               |
+# | `$a1`    | input/output | address | destination array for prime numbers |
+# | `$v0`    | output       | integer | number of primes                    |
+# | `$sp`    | stack        | address | stack pointer, points to table      |
+# | `$t0`    | temporary    | integer | size of table                       |
+# | `$t1`    | temporary    | address | pointer into table                  |
+# | `$t2`    | temporary    | integer | table entry                         |
+# | `$t3`    | temporary    | address | output pointer                      |
+# | `$t4`    | temporary    | integer | candidate prime                     |
+# | `$t5`    | temporary    | integer | multiple of candidate prime         |
+
+.globl primes
+
+primes:
+        addi    $t0, $a0, 4             # limit, rounded up to the next multiple of 4
+        andi    $t0, $t0, -4
+        move    $t1, $sp                # end of table
+        sub     $sp, $sp, $t0           # allocate space on stack for table
+        li      $t2, -1                 # non-zero in all bytes
+        move    $t3, $a1                # output pointer
+
+fill:
+        subi    $t1, $t1, 4             # decrement pointer into table
+        sw      $t2, 0($t1)             # store non-zero values
+        bne     $t1, $sp, fill          # repeat util we have reached the start of the table
+
+        li      $t4, 2                  # first candidate prime
+        bgt     $t4, $a0, return
+
+check_prime:
+        add     $t1, $sp, $t4
+        lb      $t2, 0($t1)
+        beqz    $t2, advance            # 0 indicates $t4 is composite
+
+        sw      $t4, 0($t3)             # output prime
+        addi    $t3, $t3, 4
+
+        mulu    $t5, $t4, $t4           # prime * prime
+        bgt     $t5, $a0, advance
+
+update_table:
+        add     $t1, $sp, $t5
+        sb      $zero, 0($t1)           # record that multiple of prime is composite
+        add     $t5, $t5, $t4           # next multiple
+        ble     $t5, $a0, update_table  # repeat while multiple <= limit
+
+advance:
+        addi    $t4, $t4, 1             # advance to next candidate prime
+        ble     $t4, $a0, check_prime   # repeat while candidate prime <= limit
+
+return:
+        sub     $v0, $t3, $a1           # calculate number of output values
+        srl     $v0, $v0, 2
+
+        add     $sp, $sp, $t0           # restore original stack pointer
+        jr      $ra
