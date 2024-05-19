@@ -7,6 +7,15 @@
 # | `$v0`    | output    | integer | age in hundredths of a year                |
 # | `$t0-9`  | temporary | any     | used for temporary storage                 |
 
+.eqv MERCURY 0
+.eqv VENUS   1
+.eqv EARTH   2
+.eqv MARS    3
+.eqv JUPITER 4
+.eqv SATURN  5
+.eqv URANUS  6
+.eqv NEPTUNE 7
+
 .globl age
 
 age:
