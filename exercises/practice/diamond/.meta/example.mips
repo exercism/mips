@@ -1,0 +1,79 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | byte    | letter                        |
+# | `$a1`    | input/output | address | null-terminated result string |
+# | `$t0`    | temporary    | address | return address                |
+# | `$t1`    | temporary    | byte    | letter for current row        |
+# | `$t2`    | temporary    | address | end address for run of spaces |
+# | `$t7`    | temporary    | byte    | '\n' newline                  |
+# | `$t8`    | temporary    | byte    | 'A'                           |
+# | `$t9`    | temporary    | byte    | ' ' space                     |
+
+.globl rows
+
+rows:
+        move    $t0, $ra                # save return address
+        li      $t7, '\n'
+        li      $t8, 'A'
+        li      $t9, ' '
+        li      $t1, '@'                # 'A' minus 1
+
+upper_row:
+        addi    $t1, $t1, 1
+        jal     row
+        bne     $t1, $a0, upper_row
+
+        beq     $t1, $t8, return
+
+lower_row:
+        subi    $t1, $t1, 1
+        jal     row
+        bne     $t1, $t8, lower_row
+
+return:
+        sb      $zero, 0($a1)
+        jr      $t0
+
+
+row:
+        sub     $t2, $a0, $t1           # number of left spaces
+        beqz    $t2, skip_left
+        add     $t2, $a1, $t2
+
+left_space:
+        sb      $t9, 0($a1)             # write left space
+        addi    $a1, $a1, 1
+        bne     $a1, $t2, left_space
+
+skip_left:
+        sb      $t1, 0($a1)             # write letter
+        addi    $a1, $a1, 1
+        beq     $t1, $t8, skip_center
+
+        sub     $t2, $t1, $t8
+        sll     $t2, $t2, 1
+        subi    $t2, $t2, 1             # number of center spaces
+        add     $t2, $a1, $t2
+
+center_space:
+        sb      $t9, 0($a1)             # write center space
+        addi    $a1, $a1, 1
+        bne     $a1, $t2, center_space
+
+        sb      $t1, 0($a1)             # write letter
+        addi    $a1, $a1, 1
+
+skip_center:
+        sub     $t2, $a0, $t1           # number of right spaces
+        beqz    $t2, skip_right
+        add     $t2, $a1, $t2
+
+right_space:
+        sb      $t9, 0($a1)             # write right space
+        addi    $a1, $a1, 1
+        bne     $a1, $t2, right_space
+
+skip_right:
+        sb      $t7, 0($a1)             # write newline
+        addi    $a1, $a1, 1
+        jr      $ra
