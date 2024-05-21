@@ -163,6 +163,14 @@
         "difficulty": 4
       },
       {
+        "slug": "space-age",
+        "name": "Space Age",
+        "uuid": "24c7e0dc-6c3e-405e-8449-c8da0100545d",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
         "slug": "atbash-cipher",
         "name": "Atbash Cipher",
         "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",

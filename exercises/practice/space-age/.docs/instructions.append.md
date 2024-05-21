@@ -1,0 +1,16 @@
+# Instructions append
+
+## Output format
+
+Output the age in hundredths of a year.
+
+For example, 100 × 1,000,000,000 ÷ 31,557,600 ≈ 3,169, so someone 1,000,000,000 seconds old is `3169` hundredths of an Earth-year old.
+
+## Registers
+
+| Register | Usage     | Type    | Description                   |
+| -------- | --------- | ------- | ----------------------------- |
+| `$a0`    | input     | integer | planet (`0` = Mercury, `1` = Venus, `2` = Earth, `3` = Mars, `4` = Jupiter, `5` = Saturn, `6` = Uranus, `7` = Neptune) |
+| `$a1`    | input     | integer | seconds                       |
+| `$v0`    | output    | integer | age in hundredths of a year   |
+| `$t0-9`  | temporary | any     | used for temporary storage    |

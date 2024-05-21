@@ -1,0 +1,41 @@
+# | Register | Usage     | Type    | Description                                |
+# | -------- | --------- | ------- | ------------------------------------------ |
+# | `$a0`    | input     | integer | planet (`0` = Mercury, `1` = Venus,        |
+# |          |           |         | `2` = Earth, `3` = Mars, `4` = Jupiter,    |
+# |          |           |         | `5` = Saturn, `6` = Uranus, `7` = Neptune) |
+# | `$a1`    | input     | integer | seconds                                    |
+# | `$v0`    | output    | integer | age in hundredths of a year                |
+# | `$t0`    | temporary | address | address of reciprocal of planet's period   |
+# | `$t1`    | temporary | integer | reciprocal of planet's period              |
+# | `$t2`    | temporary | integer | 0x8000, used to round up result            |
+
+.globl age
+
+.data
+
+# reciprocal of the number of seconds in a year, scaled up by 100 * 2**48
+reciprocals:  .word
+        3703353120, # Mercury,
+        1449844523, # Venus,
+        891940378,  # Earth,
+        474230585,  # Mars,
+        75189187,   # Jupiter,
+        30289174,   # Saturn,
+        10616209,   # Uranus,
+        5412545     # Neptune
+
+.text
+
+age:
+        la      $t0, reciprocals
+        sll     $a0, $a0, 2
+        add     $t0, $t0, $a0
+        lw      $t1, 0($t0)             # load reciprocal of the number of seconds in a year
+        multu   $t1, $a1
+        mfhi    $v0                     # scale down by 2**32 by discarding low bits
+
+        ori     $t2, $zero, 0x8000
+        addu    $v0, $v0, $t2           # scale down by 2**16, with rounding
+        srl     $v0, $v0, 16
+
+        jr      $ra
