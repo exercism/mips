@@ -439,6 +439,14 @@
         "difficulty": 4
       },
       {
+        "slug": "diamond",
+        "name": "Diamond",
+        "uuid": "ff7ba1a0-afca-44c5-950a-3cbfc1d5668d",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "protein-translation",
         "name": "Protein Translation",
         "uuid": "d44479b2-3cae-4a64-9b1f-71f0ef6047ce",
