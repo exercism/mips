@@ -368,6 +368,18 @@
         "difficulty": 5
       },
       {
+        "slug": "sieve",
+        "name": "Sieve",
+        "uuid": "4d173d23-64aa-40e0-86e4-3da415331c37",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5,
+        "topics": [
+          "loops",
+          "math"
+        ]
+      },
+      {
         "slug": "isogram",
         "name": "Isogram",
         "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",

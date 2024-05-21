@@ -1,0 +1,10 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage        | Type    | Description                         |
+| -------- | ------------ | ------- | ----------------------------------- |
+| `$a0`    | input        | integer | limit                               |
+| `$a1`    | input/output | address | destination array for prime numbers |
+| `$v0`    | output       | integer | number of primes                    |
+| `$t0-9`  | temporary    | any     | used for temporary storage          |
