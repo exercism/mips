@@ -4,6 +4,8 @@
 
 Output the age in hundredths of a year.
 
+For example, 100 × 1,000,000,000 ÷ 31,557,600 ≈ 3,169, so someone 1,000,000,000 seconds old is `3169` hundredths of an Earth-year old.
+
 ## Registers
 
 | Register | Usage     | Type    | Description                   |
