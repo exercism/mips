@@ -1,0 +1,56 @@
+# | Register | Usage        | Type    | Description                    |
+# | -------- | ------------ | ------- | ------------------------------ |
+# | `$a0`    | input        | address | null-terminated series string  |
+# | `$a1`    | input        | integer | slice length                   |
+# | `$a2`    | input/output | address | null-terminated output string  |
+# | `$t0`    | temporary    | address | end of series string           |
+# | `$t1`    | temporary    | byte    | character in series string     |
+# | `$t2`    | temporary    | integer | length of series string        |
+# | `$t3`    | temporary    | address | pointer into series string     |
+# | `$t4`    | temporary    | address | end of current slice           |
+# | `$t8`    | temporary    | byte    | ',' comma separator            |
+# | `$t9`    | temporary    | byte    | ' ' space separator            |
+
+.globl slices
+
+slices:
+        move    $t0, $a0
+        li      $t8, ','                # comma
+        li      $t9, ' '                # space
+
+scan_input:
+        lb      $t1, 0($t0)             # read from series string
+        addi    $t0, $t0, 1
+        bnez    $t1, scan_input         # repeat until we reach null terminator
+
+        subi    $t0, $t0, 1             # t0 is address of null terminator
+        sub     $t2, $t0, $a0           # t2 is length of series
+        beqz    $t2, return
+        bgt     $a1, $t2, return
+        blez    $a1, return
+        j       copy_slice
+
+separate:
+        sb      $t8, 0($a2)             # output comma
+        sb      $t9, 1($a2)             # output space
+        addi    $a2, $a2, 2
+
+        addi    $a0, $a0, 1
+
+                                        # Copy $a1 characters from $a0 to $a2
+copy_slice:
+        move    $t3, $a0
+        add     $t4, $t3, $a1           # end of current slice
+
+copy_char:
+        lb      $t1, 0($t3)
+        sb      $t1, 0($a2)
+        addi    $t3, $t3, 1
+        addi    $a2, $a2, 1
+        bne     $t3, $t4, copy_char
+
+        bne     $t3, $t0, separate
+
+return:
+        sb $zero, 0($a2)
+        jr $ra
