@@ -505,6 +505,14 @@
           "loops",
           "math"
         ]
+      },
+      {
+        "slug": "minesweeper",
+        "name": "Minesweeper",
+        "uuid": "3c65a63d-f788-47a1-9615-8cab7e7974dd",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 8
       }
     ]
   },
