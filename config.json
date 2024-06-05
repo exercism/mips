@@ -55,7 +55,8 @@
         "difficulty": 1,
         "topics": [
           "math"
-        ]
+        ],
+        "status": "deprecated"
       },
       {
         "slug": "leap",
@@ -270,7 +271,8 @@
         "difficulty": 1,
         "topics": [
           "math"
-        ]
+        ],
+        "status": "deprecated"
       },
       {
         "slug": "octal",
@@ -281,7 +283,8 @@
         "difficulty": 1,
         "topics": [
           "math"
-        ]
+        ],
+        "status": "deprecated"
       },
       {
         "slug": "bob",
@@ -327,7 +330,8 @@
         "difficulty": 1,
         "topics": [
           "math"
-        ]
+        ],
+        "status": "deprecated"
       },
       {
         "slug": "two-fer",
