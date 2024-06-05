@@ -1,0 +1,96 @@
+# | Register | Usage        | Type    | Description                        |
+# | -------- | ------------ | ------- | ---------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string       |
+# | `$a1`    | input/output | address | null-terminated output string      |
+# | `$t0`    | temporary    | integer | count of alphanumeric characters   |
+# | `$t1`    | temporary    | integer | number of input columns            |
+# | `$t2`    | temporary    | integer | number of input rows, plus 1       |
+# | `$t3`    | temporary    | integer | product, then output row number    |
+# | `$t4`    | temporary    | address | start of input string              |
+# | `$t5`    | temporary    | address | pointer into output                |
+# | `$t6`    | temporary    | byte    | '0'                                |
+# | `$t7`    | temporary    | byte    | '9'                                |
+# | `$t8`    | temporary    | byte    | 'a'                                |
+# | `$t9`    | temporary    | byte    | 'z'                                |
+# | `$v0`    | temporary    | byte    | character in string                |
+# | `$v1`    | temporary    | address | return address                     |
+
+.globl ciphertext
+
+ciphertext:
+        move    $v1, $ra                # save return address
+        move    $t4, $a0                # start of input string
+        li      $t6, '0'
+        li      $t7, '9'
+        li      $t8, 'a'
+        li      $t9, 'z'
+
+        li      $t0, -1
+count_alphanumeric:
+        addi    $t0, $t0, 1             # count of alphanumeric characters
+        jal     get_input               # return next alphanumeric, or null terminator
+        bnez    $v0, count_alphanumeric
+
+        beqz    $t0, return_empty       # output an empty string when count is 0
+        move    $a0, $t4                # start of input string
+
+        move    $t1, $zero
+increment_columns:
+        addi    $t1, $t1, 1             # number of columns
+        mulu    $t3, $t1, $t1
+        blt     $t3, $t0, increment_columns # repeat while columns * column < count
+
+        subi    $t2, $t1, 2
+increment_rows:
+        addi    $t2, $t2, 1             # number of rows
+        mulu    $t3, $t2, $t1
+        blt     $t3, $t0, increment_rows # repeat while rows * column < count
+
+        add     $t3, $t3, $t1
+        subi    $t3, $t3, 1             # output length is (rows + 1) * columns - 1
+
+        addi    $t2, $t2, 1             # rows + 1
+        add     $t5, $a1, $t3
+        sb      $zero, 0($t5)           # write null terminator
+        li      $v0, ' '
+
+write_space:
+        subi    $t5, $t5, 1
+        sb      $v0, 0($t5)
+        bne     $t5, $a1, write_space
+
+next_output_column:
+        move    $t5, $a1
+        addi    $a1, $a1, 1
+
+        move    $t3, $zero
+next_output_row:
+        addi    $t3, $t3, 1             # 1-based output row number
+        jal     get_input
+        sb      $v0, 0($t5)             # output alphanumeric byte
+        subi    $t0, $t0, 1
+        beqz    $t0, return             # return when decremented count is 0
+        add     $t5, $t5, $t2
+        blt     $t3, $t1, next_output_row
+        j       next_output_column
+
+return_empty:
+        sb      $zero, 0($a1)           # write null terminator
+
+return:
+        jr      $v1
+
+check_input:
+        blt     $v0, $t6, get_input     # reject if < '0'
+        ble     $v0, $t7, accept_input  # accept if numeric
+        ori     $v0, 0x20               # convert to lower case
+        blt     $v0, $t8, get_input     # reject if < 'a'
+        ble     $v0, $t9, accept_input  # accept if alphabetic
+
+get_input:
+        lb      $v0, 0($a0)             # read input byte
+        addi    $a0, $a0, 1
+        bnez    $v0, check_input
+
+accept_input:
+        jr      $ra

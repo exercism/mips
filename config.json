@@ -243,6 +243,14 @@
         "difficulty": 5
       },
       {
+        "slug": "crypto-square",
+        "name": "Crypto Square",
+        "uuid": "de268eb1-66a8-4094-b19f-25da515fb7ac",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 7
+      },
+      {
         "slug": "nth-prime",
         "name": "Nth Prime",
         "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
