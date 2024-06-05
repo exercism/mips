@@ -1,0 +1,110 @@
+# | Register | Usage        | Type    | Description                                   |
+# | -------- | ------------ | ------- | --------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string                  |
+# | `$a1`    | input/output | address | null-terminated output string                 |
+# | `$t0`    | temporary    | address | pointer into input                            |
+# | `$t1`    | temporary    | byte    | input character                               |
+# | `$t2`    | temporary    | address | line length (including newline character)     |
+# | `$t3`    | temporary    | address | location of input's null terminator           |
+# | `$t4`    | temporary    | address | previous row (or current for first row)       |
+# | `$t5`    | temporary    | address | current row                                   |
+# | `$t6`    | temporary    | address | next row (or current for last row)            |
+# | `$t7`    | temporary    | integer | previous column (or current for first column) |
+# | `$t8`    | temporary    | integer | current column                                |
+# | `$t9`    | temporary    | integer | next column (or current for last column)      |
+# | `$a2`    | temporary    | address | row of adjacent square                        |
+# | `$a3`    | temporary    | integer | column of adjacent square                     |
+# | `$v0`    | temporary    | byte    | newline character                             |
+# | `$v1`    | temporary    | integer | number of adjacent mines                      |
+# | `$s0`    | temporary    | byte    | mine character '*'                            |
+
+.globl annotate
+
+annotate:
+        move    $t0, $a0
+        lb      $t1, 0($t0)             # read first byte of minefield
+        beqz    $t1, return
+
+        subi    $sp, $sp, 4             # preserve original $s0 value on stack
+        sw      $s0, 0($sp)
+        li      $s0, '*'                # mine character
+        li      $v0, '\n'
+
+find_newline:
+        lb      $t1, 0($t0)
+        addi    $t0, $t0, 1
+        bne     $t1, $v0, find_newline
+        sub     $t2, $t0, $a0           # line length (including newline character)
+        move    $t0, $a0
+
+find_null:
+        add     $t0, $t0, $t2           # jump ahead by line length
+        lb      $t1, 0($t0)
+        bnez    $t1, find_null
+        move    $t3, $t0                # location of input's null terminator
+
+        move    $t5, $a0
+        move    $t6, $a0                # start of first row
+
+next_row:
+        move    $t8, $zero              # first column
+        move    $t9, $zero
+        move    $t4, $t5                # current row becomes previous row
+        move    $t5, $t6                # next row becomes current row
+
+        add     $t6, $t5, $t2           # next row
+        bne     $t6, $t3, first_column
+        move    $t6, $t5                # last row
+
+first_column:
+        beq     $t2, 1, write_newline   # jump ahead if rows contain no squares
+
+next_column:
+        move    $t7, $t8                # current column becomes previous column
+        move    $t8, $t9                # next column becomes current column
+        addi    $t9, $t8, 2
+        sne     $t9, $t9, $t2           # Set $t9 to 1 if there are more columns, otherwise 0
+        add     $t9, $t8, $t9           # next column
+
+        add     $t0, $t5, $t8           # address of minefield square
+        lb      $t1, 0($t0)
+        beq     $t1, $s0, write_square  # jump ahead if we have reached a mine
+
+        move    $v1, $zero              # number of adjacent mines
+        subu    $a2, $t4, $t2
+
+adjacent_row:
+        addu    $a2, $a2, $t2           # address of adjacent row: $t4, $t4+$t2, $t6
+        subiu   $a3, $t7, 1
+
+adjacent_column:
+        addiu   $a3, $a3, 1             # index of adjacent column: $t7, $t7+1, $t9
+
+        add     $t0, $a2, $a3           # address of adjacent square
+        lb      $t1, 0($t0)
+        seq     $t0, $t1, $s0           # 1 if square contains mine, 0 otherwise
+        add     $v1, $v1, $t0           # update mine count
+
+        bne     $a3, $t9, adjacent_column
+        bne     $a2, $t6, adjacent_row
+
+        li      $t1, ' '
+        beqz    $v1, write_square
+        addi    $t1, $v1, '0'           # mine count, as ASCII digit
+
+write_square:
+        sb      $t1, 0($a1)
+        addi    $a1, $a1, 1             # increment output pointer
+        bne     $t8, $t9, next_column
+
+write_newline:
+        sb      $v0, 0($a1)             # write '\n'
+        addi    $a1, $a1, 1
+        bne     $t5, $t6, next_row
+
+        lw      $s0, 0($sp)             # restore original $s0 value
+        addi    $sp, $sp, 4
+
+return:
+        sb      $zero, 0($a1)           # null terminator
+        jr      $ra
