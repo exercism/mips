@@ -1,0 +1,162 @@
+#
+# Test translate with some examples
+#
+# a0 - input phrase string, for callee
+# a1 - pointer to output string, for callee
+# s0 - num of tests left to run
+# s1 - address of input string
+# s2 - address of expected output string
+# s3 - copy of output location
+# s4 - copy of address of expected output string
+# t1 - char byte of expected output
+# t2 - char byte of actual output
+
+.eqv BUFFER_SIZE 24
+
+.data
+
+# number of test cases
+n:  .word 22
+# input values (null terminated)
+ins:  .asciiz
+        "apple",
+        "ear",
+        "igloo",
+        "object",
+        "under",
+        "equal",
+        "pig",
+        "koala",
+        "xenon",
+        "qat",
+        "chair",
+        "queen",
+        "square",
+        "therapy",
+        "thrush",
+        "school",
+        "yttria",
+        "xray",
+        "yellow",
+        "rhythm",
+        "my",
+        "quick fast run"
+# expected output values (null terminated)
+outs:  .asciiz
+        "appleay",
+        "earay",
+        "iglooay",
+        "objectay",
+        "underay",
+        "equalay",
+        "igpay",
+        "oalakay",
+        "enonxay",
+        "atqay",
+        "airchay",
+        "eenquay",
+        "aresquay",
+        "erapythay",
+        "ushthray",
+        "oolschay",
+        "yttriaay",
+        "xrayay",
+        "ellowyay",
+        "ythmrhay",
+        "ymay",
+        "ickquay astfay unray"
+
+
+failmsg: .asciiz "failed for test input: "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, ins
+        la      $s2, outs
+
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, BUFFER_SIZE        # specify length of longest expected output
+        syscall
+        move    $s3, $v0                # location of allocated memory is where callee writes result
+
+run_test:
+        jal     clear_output            # zero out output location
+        move    $a0, $s1                # load input value into a0
+        move    $a1, $s3                # load destination address into a1
+        jal     translate               # call subroutine under test
+        move    $a1, $s3
+        move    $s4, $s2
+
+scan:
+        lb      $t1, 0($s2)             # load one byte of the expectation
+        lb      $t2, 0($a1)             # load one byte of the actual
+        bne     $t1, $t2, exit_fail     # if the two differ, the test has failed
+        addi    $s2, $s2, 1             # point to next expectation byte
+        addi    $a1, $a1, 1             # point to next actual byte
+        bne     $t1, $zero, scan        # if one char (and therefore the other) was not null, loop
+
+input_scan:
+        lb      $t1, 0($s1)
+        addi    $s1, $s1, 1
+        bne     $t1, $zero, input_scan
+
+done_scan:
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bnez    $s0, run_test           # if more tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # print input that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s3                # print actual that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s4                # print expected value that failed on
+        li      $v0, 4
+        syscall
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+clear_output:
+                                        # zero out output by storing zeros
+        addi    $t0, $s3, BUFFER_SIZE   # pointer to end of output buffer
+
+clear:
+        subi    $t0, $t0, 4             # decrement pointer
+        sw      $zero, 0($t0)           # store a 0 word
+        bne     $t0, $s3, clear         # repeat util we have reached the start of the buffer
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+# .include "impl.mips"
