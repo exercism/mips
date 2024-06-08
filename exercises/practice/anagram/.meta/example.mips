@@ -1,0 +1,112 @@
+# | Register | Usage        | Type    | Description                                                    |
+# | -------- | ------------ | ------- | -------------------------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated target string, without newline                 |
+# | `$a1`    | input        | address | null-terminated candidates string with newline after each word |
+# | `$a2`    | input/output | address | null-terminated output string with newline after each word     |
+# | `$sp`    | stack        | address | stack pointer, points to target letter count table             |
+# | `$a3`    | temporary    | address | points to candidate letter count table                         |
+# | `$v0`    | temporary    | address | points to newline or null at end of word                       |
+
+
+.macro count_letters (%word, %table)
+                                        # %word is address of input word
+                                        # %table is address of letter count table to populate
+                                        # $v0 is set to adddress of word terminator (\n or \0)
+        move    $v0, %word
+        addiu   $t1, %table, 104
+
+clear:
+        subiu   $t1, $t1, 4
+        sw      $zero, 0($t1)
+        bne     $t1, %table, clear
+
+        b       read
+
+
+count:
+        addiu   $v0, $v0, 1             # address of next letter in input word
+        or      $t0, $t0, 32            # force to lower case
+        subiu   $t0, $t0, 'a'
+        sltiu   $t1, $t0, 26            # $t1 is set to 1 if $t0 is alphabetic, otherwise 0
+        beqz    $t1, read               # jump to next character if not alphabetic
+
+        sll     $t0, $t0, 2
+        add     $t1, %table, $t0        # address for letter count
+        lw      $t2, 0($t1)
+        addi    $t2, $t2, 1             # increment letter count
+        sw      $t2, 0($t1)
+
+read:
+        lb      $t0, 0($v0)
+        bge     $t0, 32, count          # repeat until end of word
+.end_macro
+
+
+.globl find_anagrams
+
+find_anagrams:
+        subiu   $sp, $sp, 208           # Allocate stack space for letter count tables
+        addiu   $a3, $sp, 104           # Address of candidate letter count table
+        count_letters ($a0, $sp)        # Populate target letter count table
+        j       consider_candidate
+
+
+copy_next_letter:
+        addiu   $a1, $a1, 1
+
+copy_word:
+                                        # Copy word $a1..$v0 inclusive to $a2
+        lb      $t0, 0($a1)
+        sb      $t0, 0($a2)
+        addiu   $a2, $a2, 1
+        bne     $a1, $v0, copy_next_letter
+
+next_candidate:
+        addiu   $a1, $v0, 1
+        lb      $t0, 0($a1)
+        bnez    $t0, consider_candidate
+
+        sb      $zero, 0($a2)           # Write null terminator
+        addiu   $sp, $sp, 208           # Restore original stack pointer
+        jr      $ra
+
+consider_candidate:
+        count_letters ($a1, $a3)
+        move    $t5, $sp                # Pointer into target letter count table
+        move    $t6, $a3                # Pointer into candidate letter count table
+
+compare_count:
+        lw      $t7, 0($t5)
+        lw      $t8, 0($t6)
+        addiu   $t5, $t5, 4             # Increment pointers
+        addiu   $t6, $t6, 4
+        bne     $t7, $t8, next_candidate # Reject candidate if count does not match
+        bne     $t5, $a3, compare_count # Repeat until all 26 counts have been compared
+
+                                        # The letter counts match.
+                                        # We now perform a case-insentitive string comparison
+
+        move    $t5, $a0                # Pointer into target string
+        move    $t6, $a1                # Pointer into candidate string
+
+compare_character:
+        lb      $t7, 0($t5)
+        lb      $t8, 0($t6)
+        addiu   $t5, $t5, 1             # Increment pointers
+        addiu   $t6, $t6, 1
+
+                                        # Force each letter to lowercase
+
+        blt     $t7, 'A', target_letter_ready
+        bgt     $t7, 'Z', target_letter_ready
+        addi    $t7, $t7, 32
+
+target_letter_ready:
+        blt     $t8, 'A', candidate_letter_ready
+        bgt     $t8, 'Z', candidate_letter_ready
+        addi    $t8, $t8, 32
+
+candidate_letter_ready:
+        bne     $t7, $t8, copy_word     # Candidate word is not the same as target word
+        bne     $t6, $v0, compare_character # Repeat until the whole word has been compared
+        b       next_candidate          # Skip candidate word, because it is the target word

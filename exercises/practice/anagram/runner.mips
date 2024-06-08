@@ -1,0 +1,268 @@
+#
+# Test find_anagrams with some examples
+#
+# a0 - input target string, for callee
+# a1 - input candidates string, for callee
+# a2 - pointer to output string, for callee
+# s0 - num of tests left to run
+# s1 - address of input target string
+# s2 - address of input candidates string
+# s3 - address of expected output string
+# s4 - copy of output location
+# t0 - char byte of expected output
+# t1 - char byte of actual output
+
+.eqv BUFFER_SIZE 28
+
+.data
+
+# number of test cases
+n:  .word 20
+# input values
+target:  .asciiz
+        "diaper",
+        "master",
+        "solemn",
+        "good",
+        "listen",
+        "allergy",
+        "nose",
+        "mass",
+        "Orchestra",
+        "Orchestra",
+        "orchestra",
+        "go",
+        "go",
+        "tapper",
+        "BANANA",
+        "BANANA",
+        "BANANA",
+        "BANANA",
+        "LISTEN",
+        "LISTEN"
+candidates:  .ascii
+        "hello\n",
+        "world\n",
+        "zombies\n",
+        "pants\n\0",
+
+        "stream\n",
+        "pigeon\n",
+        "maters\n\0",
+
+        "lemons\n",
+        "cherry\n",
+        "melons\n\0",
+
+        "dog\n",
+        "goody\n\0",
+
+        "enlists\n",
+        "google\n",
+        "inlets\n",
+        "banana\n\0",
+
+        "gallery\n",
+        "ballerina\n",
+        "regally\n",
+        "clergy\n",
+        "largely\n",
+        "leading\n\0",
+
+        "Eons\n",
+        "ONES\n\0",
+
+        "last\n\0",
+
+        "cashregister\n",
+        "Carthorse\n",
+        "radishes\n\0",
+
+        "cashregister\n",
+        "carthorse\n",
+        "radishes\n\0",
+
+        "cashregister\n",
+        "Carthorse\n",
+        "radishes\n\0",
+
+        "go Go GO\n\0",
+
+        "goGoGO\n\0",
+
+        "patter\n\0",
+
+        "BANANA\n",
+        "Banana\n",
+        "banana\n\0",
+
+        "BANANA\n\0",
+
+        "Banana\n\0",
+
+        "banana\n\0",
+
+        "Listen\n",
+        "Silent\n",
+        "LISTEN\n\0",
+
+        "LISTEN\n",
+        "Silent\n\0"
+# expected output values
+outs:  .ascii
+        "\0",
+
+        "stream\n",
+        "maters\n\0",
+
+        "lemons\n",
+        "melons\n\0",
+
+        "\0",
+
+        "inlets\n\0",
+
+        "gallery\n",
+        "regally\n",
+        "largely\n\0",
+
+        "Eons\n",
+        "ONES\n\0",
+
+        "\0",
+
+        "Carthorse\n\0",
+
+        "carthorse\n\0",
+
+        "Carthorse\n\0",
+
+        "\0",
+
+        "\0",
+
+        "\0",
+
+        "\0",
+
+        "\0",
+
+        "\0",
+
+        "\0",
+
+        "Silent\n\0",
+
+        "Silent\n\0"
+
+
+failmsg: .asciiz "failed for test input: target \""
+candidatesmsg: .asciiz "\" with candidates\n"
+expectedmsg: .asciiz "expected\n"
+tobemsg: .asciiz "to be\n"
+okmsg: .asciiz "all tests passed"
+
+
+.text
+
+runner:
+        lw      $s0, n
+        la      $s1, target
+        la      $s2, candidates
+        la      $s3, outs
+
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, BUFFER_SIZE        # specify length of longest expected output
+        syscall
+        move    $s4, $v0                # location of allocated memory is where callee writes result
+
+run_test:
+        jal     clear_output            # zero out output location
+        move    $a0, $s1                # load input target value into a0
+        move    $a1, $s2                # load input candidates value into a1
+        move    $a2, $s4                # load destination address into a2
+        jal     find_anagrams           # call subroutine under test
+        move    $a2, $s4
+        move    $s6, $s4                # take copy of output value
+        move    $s7, $s3                # expected output
+
+scan:
+        lb      $t0, 0($s3)             # load one byte of the expectation
+        lb      $t1, 0($a2)             # load one byte of the actual
+        bne     $t0, $t1, exit_fail     # if the two differ, the test has failed
+        addi    $s3, $s3, 1             # point to next expectation byte
+        addi    $a2, $a2, 1             # point to next actual byte
+        bne     $t0, $zero, scan        # if one char (and therefore the other) was not null, loop
+
+target_scan:
+        lb      $t0, 0($s1)
+        addi    $s1, $s1, 1
+        bne     $t0, $zero, target_scan
+
+candidates_scan:
+        lb      $t0, 0($s2)
+        addi    $s2, $s2, 1
+        bne     $t0, $zero, candidates_scan
+
+done_scan:
+        sub     $s0, $s0, 1             # decrement num of tests left to run
+        bgt     $s0, $zero, run_test    # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s1                # print input target that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, candidatesmsg      # put address of candidatesmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s2                # print input candidates that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, expectedmsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s6                # print actual that failed on
+        li      $v0, 4
+        syscall
+
+        la      $a0, tobemsg
+        li      $v0, 4
+        syscall
+
+        move    $a0, $s7                # print expected value that failed on
+        li      $v0, 4
+        syscall
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+clear_output:
+                                        # zero out output by storing zeros
+        addi    $t0, $s4, BUFFER_SIZE   # pointer to end of output buffer
+
+clear:
+        subi    $t0, $t0, 4             # decrement pointer
+        sw      $zero, 0($t0)           # store a 0 word
+        bne     $t0, $s4, clear         # repeat util we have reached the start of the buffer
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+# .include "impl.mips"

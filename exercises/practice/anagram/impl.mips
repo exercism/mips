@@ -1,0 +1,11 @@
+# | Register | Usage        | Type    | Description                                                    |
+# | -------- | ------------ | ------- | -------------------------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated target string, without newline                 |
+# | `$a1`    | input        | address | null-terminated candidates string with newline after each word |
+# | `$a2`    | input/output | address | null-terminated output string with newline after each word     |
+# | `$t0-9`  | temporary    | any     | for temporary storage                                          |
+
+.globl find_anagrams
+
+find_anagrams:
+        jr $ra

@@ -482,6 +482,14 @@
         "difficulty": 4
       },
       {
+        "slug": "anagram",
+        "name": "Anagram",
+        "uuid": "4172a5bb-0c8e-4a66-9551-8b46acdfc57a",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "diamond",
         "name": "Diamond",
         "uuid": "ff7ba1a0-afca-44c5-950a-3cbfc1d5668d",
