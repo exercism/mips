@@ -1,0 +1,104 @@
+# | Register | Usage        | Type    | Description                             |
+# | -------- | ------------ | ------- | --------------------------------------- |
+# | `$a0`    | input        | address | beginning of word(s)                    |
+# | `$a1`    | input/output | address | output pointer                          |
+# | `$t0`    | temporary    | address | position in current word                |
+# | `$t1`    | temporary    | address | end of current word                     |
+# | `$t3`    | temporary    | byte    | previous letter in word                 |
+# | `$t4`    | temporary    | byte    | current letter in word                  |
+# | `$t5`    | temporary    | byte    | second letter in word                   |
+# | `$t6`    | temporary    | byte    | non-zero when current letter is a vowel |
+# | `$t7`    | temporary    | byte    | 'a'                                     |
+# | `$t8`    | temporary    | byte    | 'y'                                     |
+# | `$t9`    | temporary    | address | vowels table, minus 'a'                 |
+
+.globl translate
+
+.data
+
+# non-zero for 'a' 'e' 'i' 'o' 'u' 'y'
+vowels: .ascii "a\0\0\0e\0\0\0i\0\0\0\0\0o\0\0\0\0\0u\0\0\0y\0"
+
+
+.text
+
+translate:
+        li      $t7, 'a'
+        li      $t8, 'y'
+        la      $t9, vowels  
+        subu    $t9, $t9, $t7           # vowels table, minus 'a'
+
+start_word:
+        move    $t0, $a0                # beginning of word
+        lb      $t4, 0($a0)             # first letter in word
+        beqz    $t4, return
+        lb      $t5, 1($a0)             # second letter in word
+        addu    $t6, $t9, $t4
+        lb      $t6, 0($t6)             # non-zero if first letter is a vowel or 'y'
+        bnez    $t6, check_yt
+
+check_xr:
+        bne     $t4, 'x', consonant
+        bne     $t5, 'r', consonant         
+        j       vowel                   # Treat initial 'x' 'r' as vowel
+
+check_yt:
+        bne     $t4, 'y', vowel
+        beq     $t5, 't', vowel         # Treat initial 'y' 't' as vowel
+
+consonant:
+        addi    $t0, $t0, 1
+        move    $t3, $t4                # previous letter
+        lb      $t4, 0($t0)             # current letter in word
+        blt     $t4, $t7, vowel         # jump forward as we have reached the end of the word
+
+        addu    $t6, $t9, $t4
+        lb      $t6, 0($t6)             # non-zero if current letter is a vowel or 'y'
+        beqz    $t6, consonant
+
+        bne     $t4, 'u', vowel
+        bne     $t3, 'q', vowel
+        addi    $t0, $t0, 1             # group 'u' after 'q' with leading consonants
+
+vowel:
+                                        # Letters $a0 (inclusive) through $t0 (exclusive)
+                                        # will be output after the word's remaining letters.
+        move    $t1, $t0
+        j       check_for_remaining_letters
+
+
+copy_remaining_letters:
+        addi    $t1, $t1, 1
+        sb      $t4, 0($a1)
+        addi    $a1, $a1, 1             # Increment output pointer
+
+check_for_remaining_letters:
+        lb      $t4, 0($t1)
+        bge     $t4, $t7, copy_remaining_letters
+        j       check_for_leading_consonants
+
+
+copy_leading_consonants:
+        lb      $t5, 0($a0)
+        addi    $a0, $a0, 1
+        sb      $t5, 0($a1)
+        addi    $a1, $a1, 1             # Increment output pointer
+
+check_for_leading_consonants:
+        bne     $a0, $t0, copy_leading_consonants
+
+copy_ay:
+        sb      $t7, 0($a1)             # 'a'
+        addi    $a1, $a1, 1             # Increment output pointer
+        sb      $t8, 0($a1)             # 'y'
+        addi    $a1, $a1, 1             # Increment output pointer
+        beqz    $t4, return             # Check for null terminator
+
+        sb      $t4, 0($a1)             # Output space between words
+        addi    $a1, $a1, 1             # Increment output pointer
+        addi    $a0, $t1, 1             # Start of next word
+        j       start_word
+
+return:
+        sb      $zero, 0($a1)
+        jr      $ra
