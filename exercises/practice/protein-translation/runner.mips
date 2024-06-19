@@ -42,7 +42,7 @@ ins:  .asciiz
         "AUGUUUUAA",
         "UGGUAGUGG",
         "UGGUGUUAUUAAUGGUUU",
-        "AAA",
+        "AUGAUG",
         "XYZ",
         "AUGU",
         "UUCUUCUAAUGGU"
@@ -74,7 +74,7 @@ outs:  .asciiz
         "Methionine\nPhenylalanine\n",
         "Tryptophan\n",
         "Tryptophan\nCysteine\nTyrosine\n",
-        "", # Invalid codon,
+        "Methionine\nMethionine\n",
         "", # Invalid codon,
         "", # Invalid codon,
         "Phenylalanine\nPhenylalanine\n"
