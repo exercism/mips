@@ -29,7 +29,4 @@ bin/configlet create --practice-exercise "${slug}" --author "${author}" --diffic
 
 cp exercises/practice/hello-world/.docs/hints.md exercises/practice/${slug}/.docs/hints.md
 
-touch exercises/practice/${slug}/runner.mips
-touch exercises/practice/${slug}/impl.mips
-touch exercises/practice/${slug}/.meta/example.mips
 touch exercises/practice/${slug}/.docs/instructions.append.md
