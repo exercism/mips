@@ -547,6 +547,14 @@
         "topics": [
           "math"
         ]
+      },
+      {
+        "slug": "zebra-puzzle",
+        "name": "Zebra Puzzle",
+        "uuid": "29f8cd44-2d46-4674-ae4a-42eb0e07c664",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 10
       }
     ],
     "foregone": [
