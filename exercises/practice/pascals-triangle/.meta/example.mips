@@ -1,0 +1,50 @@
+# | Register | Usage        | Type    | Description                      |
+# | -------- | ------------ | ------- | -------------------------------- |
+# | `$a0`    | input        | integer | number of triangle rows          |
+# | `$a1`    | input/output | address | start of array of words          |
+# | `$v0`    | output       | integer | number of output words           |
+# | `$t0`    | temporary    | address | output pointer                   |
+# | `$t1`    | temporary    | integer | number of bytes in $a0 words     |
+# | `$t2`    | temporary    | integer | row length, in bytes             |
+# | `$t3`    | temporary    | address | pointer into previous row        |
+# | `$t4`    | temporary    | address | initial 1 of current row         |
+# | `$t5`    | temporary    | address | final 1 of current row           |
+# | `$t6`    | temporary    | integer | left value from previous row     |
+# | `$t7`    | temporary    | integer | right value from previous row    |
+# | `$t8`    | temporary    | integer | sum two values from previous row |
+
+.globl rows
+
+rows:
+        move    $t0, $a1                # output pointer
+        beqz    $a0, done               # stop immediately if 0 rows
+        sll     $t1, $a0, 2             # number of bytes in $a0 words
+        move    $t2, $zero              # row length, in bytes
+        li      $t7, 1                  # value for first row
+
+next_row:
+        move   $t4, $t0                 # address of initial 1 of current row
+        add    $t5, $t0, $t2            # address of final 1 of current row
+        addi   $t2, $t2, 4              # row length, in bytes
+        move   $t6, $zero               # left value from previous row
+        beq    $t0, $t5, last_column
+
+next_column:
+        lw     $t7, 0($t3)              # read from previous row
+        addi   $t3, $t3, 4
+        add    $t8, $t6, $t7            # sum two values from previous row
+        move   $t6, $t7
+        sw     $t8, 0($t0)              # write output
+        addi   $t0, $t0, 4
+        bne    $t0, $t5, next_column
+
+last_column:
+        sw     $t7, 0($t0)              # write output
+        addi   $t0, $t0, 4
+        move   $t3, $t4                 # start of most recent row
+        bne    $t2, $t1, next_row       # repeat until we have final row length
+
+done:
+        sub    $v0, $t0, $a1            # subtract start of output
+        srl    $v0, $v0, 2              # convert to number of words
+        jr     $ra
