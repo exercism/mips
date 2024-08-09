@@ -1,0 +1,11 @@
+# | Register | Usage        | Type    | Description             |
+# | -------- | ------------ | ------- | ----------------------- |
+# | `$a0`    | input        | integer | number of triangle rows |
+# | `$a1`    | input/output | address | array of words          |
+# | `$v0`    | output       | integer | number of output words  |
+# | `$t0-9`  | temporary    | any     | for temporary storage   |
+
+.globl rows
+
+rows:
+        jr $ra

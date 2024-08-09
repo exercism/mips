@@ -501,6 +501,14 @@
         "difficulty": 4
       },
       {
+        "slug": "pascals-triangle",
+        "name": "Pascal's Triangle",
+        "uuid": "4bf78b97-f958-4327-bdbb-f36dcd6c7f15",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "pig-latin",
         "name": "Pig Latin",
         "uuid": "d689fa3b-4ec9-437a-87e5-6490f868a797",
