@@ -26,14 +26,13 @@
       "runner.mips"
     ],
     "example": [
-      "example.mips"
+      ".meta/example.mips"
     ],
     "exemplar": [
       ".meta/exemplar.mips"
     ]
   },
   "exercises": {
-    "concept": [],
     "practice": [
       {
         "slug": "hello-world",
@@ -53,10 +52,10 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 1,
+        "status": "deprecated",
         "topics": [
           "math"
-        ],
-        "status": "deprecated"
+        ]
       },
       {
         "slug": "leap",
@@ -64,8 +63,7 @@
         "uuid": "d3026f71-47d0-44d1-92ac-204404d4e26e",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 1,
-        "topics": []
+        "difficulty": 1
       },
       {
         "slug": "difference-of-squares",
@@ -111,8 +109,7 @@
         "uuid": "2ba35b0f-e16c-41be-81b4-88985926445a",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 3,
-        "topics": []
+        "difficulty": 3
       },
       {
         "slug": "grains",
@@ -136,8 +133,7 @@
         "uuid": "50cacd4d-56c2-4331-b84f-7c91e4b12c35",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 2,
-        "topics": []
+        "difficulty": 2
       },
       {
         "slug": "eliuds-eggs",
@@ -177,8 +173,7 @@
         "uuid": "823ca6fc-369c-468c-914e-b53bb0db4763",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 4,
-        "topics": []
+        "difficulty": 4
       },
       {
         "slug": "binary-search",
@@ -186,8 +181,7 @@
         "uuid": "25145170-d7d4-4f72-8a4f-a44b6f3880da",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 4,
-        "topics": []
+        "difficulty": 4
       },
       {
         "slug": "prime-factors",
@@ -214,8 +208,7 @@
         "uuid": "fa283d1e-2005-40d3-9a30-252d06d98523",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 4,
-        "topics": []
+        "difficulty": 4
       },
       {
         "slug": "scrabble-score",
@@ -223,8 +216,7 @@
         "uuid": "42c7d965-c56c-437f-b513-19bcbcedef01",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 5,
-        "topics": []
+        "difficulty": 5
       },
       {
         "slug": "raindrops",
@@ -232,8 +224,7 @@
         "uuid": "d294d722-8ea2-461e-86d8-0fecb6c5637a",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 5,
-        "topics": []
+        "difficulty": 5
       },
       {
         "slug": "spiral-matrix",
@@ -269,10 +260,10 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 1,
+        "status": "deprecated",
         "topics": [
           "math"
-        ],
-        "status": "deprecated"
+        ]
       },
       {
         "slug": "octal",
@@ -281,10 +272,10 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 1,
+        "status": "deprecated",
         "topics": [
           "math"
-        ],
-        "status": "deprecated"
+        ]
       },
       {
         "slug": "bob",
@@ -328,10 +319,10 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 1,
+        "status": "deprecated",
         "topics": [
           "math"
-        ],
-        "status": "deprecated"
+        ]
       },
       {
         "slug": "two-fer",
@@ -416,8 +407,7 @@
         "uuid": "429467c7-edf4-4010-a696-5fc76d0dd12c",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 3,
-        "topics": []
+        "difficulty": 3
       },
       {
         "slug": "pangram",
@@ -452,8 +442,7 @@
         "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 3,
-        "topics": []
+        "difficulty": 3
       },
       {
         "slug": "kindergarten-garden",
@@ -461,8 +450,7 @@
         "uuid": "bc580dd5-6a6b-48ce-84b3-6f60b9da2db2",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 4,
-        "topics": []
+        "difficulty": 4
       },
       {
         "slug": "phone-number",
@@ -470,8 +458,7 @@
         "uuid": "60bcccb4-589f-4465-a7d8-c84b22494306",
         "practices": [],
         "prerequisites": [],
-        "difficulty": 4,
-        "topics": []
+        "difficulty": 4
       },
       {
         "slug": "matching-brackets",
@@ -553,13 +540,12 @@
         "prerequisites": [],
         "difficulty": 8
       }
+    ],
+    "foregone": [
+      "bank-account",
+      "parallel-letter-frequency"
     ]
   },
-  "foregone": [
-    "bank-account",
-    "parallel-letter-frequency"
-  ],
-  "concepts": [],
   "key_features": [
     {
       "title": "Easy to Learn",
@@ -593,15 +579,15 @@
     }
   ],
   "tags": [
+    "execution_mode/compiled",
     "paradigm/imperative",
     "paradigm/procedural",
+    "platform/linux",
+    "platform/mac",
+    "platform/windows",
+    "runtime/standalone_executable",
     "typing/static",
     "typing/weak",
-    "execution_mode/compiled",
-    "platform/windows",
-    "platform/mac",
-    "platform/linux",
-    "runtime/standalone_executable",
     "used_for/embedded_systems"
   ]
 }
