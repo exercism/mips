@@ -2,7 +2,6 @@
   "authors": [
     "keiravillekode"
   ],
-  "contributors": [],
   "files": {
     "solution": [
       "impl.mips"
