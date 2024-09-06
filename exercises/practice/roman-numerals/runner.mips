@@ -13,7 +13,7 @@
 .data
 
 # number of test cases
-n:  .word 26
+n:  .word 27
 # input values (word sized ints)
 ins:  .word
         1,
@@ -41,6 +41,7 @@ ins:  .word
         1666,
         3000,
         3001,
+        3888,
         3999
 # expected output values (null terminated)
 outs:  .asciiz
@@ -69,6 +70,7 @@ outs:  .asciiz
         "MDCLXVI",
         "MMM",
         "MMMI",
+        "MMMDCCCLXXXVIII",
         "MMMCMXCIX"
 
 failmsg: .asciiz "failed for test input: "
