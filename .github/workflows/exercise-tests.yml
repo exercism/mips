@@ -19,7 +19,7 @@ jobs:
         os:
           - ubuntu-22.04
           - windows-2022
-          - macOS-12
+          - macOS-14
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
