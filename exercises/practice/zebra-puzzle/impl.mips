@@ -1,0 +1,18 @@
+## Registers
+
+# | Register | Usage     | Type    | Description                  |
+# | -------- | --------- | ------- | ---------------------------- |
+# | `$v0`    | output    | byte    | nationality of water drinker |
+# | `$v1`    | output    | byte    | nationality of zebra owner   |
+# | `$t0-9`  | temporary | any     | for temporary storage        |
+
+.eqv ENGLISHMAN 69
+.eqv JAPANESE   74
+.eqv NORWEGIAN  78
+.eqv SPANIARD   83
+.eqv UKRAINIAN  85
+
+.globl solution
+
+solution:
+        jr $ra
