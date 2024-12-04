@@ -40,11 +40,11 @@ ins:  .asciiz
         "",
         "          ",
         "\t\t\t\t\t\t\t\t\t\t",
-        "\nDoes this cryogenic chamber make me look fat?\nNo.",
         "         hmmmmmmm...",
         "Okay if like my  spacebar  quite a bit?   ",
         "\n\r \t",
-        "This is a statement ending with whitespace      "
+        "This is a statement ending with whitespace      ",
+        "\nDoes this cryogenic chamber make\n me look fat?"
 # expected output values (null terminated)
 outs:  .asciiz
         "Whatever.",
@@ -68,10 +68,10 @@ outs:  .asciiz
         "Fine. Be that way!",
         "Fine. Be that way!",
         "Whatever.",
-        "Whatever.",
         "Sure.",
         "Fine. Be that way!",
-        "Whatever."
+        "Whatever.",
+        "Sure."
 
 failmsg: .asciiz "\nfailed for test input: "
 expectedmsg: .asciiz ". expected "
