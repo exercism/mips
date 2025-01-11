@@ -16,7 +16,7 @@
 .data
 
 # number of test cases
-n:  .word 22
+n:  .word 23
 # input values (null terminated)
 ins:  .asciiz
         "apple",
@@ -29,6 +29,7 @@ ins:  .asciiz
         "koala",
         "xenon",
         "qat",
+        "liquid",
         "chair",
         "queen",
         "square",
@@ -53,6 +54,7 @@ outs:  .asciiz
         "oalakay",
         "enonxay",
         "atqay",
+        "iquidlay",
         "airchay",
         "eenquay",
         "aresquay",
