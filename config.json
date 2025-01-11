@@ -474,6 +474,14 @@
         "difficulty": 5
       },
       {
+        "slug": "food-chain",
+        "name": "Food Chain",
+        "uuid": "28ad8056-fc54-4372-aad5-530d6d666a87",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "knapsack",
         "name": "Knapsack",
         "uuid": "79e48619-beb7-4493-9a21-9581022f4ded",
