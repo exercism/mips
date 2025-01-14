@@ -571,6 +571,14 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 10
+      },
+      {
+        "slug": "bottle-song",
+        "name": "Bottle Song",
+        "uuid": "b6d90e4b-9f17-459b-aff3-2716e49ccb9c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
       }
     ],
     "foregone": [

@@ -1,0 +1,133 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | integer | start bottles                 |
+# | `$a1`    | input        | integer | take down                     |
+# | `$a2`    | input/output | address | null-terminated output string |
+# | `$a3`    | temporary    | address | null-terminated source string |
+# | `$t0`    | temporary    | byte    | character for output          |
+# | `$t3`    | temporary    | address | pointer into number_array     |
+# | `$t4`    | temporary    | integer | 4                             |
+# | `$t8`    | temporary    | address | number_array                  |
+# | `$t9`    | temporary    | address | return address                |
+
+.globl recite
+
+.data
+
+green_bottles:
+        .asciiz " green bottles hanging on the wall"
+green_bottle:
+        .asciiz " green bottle hanging on the wall"
+and_if:
+        .asciiz "And if one green bottle should accidentally fall,\nThere'll be "
+comma:  .asciiz ",\n"
+stop:   .asciiz ".\n"
+
+no:     .asciiz "No"
+one:    .asciiz "One"
+two:    .asciiz "Two"
+three:  .asciiz "Three"
+four:   .asciiz "Four"
+five:   .asciiz "Five"
+six:    .asciiz "Six"
+seven:  .asciiz "Seven"
+eight:  .asciiz "Eight"
+nine:   .asciiz "Nine"
+ten:    .asciiz "Ten"
+
+number_array:
+        .word no
+        .word one
+        .word two
+        .word three
+        .word four
+        .word five
+        .word six
+        .word seven
+        .word eight
+        .word nine
+        .word ten
+
+.text
+
+recite:
+        sll     $a0, $a0, 2
+        sll     $a1, $a1, 2
+        sub     $a1, $a0, $a1           # end bottles
+        li      $t4, 4
+        la      $t8, number_array
+        move    $t9, $ra                # Save return address
+        j       start
+
+loop:
+        li      $t0, '\n'
+        sb      $t0, 0($a2)             # write byte to destination
+        addi    $a2, $a2, 1             # increment destination pointer
+
+start:
+        la      $t5, green_bottles
+        bne     $a0, $t4, bottles_or_bottle1
+
+        la      $t5, green_bottle
+
+bottles_or_bottle1:
+        add     $t3, $t8, $a0
+        lw      $a3, 0($t3)
+        jal     copy_string
+
+        move    $a3, $t5
+        jal     copy_string
+
+        la      $a3, comma
+        jal     copy_string
+
+        add     $t3, $t8, $a0
+        lw      $a3, 0($t3)
+        jal     copy_string
+
+        move    $a3, $t5
+        jal     copy_string
+
+        la      $a3, comma
+        jal     copy_string
+
+        la      $a3, and_if
+        jal     copy_string
+
+        sub     $a0, $a0, 4
+        la      $t5, green_bottles
+        bne     $a0, $t4, bottles_or_bottle2
+
+        la      $t5, green_bottle
+
+bottles_or_bottle2:
+        add     $t3, $t8, $a0
+        lw      $a3, 0($t3)
+        lb      $t0, 0($a3)             # load source byte
+        or      $t0, $t0, 32            # force lower case
+        sb      $t0, 0($a2)             # write byte to destination
+        addi    $a3, $a3, 1             # increment souce pointer
+        addi    $a2, $a2, 1             # increment destination pointer
+        jal     copy_string
+
+        move    $a3, $t5
+        jal     copy_string
+
+        la      $a3, stop
+        jal     copy_string
+
+        bne     $a0, $a1, loop
+        jr      $t9
+
+
+copy_string:
+                                        # copy string from source $a3 to destination $a2
+        lb      $t0, 0($a3)             # load source byte
+        sb      $t0, 0($a2)             # write byte to destination
+        addi    $a3, $a3, 1             # increment souce pointer
+        addi    $a2, $a2, 1             # increment destination pointer
+        bne     $t0, $zero, copy_string # repeat until we have reached null terminator
+
+        subi    $a2, $a2, 1             # decrement destination pointer,
+                                        # ready to append other strings
+        jr      $ra
