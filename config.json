@@ -474,6 +474,14 @@
         "difficulty": 5
       },
       {
+        "slug": "twelve-days",
+        "name": "Twelve Days",
+        "uuid": "3db2af89-e1ff-43b8-acb3-a0a1ce5f5dad",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "food-chain",
         "name": "Food Chain",
         "uuid": "28ad8056-fc54-4372-aad5-530d6d666a87",
