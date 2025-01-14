@@ -490,6 +490,14 @@
         "difficulty": 6
       },
       {
+        "slug": "house",
+        "name": "House",
+        "uuid": "914f654d-2d0c-4d4b-8c42-bff8ebdac21c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "knapsack",
         "name": "Knapsack",
         "uuid": "79e48619-beb7-4493-9a21-9581022f4ded",

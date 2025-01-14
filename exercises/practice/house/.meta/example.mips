@@ -1,0 +1,62 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | integer | start verse                   |
+# | `$a1`    | input        | integer | end verse                     |
+# | `$a2`    | input/output | address | null-terminated output string |
+# | `$t0`    | temporary    | byte    | character being copied        |
+# | `$t3`    | temporary    | address | pointer into lyrics           |
+# | `$t5`    | temporary    | address | lyrics                        |
+# | `$t6`    | temporary    | address | table                         |
+# | `$t7`    | temporary    | word    | "THIS" (4 ASCII bytes)        |
+# | `$t8`    | temporary    | word    | " IS " (4 ASCII bytes)        |
+
+.eqv THIS 0x73696854 # "This"
+.eqv IS   0x20736920 # " is "
+
+.globl recite
+
+.data
+
+lyrics: .asciiz "This is the horse and the hound and the horn that belonged to the farmer sowing his corn that kept the rooster that crowed in the morn that woke the priest all shaven and shorn that married the man all tattered and torn that kissed the maiden all forlorn that milked the cow with the crumpled horn that tossed the dog that worried the cat that killed the rat that ate the malt that lay in the house that Jack built.\n"
+
+table:
+        .word -1, 389, 368, 351, 331, 310, 267, 232, 190, 145, 99, 62, 8
+
+
+.text
+
+recite:
+        la      $t5, lyrics
+        la      $t6, table
+        li      $t7, THIS
+        li      $t8, IS
+
+        sll     $a0, $a0, 2
+        sll     $a1, $a1, 2
+        add     $a0, $t6, $a0           # pointer into table for current verse
+        add     $a1, $t6, $a1           # pointer into table for end verse
+
+line:
+        usw     $t7, 0($a2)             # unaligned store word "This"
+        usw     $t8, 4($a2)             # unaligned store word " is "
+        add     $a2, $a2, 8
+
+        lw      $t3, 0($a0)
+        add     $t3, $t5, $t3
+
+copy_string:
+                                        # copy string from source $t3 to destination $a2
+        lb      $t0, 0($t3)             # load source byte
+        sb      $t0, 0($a2)             # write byte to destination
+        addi    $t3, $t3, 1             # increment souce pointer
+        addi    $a2, $a2, 1             # increment destination pointer
+        bne     $t0, $zero, copy_string # repeat until we have reached null terminator
+
+        subi    $a2, $a2, 1             # decrement destination pointer,
+                                        # ready to append other strings
+
+        move    $t1, $a0
+        add     $a0, $a0, 4
+        bne     $t1, $a1, line
+
+        jr $ra
