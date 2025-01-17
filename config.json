@@ -387,6 +387,14 @@
         "difficulty": 5
       },
       {
+        "slug": "bottle-song",
+        "name": "Bottle Song",
+        "uuid": "b6d90e4b-9f17-459b-aff3-2716e49ccb9c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
         "slug": "diamond",
         "name": "Diamond",
         "uuid": "ff7ba1a0-afca-44c5-950a-3cbfc1d5668d",
@@ -406,6 +414,14 @@
         "slug": "protein-translation",
         "name": "Protein Translation",
         "uuid": "d44479b2-3cae-4a64-9b1f-71f0ef6047ce",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 5
+      },
+      {
+        "slug": "proverb",
+        "name": "Proverb",
+        "uuid": "c4bb45c9-9c9d-4a56-933b-df7aa2d45945",
         "practices": [],
         "prerequisites": [],
         "difficulty": 5
@@ -579,14 +595,6 @@
         "practices": [],
         "prerequisites": [],
         "difficulty": 10
-      },
-      {
-        "slug": "bottle-song",
-        "name": "Bottle Song",
-        "uuid": "b6d90e4b-9f17-459b-aff3-2716e49ccb9c",
-        "practices": [],
-        "prerequisites": [],
-        "difficulty": 5
       }
     ],
     "foregone": [
