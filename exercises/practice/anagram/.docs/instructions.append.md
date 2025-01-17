@@ -4,6 +4,8 @@
 
 Each set of words is represented as a null-terminated string, with a newline character at the end of each word.
 
+You must return the anagrams in the same order as they are listed in the candidate words.
+
 An example would be `"tones\nnotes\nSeton\n"`
 
 ## Registers
