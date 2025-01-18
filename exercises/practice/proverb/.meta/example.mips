@@ -1,0 +1,95 @@
+# | Register | Usage        | Type    | Description                                                |
+# | -------- | ------------ | ------- | ---------------------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string with newline after each input |
+# | `$a1`    | input/output | address | null-terminated output string                              |
+# | `$a2`    | temporary    | address | null-terminated or newline-terminated source string        |
+# | `$t0`    | temporary    | byte    | character for output                                       |
+# | `$t6`    | temporary    | address | current string                                             |
+# | `$t7`    | temporary    | address | first string                                               |
+# | `$t8`    | temporary    | byte    | '\n' newline                                               |
+# | `$t9`    | temporary    | address | return address                                             |
+
+.globl recite
+
+.data
+
+for_want: .asciiz "For want of a "
+the:      .asciiz " the "
+was_lost: .asciiz " was lost.\n"
+and_all:  .asciiz "And all for the want of a "
+stop:     .asciiz ".\n"
+
+
+.text
+
+recite:
+        move    $t7, $a0                # first string
+        li      $t8, '\n'
+        move    $t9, $ra                # Save return address
+        j       next
+
+write_line:
+        la      $a2, for_want
+        jal     copy_string
+
+        move    $a2, $t6
+        jal     copy_line
+
+        la      $a2, the
+        jal     copy_string
+
+        move    $a2, $a0
+        jal     copy_line
+
+        la      $a2, was_lost
+        jal     copy_string
+
+next:
+        move    $t6, $a0                # current string
+
+scan:
+        lb      $t0, 0($a0)             # read input byte
+        addi    $a0, $a0, 1             # increment input pointer
+        bne     $t0, $t8, scan          # loop until newline
+
+        lb      $t0, 0($a0)             # first byte after newline
+        bnez    $t0, write_line
+
+write_final_line:
+        la      $a2, and_all
+        jal     copy_string
+
+        move    $a2, $t7                # first string
+        jal     copy_line
+
+        la      $a2, stop
+        jal     copy_string
+
+        jr      $t9
+
+
+copy_string:
+                                        # copy string from source $a2 to destination $a1
+        lb      $t0, 0($a2)             # load source byte
+        sb      $t0, 0($a1)             # write byte to destination
+        addi    $a2, $a2, 1             # increment souce pointer
+        addi    $a1, $a1, 1             # increment destination pointer
+        bnez    $t0, copy_string        # repeat until we have reached null terminator
+
+        subi    $a1, $a1, 1             # decrement destination pointer,
+                                        # ready to append other strings
+        jr      $ra
+
+
+copy_line:
+                                        # copy line from source $a2 to destination $a1
+                                        # assume $t8 is '\n'
+        lb      $t0, 0($a2)             # load source byte
+        sb      $t0, 0($a1)             # write byte to destination
+        addi    $a2, $a2, 1             # increment souce pointer
+        addi    $a1, $a1, 1             # increment destination pointer
+        bne     $t0, $t8, copy_line     # repeat until we have reached '\n' line terminator
+
+        subi    $a1, $a1, 1             # decrement destination pointer,
+                                        # ready to append other strings
+        jr      $ra
