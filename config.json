@@ -187,7 +187,7 @@
       },
       {
         "slug": "two-fer",
-        "name": "Two Fer",
+        "name": "Two-Fer",
         "uuid": "cbf9d422-ad22-4919-ac3f-6ff13dfaea23",
         "practices": [],
         "prerequisites": [],
@@ -273,7 +273,7 @@
       },
       {
         "slug": "sum-of-multiples",
-        "name": "Sum Of Multiples",
+        "name": "Sum of Multiples",
         "uuid": "74765ef9-de2c-488a-8152-e608e4f12e3a",
         "practices": [],
         "prerequisites": [],
