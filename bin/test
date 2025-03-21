@@ -4,14 +4,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-MARS=`dirname $0`/mars-4-5.jar
+MARS=$(dirname "$0")/mars-4-5.jar
 
 # test all test runners against example code
 function test-all {
   log "Testing all exercises..."
   for exercise in exercises/practice/*; do
     echo
-    test-one $exercise
+    test-one "$exercise"
   done
 }
 
@@ -19,15 +19,15 @@ function test-all {
 function test-one {
   exercise=$1
   log "Testing $exercise..."
-  java -jar $MARS ae1 nc $exercise/runner.mips $exercise/.meta/example.mips
+  java -jar "$MARS" ae1 nc "$exercise"/runner.mips "$exercise"/.meta/example.mips
 }
 
 # log a message
 function log {
-  echo "*- $@"
+  echo "*- $*"
 }
 
 # if called with interpreter, run fn that matches first arg
 [[ ${BASH_SOURCE[0]} = "$0" ]] && {
-  eval "$1" "${@:2}"
+  "$1" "${@:2}"
 }
