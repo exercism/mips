@@ -256,17 +256,17 @@
         "difficulty": 3
       },
       {
-        "slug": "rna-transcription",
-        "name": "RNA Transcription",
-        "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
+        "slug": "resistor-color",
+        "name": "Resistor Color",
+        "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
         "practices": [],
         "prerequisites": [],
         "difficulty": 3
       },
       {
-        "slug": "resistor-color",
-        "name": "Resistor Color",
-        "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
+        "slug": "rna-transcription",
+        "name": "RNA Transcription",
+        "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
         "practices": [],
         "prerequisites": [],
         "difficulty": 3
@@ -587,6 +587,14 @@
         "topics": [
           "math"
         ]
+      },
+      {
+        "slug": "two-bucket",
+        "name": "Two Bucket",
+        "uuid": "206ddd19-4fee-4acf-81ea-48cacda70411",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 8
       },
       {
         "slug": "zebra-puzzle",
