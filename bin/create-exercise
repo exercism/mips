@@ -27,6 +27,9 @@ read -rp "What's the difficulty for ${slug}? " difficulty
 bin/fetch-configlet
 bin/configlet create --practice-exercise "${slug}" --author "${author}" --difficulty "${difficulty}"
 
+filter='.exercises.practice = (.exercises.practice | sort_by(.difficulty, .slug))'
+jq "${filter}" config.json > config.sorted && mv config.sorted config.json
+
 cp exercises/practice/hello-world/.docs/hints.md "exercises/practice/${slug}/.docs/hints.md"
 
 touch "exercises/practice/${slug}/.docs/instructions.append.md"
