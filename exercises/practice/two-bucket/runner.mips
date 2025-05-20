@@ -37,6 +37,7 @@ outs:  .word
         -1, 0, 0
 
 failmsg: .asciiz "failed measure from input "
+spacemsg: .asciiz " "
 expectedmsg: .asciiz ". expected "
 tobemsg: .asciiz " to be "
 okmsg: .asciiz "all tests passed"
@@ -93,24 +94,56 @@ exit_fail:
         li      $v0, 4                  # 4 is print string
         syscall
 
-        move    $a0, $s1                # inputs
-        li      $a1, 4                  # number of inputs
+        move    $a0, $s1                # bucket capacities
+        li      $a1, 2                  # number of inputs
         jal     print_array
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 8($s1)             # start bucket (1 or 2)
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 12($s1)            # target volume
+        li      $v0, 1                  # 1 is print integer
+        syscall
 
         la      $a0, expectedmsg        # put address of expectedmsg into a0
         li      $v0, 4                  # 4 is print string
         syscall
 
-        addi    $a0, $sp, 8             # outputs
-        li      $a1, 3                  # number of outputs
+        lw      $a0, 8($sp)             # load actual number of actions
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        addi    $a0, $sp, 12            # final bucket contents
+        li      $a1, 2                  # number of outputs
         jal     print_array
 
         la      $a0, tobemsg            # put address of tobemsg into a0
         li      $v0, 4                  # 4 is print string
         syscall
 
-        move    $a0, $s2                # expected outputs
-        li      $a1, 3                  # number of outputs
+        lw      $a0, 0($s2)             # load expected number of actions
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        addi    $a0, $s2, 4             # expected final bucket contents
+        li      $a1, 2                  # number of outputs
         jal     print_array
 
         li      $a0, 1                  # set error code to 1
