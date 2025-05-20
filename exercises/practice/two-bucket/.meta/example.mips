@@ -28,7 +28,7 @@ gcd_loop:
         rem     $t7, $t5, $t6
         bnez    $t7, gcd_loop
 
-        rem     $t7, $a2, $t6
+        remu    $t7, $a2, $t6
         bnez    $t7, not_possible       # target volume not a multiple of capacities gcd
 
         ble     $a2, $t3, possible
