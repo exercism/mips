@@ -1,0 +1,13 @@
+# | Register | Usage        | Type    | Description                                    |
+# | -------- | ------------ | ------- | ---------------------------------------------- |
+# | `$a0`    | input        | address | word array with bucket capacities              |
+# | `$a1`    | input        | integer | start bucket (1 or 2)                          |
+# | `$a2`    | input        | integer | target volume                                  |
+# | `$a3`    | input/output | address | word array with final bucket contents          |
+# | `$v0`    | output       | integer | number of actions required, -1 if not possible |
+# | `$t0-9`  | temporary    | any     | used for temporary storage                     |
+
+.globl measure
+
+measure:
+        jr $ra

@@ -1,0 +1,94 @@
+# | Register | Usage        | Type    | Description                                    |
+# | -------- | ------------ | ------- | ---------------------------------------------- |
+# | `$a0`    | input        | address | word array with bucket capacities              |
+# | `$a1`    | input        | integer | start bucket (1 or 2)                          |
+# | `$a2`    | input        | integer | target volume                                  |
+# | `$a3`    | input/output | address | word array with final bucket contents          |
+# | `$v0`    | output       | integer | number of actions required, -1 if not possible |
+# | `$t1`    | temporary    | integer | 1                                              |
+# | `$t3`    | temporary    | integer | bucket one capacity                            |
+# | `$t4`    | temporary    | integer | bucket two capacity                            |
+# | `$t5`    | temporary    | integer | bucket one contents                            |
+# | `$t6`    | temporary    | integer | bucket two contents                            |
+# | `$t7`    | temporary    | integer | remainder                                      |
+
+.globl measure
+
+measure:
+        li      $t1, 1
+        lw      $t3, 0($a0)             # bucket one capacity
+        lw      $t4, 4($a0)             # bucket two capacity
+
+        move    $t6, $t3
+        move    $t7, $t4
+
+gcd_loop:
+        move    $t5, $t6
+        move    $t6, $t7
+        rem     $t7, $t5, $t6
+        bnez    $t7, gcd_loop
+
+        remu    $t7, $a2, $t6
+        bnez    $t7, not_possible       # target volume not a multiple of capacities gcd
+
+        ble     $a2, $t3, possible
+
+        ble     $a2, $t4, possible
+
+not_possible:
+        li      $v0, -1
+        jr      $ra
+
+possible:
+        beq     $a1, $t1, start
+
+        move    $t0, $t3                # Swap bucket capacities
+        move    $t3, $t4
+        move    $t4, $t0
+
+start:
+        move    $t5, $t3                # Fill bucket one
+        move    $t6, $zero
+        move    $v0, $t1
+        beq     $t5, $a2, success
+
+        bne     $t4, $a2, loop
+
+        move    $t6, $t4                # Fill bucket two
+        add     $v0, $v0, $t1
+        b       success
+
+loop:
+        sub     $t7, $t4, $t6           # Remaining capacity in bucket two
+        blt     $t7, $t5, fill_bucket_two
+
+        add     $t6, $t6, $t5           # Empty bucket one into bucket two
+        move    $t5, $zero
+        add     $v0, $v0, $t1
+        beq     $t6, $a2, success
+
+        move    $t5, $t3                # Fill bucket one
+        add     $v0, $v0, $t1
+        b       loop
+
+fill_bucket_two:
+        move    $t6, $t4
+        sub     $t5, $t5, $t7
+        add     $v0, $v0, $t1
+        beq     $t5, $a2, success
+
+        move    $t6, $zero              # Empty bucket two
+        add     $v0, $v0, $t1
+        b       loop
+
+success:
+        beq     $a1, $t1, report
+
+        move    $t0, $t5                # Swap bucket contents
+        move    $t5, $t6
+        move    $t6, $t0
+
+report:
+        sw      $t5, 0($a3)             # bucket one contents
+        sw      $t6, 4($a3)             # bucket two contents
+        jr      $ra
