@@ -1,0 +1,12 @@
+# | Register | Usage        | Type    | Description                 |
+# | -------- | ------------ | ------- | --------------------------- |
+# | `$a0`    | input        | integer | number of rows              |
+# | `$a1`    | input        | integer | number of columns           |
+# | `$a2`    | input        | address | grid for current generation |
+# | `$a3`    | input/output | address | grid for next generation    |
+# | `$t0-9`  | temporary    | any     | used for temporary storage  |
+
+.globl tick
+
+tick:
+        jr $ra
