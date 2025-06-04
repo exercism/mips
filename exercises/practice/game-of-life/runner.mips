@@ -1,0 +1,317 @@
+#
+# Test tick with some examples
+#
+# | Register | Type    | Description                             |
+# | -------- | ------- | --------------------------------------- |
+# | `$a0`    | integer | number of rows, for callee              |
+# | `$a1`    | integer | number of columns, for callee           |
+# | `$a2`    | address | array of words for current generation   |
+# | `$a3`    | address | array of words for next generation      |
+# | `$s0`    | integer | number of tests remaining               |
+# | `$s1`    | address | address for number of rows              |
+# | `$s2`    | address | address for number of columns           |
+# | `$s3`    | address | address for current generation          |
+# | `$s4`    | address | address for heap allocated memory       |
+# | `$s5`    | address | address for expected next generation    |
+
+.eqv BUFFER_SIZE 40
+
+.data
+
+# number of test cases
+n:  .word 8
+rows:  .word
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        8,
+        5
+columns:  .word
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        8,
+        32
+current:  .word
+        0x0,
+        0x2,
+        0x0,
+
+        0x0,
+        0x2,
+        0x2,
+
+        0x5,
+        0x5,
+        0x5,
+
+        0x2,
+        0x4,
+        0x6,
+
+        0x6,
+        0x0,
+        0x4,
+
+        0x7,
+        0x7,
+        0x7,
+
+        0xd8,
+        0xb0,
+        0xe7,
+        0x06,
+        0x8c,
+        0xc7,
+        0x29,
+        0x83,
+
+        0xec6efb48,
+        0xbeb23898,
+        0xed06beb6,
+        0x91205a96,
+        0x93710c2c
+
+next:  .word
+        0x0,
+        0x0,
+        0x0,
+
+        0x0,
+        0x0,
+        0x0,
+
+        0x0,
+        0x5,
+        0x0,
+
+        0x0,
+        0x4,
+        0x6,
+
+        0x0,
+        0x6,
+        0x0,
+
+        0x5,
+        0x0,
+        0x5,
+
+        0xd8,
+        0x06,
+        0xbd,
+        0x81,
+        0xc9,
+        0xd1,
+        0x80,
+        0x03,
+
+        0xa26f4d98,
+        0x01b08080,
+        0x81f702a2,
+        0x9573c200,
+        0x03f01c1e
+
+failmsg: .asciiz "failed tick from input "
+spacemsg: .asciiz " "
+expectedmsg: .asciiz ". expected "
+tobemsg: .asciiz " to be "
+okmsg: .asciiz "all tests passed"
+prefix: .asciiz "["
+comma: .asciiz ", "
+suffix: .asciiz "]"
+
+
+.text
+
+runner:
+        li      $v0, 9                  # code for allocating heap memory
+        li      $a0, BUFFER_SIZE
+        syscall
+        move    $s4, $v0                # location of allocated memory for callee to write next generation
+
+        lw      $s0, n
+        la      $s1, rows
+        la      $s2, columns
+        la      $s3, current
+        la      $s5, next
+
+run_test:
+        jal     clear_output            # zero out output location
+
+        lw      $a0, 0($s1)             # load number of rows into a0
+        lw      $a1, 0($s2)             # load number of columns into a1
+        move    $a2, $s3                # load address of current generation into a2
+        move    $a3, $s4                # load output address into a3
+        jal     tick                    # call subroutine under test
+
+check_output_list:
+        move    $a0, $s4                # actual next generation address
+        lw      $a1, 0($s1)             # number of rows
+        move    $a2, $s5                # expected next generation address
+        lw      $a3, 0($s1)             # number of rows
+        jal     check_list_match
+        bnez    $v0, exit_fail
+
+done_check:
+        lw      $t0, 0($s1)             # number of rows
+        sll     $t0, $t0, 2             # number of bytes occupied by each generation
+        add     $s3, $s3, $t0           # current generation for next test case
+        addi    $s1, $s1, 4             # increment number of rows pointer
+        addi    $s2, $s2, 4             # increment number of columns pointer
+        add     $s5, $s5, $t0           # address of expected next generation for next test case
+        subi    $s0, $s0, 1             # decrement num of tests left to run
+        bnez    $s0, run_test           # if more than zero tests to run, jump to run_test
+
+exit_ok:
+        la      $a0, okmsg              # put address of okmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        li      $v0, 10                 # 10 is exit with zero status (clean exit)
+        syscall
+
+exit_fail:
+        la      $a0, failmsg            # put address of failmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s1)             # load input number of rows that failed on
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        lw      $a0, 0($s2)             # load input number of columns that failed on
+        li      $v0, 1                  # 1 is print integer
+        syscall
+
+        la      $a0, spacemsg           # put address of spacemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s3                # current generation
+        lw      $a1, 0($s1)             # number of rows
+        jal     print_array
+
+        la      $a0, expectedmsg        # put address of expectedmsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s4                # actual next generation
+        lw      $a1, 0($s1)             # number of rows
+        jal     print_array
+
+        la      $a0, tobemsg            # put address of tobemsg into a0
+        li      $v0, 4                  # 4 is print string
+        syscall
+
+        move    $a0, $s5                # expected next generation
+        lw      $a1, 0($s1)             # number of rows
+        jal     print_array
+
+        li      $a0, 1                  # set error code to 1
+        li      $v0, 17                 # 17 is exit with error
+        syscall
+
+
+clear_output:
+                                        # zero out output by storing zeros
+        addi    $t0, $s4, BUFFER_SIZE   # pointer to end of output buffer
+
+clear:
+        subi    $t0, $t0, 4             # decrement pointer
+        sw      $zero, 0($t0)           # store a 0 word
+        bne     $t0, $s4, clear         # repeat util we have reached the start of the buffer
+        jr      $ra
+
+
+check_list_match:
+                                        # checks if list with address $a0, word count $a1
+                                        # exact match for list with address $a2, word count $a3
+                                        # return 0 in $v0 iff the lists match
+        bne     $a1, $a3, no_match      # if the actual output length differs, the lists do not match
+        beqz    $a3, confirm_match
+
+        move    $t1, $a1
+        sll     $t1, $t1, 2             # number of bytes occupied by each list
+        add     $t1, $a2, $t1           # end of second list
+
+compare_digits:
+        lw      $t0, 0($a0)             # load element from first list
+        lw      $t2, 0($a2)             # load element from second list
+        bne     $t0, $t2, no_match
+        addi    $a0, $a0, 4             # advance pointer into first list
+        addi    $a2, $a2, 4             # advance pointer into second list
+        bne     $a2, $t1, compare_digits # repeat while there are more list elements
+
+confirm_match:
+        li      $v0, 0
+        jr      $ra
+
+no_match:
+        li      $v0, 1
+        jr      $ra
+
+
+print_array:
+                                        # print array with address $a0, word count $a1
+                                        # local variable s0 points to current element
+                                        # local variable s1 point to end of array
+
+        bltz    $a1, negative_count
+
+        addi    $sp, $sp, -8            # Save existing values of $s0 and $s3
+        sw      $s0, 4($sp)
+        sw      $s3, 0($sp)
+
+        move    $s0, $a0                # first element of array
+        sll     $s3, $a1, 2             # length of array, in bytes
+        add     $s3, $a0, $s3           # pointer to end of array
+
+        la      $a0, prefix             # print prefix
+        li      $v0, 4
+        syscall
+
+        beq     $s0, $s3, output_suffix # jump ahead if array is empty
+        j       output_element          # first element is not preceeded by comma
+
+output_comma:
+        la      $a0, comma
+        li      $v0, 4
+        syscall
+
+output_element:
+        lw      $a0, 0($s0)             # load element value
+        addi    $s0, $s0, 4             # increment pointer
+        li      $v0, 34                 # 34 -> "print hexadecimal integer"
+        syscall
+
+        bne     $s0, $s3, output_comma  # repeat until we reach end of array
+
+output_suffix:
+        la      $a0, suffix
+        li      $v0, 4
+        syscall
+
+        lw      $s3, 0($sp)             # Restore original values of $s0 and $s3
+        lw      $s0, 4($sp)
+        addi    $sp, $sp, 8
+        jr      $ra
+
+negative_count:
+        move    $a0, $a1
+        li      $v0, 1                  # 1 -> "print integer"
+        syscall
+        jr      $ra
+
+# # Include your implementation here if you wish to run this from the MARS GUI.
+#.include "impl.mips"

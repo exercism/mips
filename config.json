@@ -546,6 +546,14 @@
         "difficulty": 7
       },
       {
+        "slug": "game-of-life",
+        "name": "Conway's Game of Life",
+        "uuid": "4b746565-2b18-43b3-8fdb-2706265baa62",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 7
+      },
+      {
         "slug": "nth-prime",
         "name": "Nth Prime",
         "uuid": "cb17b1c8-5559-41bc-ac4f-12bce61d8745",
