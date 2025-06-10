@@ -1,0 +1,98 @@
+# | Register | Usage        | Type    | Description                     |
+# | -------- | ------------ | ------- | ------------------------------- |
+# | `$a0`    | input        | integer | number of rows                  |
+# | `$a1`    | input        | integer | number of columns               |
+# | `$a2`    | input        | address | grid for current generation     |
+# | `$a3`    | input/output | address | grid for next generation        |
+# | `$t0`    | temporary    | integer | previous row, shifted           |
+# | `$t1`    | temporary    | integer | current row, shifted            |
+# | `$t2`    | temporary    | integer | next row, shifted               |
+# | `$t3`    | temporary    | bit     | curent cell                     |
+# | `$t4`    | temporary    | bit     | next cell                       |
+# | `$t5`    | temporary    | integer | number of alive neighbours      |
+# | `$t6`    | temporary    | integer | 3-row total for current column  |
+# | `$t7`    | temporary    | integer | 3-row total for next column     |
+# | `$v0`    | temporary    | integer | row for output                  |
+# | `$v1`    | temporary    | integer | current column                  |
+# | `$s0`    | temporary    | integer | previous row                    |
+# | `$s1`    | temporary    | integer | current row                     |
+# | `$s2`    | temporary    | integer | next row                        |
+# | `$s3`    | temporary    | integer | 3                               |
+
+.globl tick
+
+tick:
+        subi    $sp, $sp, 16            # preserve original register values on stack
+        sw      $s0, 0($sp)
+        sw      $s1, 4($sp)
+        sw      $s2, 8($sp)
+        sw      $s3, 12($sp)
+        beqz    $a0, return             # 0 rows?
+
+        li      $s3, 3
+        move    $s1, $zero
+        lw      $s2, 0($a2)             # read first row
+        addi    $a2, $a2, 4 
+
+outer:
+        subi    $a0, $a0, 1
+        move    $s0, $s1                # previous row
+        move    $s1, $s2                # current row
+        move    $s2, $zero
+        beqz    $a0, process_row
+
+        lw      $s2, 0($a2)             # read next row
+        addi    $a2, $a2, 4 
+
+process_row:
+        move    $v0, $zero
+        move    $v1, $zero
+        move    $t0, $s0
+        move    $t1, $s1
+        move    $t2, $s2
+        move    $t6, $zero
+
+        andi    $t7, $t0, 1
+        andi    $t4, $t2, 1
+        add     $t7, $t7, $t4
+        andi    $t4, $t1, 1             # first cell 
+        add     $t7, $t7, $t4
+
+        beqz    $a1, write              # zero columns?
+
+inner:
+        srl     $t0, $t0, 1             # previous row, shifted
+        srl     $t1, $t1, 1             # current row, shifted
+        srl     $t2, $t2, 1             # next row, shifted
+        move    $t3, $t4                # current cell
+        add     $t5, $t6, $t7
+        move    $t6, $t7                # total for current column across 3 rows
+
+        andi    $t7, $t0, 1
+        andi    $t4, $t2, 1
+        add     $t7, $t7, $t4
+        andi    $t4, $t1, 1             # next cell
+        add     $t7, $t7, $t4
+
+        add     $t5, $t5, $t7
+        sub     $t5, $t5, $t3           # total of 8 neighbours
+        or      $t5, $t5, $t3           # if current cell is alive, treat 2 alive neighbours as 3
+        seq     $t5, $t5, $s3           # 1 if 3 neighbours, otherwise 0
+
+        sllv    $t5, $t5, $v1
+        or      $v0, $v0, $t5
+        addi    $v1, $v1, 1
+        bne     $v1, $a1, inner         # remaining columns?
+
+write:
+        sw      $v0, 0($a3)             # write row
+        addi    $a3, $a3, 4 
+        bnez    $a0, outer              # remaining rows?
+
+return:
+        lw      $s3, 12($sp)             # restore original register values
+        lw      $s2, 8($sp)
+        lw      $s1, 4($sp)
+        lw      $s0, 0($sp)
+        addi    $sp, $sp, 16
+        jr      $ra
