@@ -538,6 +538,14 @@
         "difficulty": 6
       },
       {
+        "slug": "yacht",
+        "name": "Yacht",
+        "uuid": "57637481-d670-4d8d-ba5a-58c6988ed874",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "crypto-square",
         "name": "Crypto Square",
         "uuid": "de268eb1-66a8-4094-b19f-25da515fb7ac",
