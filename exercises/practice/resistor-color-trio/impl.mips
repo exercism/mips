@@ -1,0 +1,12 @@
+# | Register | Usage        | Type    | Description                            |
+# | -------- | ------------ | ------- | -------------------------------------- |
+# | `$a0`    | input        | address | first color as null-terminated string  |
+# | `$a1`    | input        | address | second color as null-terminated string |
+# | `$a2`    | input        | address | third color as null-terminated string  |
+# | `$a3`    | input/output | address | null-terminated output string          |
+# | `$t0-9`  | temporary    | any     | used for temporary storage             |
+
+.globl label
+
+label:
+        jr      $ra

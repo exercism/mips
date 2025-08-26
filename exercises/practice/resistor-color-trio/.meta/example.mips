@@ -1,0 +1,170 @@
+# | Register | Usage        | Type    | Description                            |
+# | -------- | ------------ | ------- | -------------------------------------- |
+# | `$a0`    | input        | address | first color as null-terminated string  |
+# | `$a1`    | input        | address | second color as null-terminated string |
+# | `$a2`    | input        | address | third color as null-terminated string  |
+# | `$a3`    | input/output | address | null-terminated output string          |
+# | `$t0-9`  | temporary    | any     | used for temporary storage             |
+
+.globl label
+
+.data
+
+ohms:     .asciiz " ohms"
+kiloohms: .asciiz " kiloohms"
+megaohms: .asciiz " megaohms"
+gigaohms: .asciiz " gigaohms"
+
+units:
+        .word ohms
+        .word kiloohms
+        .word megaohms
+        .word gigaohms
+
+
+.text
+
+label:
+        move    $t2, $ra
+        jal     color_code              # puts color-code value of first input in $v0
+        addi    $t3, $v0, '0'
+        move    $t5, $v0
+
+        move    $a0, $a1
+        jal     color_code              # puts color-code value of second input in $v0
+        addi    $t4, $v0, '0'
+        move    $t6, $v0
+
+        move    $a0, $a2
+        jal     color_code              # puts color-code value of third input in $v0
+        addi    $v0, $v0, 1
+        li      $a1, 3
+        div     $v0, $a1                # Divide (third color value + 1) by 3
+        mflo    $a0                     # Quotient
+        mfhi    $a1                     # Remainder
+
+        beqz    $a1, divide
+
+        beqz    $t5, skip_first
+
+        sb      $t3, 0($a3)             # digit for first input
+        addi    $a3, $a3, 1
+
+skip_first:
+        sb      $t4, 0($a3)             # digit for second input
+        addi    $a3, $a3, 1
+
+        li      $t3, 1
+        beq     $a1, $t3, append_units
+
+        li      $t4, '0'
+        sb      $t4, 0($a3)
+        addi    $a3, $a3, 1
+        b       append_units
+
+divide:
+        sb      $t3, 0($a3)             # digit for first input
+        addi    $a3, $a3, 1
+
+        beqz    $t6, append_units
+
+        li      $t3, '.'
+        sb      $t3, 0($a3)
+        addi    $a3, $a3, 1
+
+        sb      $t4, 0($a3)             # digit for second input
+        addi    $a3, $a3, 1
+
+append_units:
+        la      $t6, units
+        sll     $a0, $a0, 2
+        add     $a0, $t6, $a0
+        lw      $a0, 0($a0)             # read from units
+        move    $a1, $a3                # output
+
+string_copy:
+                                        # copy null-terminated string from $a0 to $a1
+                                        # return pointers to null terminator at end of output
+        lb      $v0, 0($a0)             # read byte from source
+        addi    $a0, $a0, 1             # increment source pointer
+        sb      $v0, 0($a1)             # write byte to destination
+        addi    $a1, $a1, 1             # increment destination pointer
+        bnez    $v0, string_copy        # repeat until null terminator
+        addi    $a1, $a1, -1            # return pointer to null terminator at end of output
+        move    $v0, $a1
+        jr      $t2
+
+
+# From resistor-color exercise:
+# $a0 - input, pointer to null-terminated color code string
+# $v0 - output, numeric value
+# $t0 - character from input string
+# $t1 - known color code character for comparison
+color_code:
+        lb      $t0, 0($a0)             # load first byte
+        li      $t1, 'b'
+        beq     $t0, $t1, black_brown_blue
+        li      $t1, 'g'
+        beq     $t0, $t1, green_grey
+        li      $t1, 'r'
+        ble     $t0, $t1, orange_red
+        li      $t1, 'v'
+        beq     $t0, $t1, violet
+        li      $t1, 'w'
+        beq     $t0, $t1, white
+
+yellow:
+        li      $v0, 4
+        jr      $ra
+
+black_brown_blue:
+        lb      $t0, 2($a0)             # load third byte
+        li      $t1, 'a'
+        beq     $t0, $t1, black
+        li      $t1, 'o'
+        beq     $t0, $t1, brown
+
+blue:
+        li      $v0, 6
+        jr      $ra
+
+green_grey:
+        lb      $t0, 3($a0)             # load fourth byte
+        li      $t1, 'e'
+        beq     $t0, $t1, green
+
+grey:
+        li      $v0, 8
+        jr      $ra
+
+orange_red:
+        li      $t1, 'o'
+        beq     $t0, $t1, orange
+
+red:
+        li      $v0, 2
+        jr      $ra
+
+violet:
+        li      $v0, 7
+        jr      $ra
+
+white:
+        li      $v0, 9
+        jr      $ra
+
+black:
+        li      $v0, 0
+        jr      $ra
+
+brown:
+        li      $v0, 1
+        jr      $ra
+
+green:
+        li      $v0, 5
+        jr      $ra
+
+orange:
+        li      $v0, 3
+        jr      $ra

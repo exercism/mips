@@ -256,14 +256,6 @@
         "difficulty": 3
       },
       {
-        "slug": "resistor-color",
-        "name": "Resistor Color",
-        "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
-        "practices": [],
-        "prerequisites": [],
-        "difficulty": 3
-      },
-      {
         "slug": "rna-transcription",
         "name": "RNA Transcription",
         "uuid": "e7a3845a-2f5a-455a-9158-0a7d1c1d5979",
@@ -345,6 +337,30 @@
         "topics": [
           "math"
         ]
+      },
+      {
+        "slug": "resistor-color",
+        "name": "Resistor Color",
+        "uuid": "8e6980a8-89d4-4415-bd1e-13663cf5144a",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
+        "slug": "resistor-color-duo",
+        "name": "Resistor Color Duo",
+        "uuid": "d1b59c94-2b34-4f4d-82c5-6291407dc77b",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
+      },
+      {
+        "slug": "resistor-color-trio",
+        "name": "Resistor Color Trio",
+        "uuid": "31f938ae-41d6-4e40-b15e-bc2460f9e340",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 4
       },
       {
         "slug": "roman-numerals",
@@ -430,14 +446,6 @@
         "slug": "raindrops",
         "name": "Raindrops",
         "uuid": "d294d722-8ea2-461e-86d8-0fecb6c5637a",
-        "practices": [],
-        "prerequisites": [],
-        "difficulty": 5
-      },
-      {
-        "slug": "resistor-color-duo",
-        "name": "Resistor Color Duo",
-        "uuid": "d1b59c94-2b34-4f4d-82c5-6291407dc77b",
         "practices": [],
         "prerequisites": [],
         "difficulty": 5
