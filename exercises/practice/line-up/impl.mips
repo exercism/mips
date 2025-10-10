@@ -1,0 +1,11 @@
+# | Register | Usage        | Type    | Description                   |
+# | -------- | ------------ | ------- | ----------------------------- |
+# | `$a0`    | input        | address | null-terminated name string   |
+# | `$a1`    | input        | integer | number                        |
+# | `$a2`    | input/output | address | null-terminated result string |
+# | `$t0-9`  | temporary    | any     | for temporary storage         |
+
+.globl format
+
+format:
+        jr $ra
