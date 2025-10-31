@@ -15,7 +15,7 @@
 .data
 
 # number of test cases
-n:  .word 12
+n:  .word 13
 # input values
 ins:  .ascii
         "\0",
@@ -65,7 +65,9 @@ ins:  .ascii
         "    * \n",
         "   * *\n",
         " *  * \n",
-        "      \n\0"
+        "      \n\0",
+
+        " ** \n\0"
 # expected output values
 outs:  .ascii
         "\0",
@@ -115,7 +117,9 @@ outs:  .ascii
         " 123*2\n",
         "112*4*\n",
         "1*22*2\n",
-        "111111\n\0"
+        "111111\n\0",
+
+        "1**1\n\0"
 
 failmsg: .asciiz "failed for test input:\n"
 expectedmsg: .asciiz "expected\n"
