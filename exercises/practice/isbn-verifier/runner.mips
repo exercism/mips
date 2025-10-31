@@ -10,8 +10,8 @@
 .data
 
 # number of test cases
-n:  .word 19
-# input values (null terminated) & expected output values (word sized ints)
+n:  .word 21
+# input values (null terminated)
 ins:  .asciiz
         "3-598-21508-8",
         "3-598-21508-9",
@@ -20,6 +20,8 @@ ins:  .asciiz
         "4-598-21507-B",
         "3-598-P1581-X",
         "3-598-2X507-9",
+        "3-598-21508-96",
+        "3-598-2X507-5",
         "3598215088",
         "359821507X",
         "359821507",
@@ -32,11 +34,13 @@ ins:  .asciiz
         "3132P34035",
         "3598P215088",
         "98245726788"
-
+# expected output values (word sized ints)
 outs:  .word
         1,
         0,
         1,
+        0,
+        0,
         0,
         0,
         0,
