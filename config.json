@@ -562,6 +562,14 @@
         "difficulty": 6
       },
       {
+        "slug": "state-of-tic-tac-toe",
+        "name": "State of Tic-Tac-Toe",
+        "uuid": "c7ac5345-8f88-4dc1-835b-6987766e131e",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "yacht",
         "name": "Yacht",
         "uuid": "57637481-d670-4d8d-ba5a-58c6988ed874",

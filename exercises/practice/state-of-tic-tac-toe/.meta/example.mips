@@ -1,0 +1,107 @@
+# | Register | Usage        | Type    | Description                                                             |
+# | -------- | ------------ | ------- | ----------------------------------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated input string                                            |
+# | `$v0`    | output       | integer | game state (`1` = `ongoing`, `2` = `draw`, `3` = `win`, `-1` = `error`) |
+# | `$t0`    | temporary    | integer | bitset representing X marks on board                                    |
+# | `$t1`    | temporary    | integer | bitset representing O marks on board                                    |
+# | `$t2`    | temporary    | integer | number of X marks on board / X win                                      |
+# | `$t3`    | temporary    | integer | number of O marks on board / O win                                      |
+# | `$t4`    | temporary    | any     | grid entry                                                              |
+# | `$t5`    | temporary    | integer |                                                                         |
+# | `$t6`    | temporary    | integer | number of marks on board                                                |
+# | `$t7`    | temporary    | address | lines array                                                             |
+# | `$t8`    | temporary    | char    | 'X'                                                                     |
+# | `$t9`    | temporary    | char    | 'O'                                                                     |
+
+.eqv ONGOING   1
+.eqv DRAW      2
+.eqv WIN       3
+.eqv INVALID  -1
+
+.globl gamestate
+
+.data
+
+# bitsets representing horizontal, vertical and diagonal lines
+lines: .half  0x00e, 0x0e0, 0xe00, 0x222, 0x444, 0x888, 0x248, 0x842, 0
+
+.text
+
+# extern int gamestate(const char *board);
+gamestate:
+        la      $t7, lines
+        li      $t8, 'X'
+        li      $t9, 'O'
+        move    $t0, $zero              # bitset representing X marks on board
+        move    $t1, $zero              # bitset representing O marks on board
+        move    $t2, $zero              # number of X marks on board
+        move    $t3, $zero              # number of O marks on board
+        j       .read
+
+.update:
+        sll     $t0, $t0, 1
+        sll     $t1, $t1, 1
+        beq     $t4, $t8, .x
+        bne     $t4, $t9, .read
+
+.o:
+        ori     $t1, $t1, 1
+        addi    $t3, $t3, 1
+        j       .read
+
+.x:
+        ori     $t0, $t0, 1
+        addi    $t2, $t2, 1
+
+.read:
+        lb      $t4, 0($a0)             # read board
+        addi    $a0, $a0, 1
+        bnez    $t4, .update
+
+        add     $t6, $t2, $t3           # number of marks
+
+        bgt     $t3, $t2, .invalid      # number of O marks > number of X marks
+
+        addi    $t3, $t3, 1
+        bgt     $t2, $t3, .invalid      # number of X marks > 1 + number of O
+
+        move    $t2, $zero              # found win for X?
+        move    $t3, $zero              # found win for O?
+
+.read_line:
+        lh      $t4, 0($t7)             # read from lines
+        addi    $t7, $t7, 2
+        beqz    $t4, .report
+
+        and     $t5, $t0, $t4
+        xor     $t5, $t5, $t4
+        sltiu   $t5, $t5, 1
+        or      $t2, $t2, $t5
+
+        and     $t5, $t1, $t4
+        xor     $t5, $t5, $t4
+        sltiu   $t5, $t5, 1
+        or      $t3, $t3, $t5
+        j       .read_line
+
+.report:
+        or      $t4, $t2, $t3           # has either player won?
+        bnez    $t4, .win
+
+        addi    $t6, $t6, -9
+        sltiu   $v0, $t6, 1
+        addi    $v0, $v0, 1             # DRAW 2 if board is full, ONGOING 1 otherwise
+        jr      $ra
+
+.win:
+        beq     $t2, $t3, .invalid
+
+        andi    $t5, $t6, 1             # 1 if X made the last move
+        bne     $t2, $t5, .invalid
+
+        li      $v0, WIN
+        jr      $ra
+
+.invalid:
+        li      $v0, INVALID
+        jr      $ra
