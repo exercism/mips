@@ -1,0 +1,9 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage        | Type    | Description                            |
+| -------- | ------------ | ------- | -------------------------------------- |
+| `$a0`    | input        | address | null-terminated question string        |
+| `$v0`    | output       | integer | result, 0 if the question is not valid |
+| `$t0-9`  | temporary    | any     | for temporary storage                  |
