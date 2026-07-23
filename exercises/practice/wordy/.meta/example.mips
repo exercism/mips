@@ -1,0 +1,142 @@
+# | Register | Usage        | Type    | Description                                   |
+# | -------- | ------------ | ------- | --------------------------------------------- |
+# | `$a0`    | input        | address | null-terminated question string               |
+# | `$a1`    | temporary    | address | `read_word` input: array of pointers to words |
+# | `$a2`    | temporary    | integer | `read_word` matched id                        |
+# | `$a3`    | temporary    | integer | `read_number` input base: 10                  |
+# | `$v0`    | output       | integer | result, 0 if the question is not valid        |
+# | `$v1`    | temporary    | integer | `read_number` output: the number just read    |
+# | `$t0`    | temporary    | integer | `read_number` negative flag                   |
+# | `$t2`    | temporary    | integer | input character                               |
+# | `$t3`    | temporary    | integer | `read_word` word character                    |
+# | `$t4`    | temporary    | address | `read_word` start of input                    |
+# | `$t5`    | temporary    | address | `read_word` cursor into the current word      |
+# | `$t6`    | temporary    | integer | MULTIPLIED_BY                                 |
+# | `$t7`    | temporary    | integer | DIVIDED_BY                                    |
+# | `$t8`    | temporary    | integer | MINUS                                         |
+# | `$t9`    | temporary    | address | return address of `answer`                    |
+
+.eqv WHAT_IS 0
+.eqv QUESTION_MARK 0
+.eqv PLUS 4
+.eqv MINUS 8
+.eqv MULTIPLIED_BY 12
+.eqv DIVIDED_BY 16
+
+.data
+what_is:        .asciiz "What is "
+plus:           .asciiz " plus "
+minus:          .asciiz " minus "
+multiplied_by:  .asciiz " multiplied by "
+divided_by:     .asciiz " divided by "
+question_mark:  .asciiz "?"
+
+word_array:
+                .word what_is
+                .word 0
+                .word question_mark
+                .word plus
+                .word minus
+                .word multiplied_by
+                .word divided_by
+                .word 0
+
+.text
+.globl answer
+
+
+read_word:
+        move    $t4, $a0                  # remember start of input
+        move    $a2, $a1                  # cursor into the array of words
+
+.next:
+        lw      $t5, 0($a2)               # load pointer to word
+        beqz    $t5, reject
+
+        move    $a0, $t4                  # rewind input
+
+.compare:
+        lb      $t3, 0($t5)               # load word character
+        addi    $t5, $t5, 1
+        beqz    $t3, .match
+
+        lb      $t2, 0($a0)               # load input character
+        addi    $a0, $a0, 1
+        beq     $t2, $t3, .compare
+
+        addi    $a2, $a2, 4
+        j       .next
+
+.match:
+        sub     $a2, $a2, $a1             # id of the matched word
+        jr      $ra
+
+
+read_number:
+        lb      $t2, 0($a0)
+        addi    $t0, $t2, -45             # '-'
+        sltiu   $t0, $t0, 1               # 0 for positive, 1 for negative
+        add     $a0, $a0, $t0             # increment input pointer past leading '-'
+
+        move    $v1, $zero                # value of digits so far
+        lb      $t2, 0($a0)
+        addi    $t2, $t2, -48             # '0'
+        bgeu    $t2, $a3, reject
+
+.accept_digit:
+        addi    $a0, $a0, 1
+        mul     $v1, $a3, $v1
+        add     $v1, $v1, $t2
+        lb      $t2, 0($a0)
+        addi    $t2, $t2, -48             # '0'
+        bltu    $t2, $a3, .accept_digit
+
+        beqz    $t0, .return_number
+
+        neg     $v1, $v1
+
+.return_number:
+        jr      $ra
+
+
+answer:
+        li      $a3, 10
+        li      $t6, MULTIPLIED_BY
+        li      $t7, DIVIDED_BY
+        li      $t8, MINUS
+        move    $t9, $ra                  # return address
+
+        la      $a1, word_array
+        jal     read_word                 # Read "What is ", leaving WHAT_IS in $a2
+        addi    $a1, $a1, 8               # from now on, the words are operations
+        move    $v0, $zero
+
+.read_operand:
+        jal     read_number
+        beq     $a2, $t6, .multiply
+        beq     $a2, $t7, .divide
+        bne     $a2, $t8, .add            # PLUS or WHAT_IS
+
+        neg     $v1, $v1
+
+.add:
+        add     $v0, $v0, $v1
+
+.read_operation:
+        jal     read_word
+        bnez    $a2, .read_operand        # QUESTION_MARK is 0
+
+.success:
+        jr      $t9
+
+.multiply:
+        mul     $v0, $v0, $v1
+        j       .read_operation
+
+.divide:
+        div     $v0, $v0, $v1
+        j       .read_operation
+
+reject:
+        move    $v0, $zero
+        jr      $t9
