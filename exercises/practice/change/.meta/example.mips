@@ -1,0 +1,86 @@
+# | Register | Usage        | Type    | Description                                 |
+# | -------- | ------------ | ------- | ------------------------------------------- |
+# | `$a0`    | input        | integer | number of input coins                       |
+# | `$a0`    | temporary    | address | end of input coins                          |
+# | `$a1`    | input        | integer | target                                      |
+# | `$a2`    | input/output | address | overwritable array of coin words            |
+# | `$a2`    | temporary    | address | output pointer                              |
+# | `$v0`    | temporary    | integer | fewest coins for the index, -1 if unpayable |
+# | `$v0`    | output       | integer | number of output coins, -1 if input invalid |
+# | `$v1`    | temporary    | integer | coin that achieves the fewest coins         |
+# | `$t0`    | temporary    | integer | index into the table                        |
+# | `$t2`    | temporary    | address | pointer into the input coins                |
+# | `$t3`    | temporary    | integer | coin                                        |
+# | `$t4`    | temporary    | integer | count of coins                              |
+# | `$t5`    | temporary    | address | address within the table                    |
+# | `$t7`    | temporary    | integer | size of the stack frame, in bytes           |
+
+.eqv UNREACHABLE_TARGET -1
+
+.globl find_fewest_coins
+
+find_fewest_coins:
+        blt     $a1, $zero, negative_target
+
+        sll     $a0, $a0, 2
+        add     $a0, $a2, $a0           # end of input coins
+        addi    $t7, $a1, 1
+        sll     $t7, $t7, 3             # table size in bytes
+        move    $v0, $zero
+        sub     $sp, $sp, $t7
+        beqz    $a1, return
+
+        sw      $zero, 0($sp)
+        li      $t0, 1                  # index into table
+
+table_do:
+        li      $v0, -2                 # best count, less one
+        move    $t2, $a2                # pointer into coins
+        beq     $t2, $a0, coins_done
+
+coins_do:
+        lw      $t3, 0($t2)             # coin
+        sub     $t5, $t0, $t3
+        blt     $t5, $zero, coins_while
+
+        sll     $t5, $t5, 3
+        add     $t5, $sp, $t5
+        lw      $t4, 0($t5)
+        bgeu    $t4, $v0, coins_while
+
+        move    $v0, $t4
+        move    $v1, $t3                # best coin
+
+coins_while:
+        addi    $t2, $t2, 4
+        bne     $t2, $a0, coins_do
+
+coins_done:
+        addi    $v0, $v0, 1             # best count, -1 if unpayable
+        sll     $t5, $t0, 3
+        add     $t5, $sp, $t5
+        sw      $v0, 0($t5)
+        sw      $v1, 4($t5)
+
+table_while:
+        addi    $t0, $t0, 1
+        bleu    $t0, $a1, table_do
+
+        blt     $v0, $zero, return
+
+target_do:
+        sll     $t5, $a1, 3
+        add     $t5, $sp, $t5
+        lw      $v1, 4($t5)             # coin
+        sub     $a1, $a1, $v1           # target -= coin
+        sw      $v1, 0($a2)
+        addi    $a2, $a2, 4
+        bnez    $a1, target_do
+
+return:
+        add     $sp, $sp, $t7
+        jr      $ra
+
+negative_target:
+        li      $v0, UNREACHABLE_TARGET
+        jr      $ra
