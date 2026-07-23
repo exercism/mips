@@ -1,0 +1,145 @@
+# | Register | Usage     | Type    | Description                 |
+# | -------- | --------- | ------- | --------------------------- |
+# | `$a0`    | input     | address | array of book words         |
+# | `$a1`    | input     | integer | number of books             |
+# | `$v0`    | output    | integer | price, in cents             |
+# | `$t0-9`  | temporary | any     | used for temporary storage  |
+
+.globl total
+
+
+# void count(const uint32_t *basket, size_t basket_count, uint16_t *tally);
+count:
+        sll     $a1, $a1, 2               # number of bytes occupied by array
+        beqz    $a1, .return
+
+.loop:
+        addi    $a1, $a1, -4
+        add     $t5, $a0, $a1
+        lw      $t0, 0($t5)               # book
+        sll     $t0, $t0, 1
+        add     $t5, $a2, $t0
+        lhu     $t1, 0($t5)
+        addi    $t1, $t1, 1               # increment tally
+        sh      $t1, 0($t5)
+        bnez    $a1, .loop
+
+.return:
+        jr      $ra
+
+
+
+# void sort(uint16_t *tally)
+sort:
+        addi    $t0, $a0, 4
+        addi    $t1, $a0, 12              # offsets 4..10 for books 2..5
+
+.outer:
+        lhu     $t2, 0($t0)
+        addi    $t3, $t0, -2
+
+.inner:
+        lhu     $t4, 0($t3)
+        bge     $t4, $t2, .exit
+
+        sh      $t4, 2($t3)
+        addi    $t3, $t3, -2
+        bne     $t3, $a0, .inner
+
+.exit:
+        sh      $t2, 2($t3)
+        addi    $t0, $t0, 2
+        bne     $t0, $t1, .outer
+
+        jr      $ra
+
+
+# void difference(uint16_t *tally);
+difference:
+        lh      $t0, 10($a0)
+        lh      $t1, 8($a0)
+        sub     $t3, $t1, $t0
+        sh      $t3, 8($a0)               # tally[4] - tally[5]
+
+        lh      $t0, 6($a0)
+        sub     $t3, $t0, $t1
+        sh      $t3, 6($a0)               # tally[3] - tally[4]
+
+        lh      $t1, 4($a0)
+        sub     $t3, $t1, $t0
+        sh      $t3, 4($a0)               # tally[2] - tally[3]
+
+        lh      $t0, 2($a0)
+        sub     $t3, $t0, $t1
+        sh      $t3, 2($a0)               # tally[1] - tally[2]
+        jr      $ra
+
+
+# void adjust(uint16_t *tally);
+adjust:
+        lhu     $t0, 6($a0)
+        lhu     $t1, 8($a0)
+        lhu     $t2, 10($a0)
+
+        move    $t3, $t0
+        bgeu    $t2, $t0, .adjust
+
+        move    $t3, $t2
+
+.adjust:
+        sub     $t0, $t0, $t3
+        sh      $t0, 6($a0)
+        add     $t1, $t1, $t3
+        add     $t1, $t1, $t3
+        sh      $t1, 8($a0)
+        sub     $t2, $t2, $t3
+        sh      $t2, 10($a0)
+
+        jr      $ra
+
+
+# uint32_t score(uint16_t *tally);
+score:
+        lhu     $t1, 2($a0)
+        li      $t0, 800                  # price of 1 book
+        mul     $t2, $t0, $t1
+
+        lhu     $t1, 4($a0)
+        li      $t0, 1520                 # price of 2 books
+        mul     $t3, $t0, $t1
+        add     $t2, $t2, $t3
+
+        lhu     $t1, 6($a0)
+        li      $t0, 2160                 # price of 3 books
+        mul     $t3, $t0, $t1
+        add     $t2, $t2, $t3
+
+        lhu     $t1, 8($a0)
+        li      $t0, 2560                 # price of 4 books
+        mul     $t3, $t0, $t1
+        add     $t2, $t2, $t3
+
+        lhu     $t1, 10($a0)
+        li      $t0, 3000                 # price of 5 books
+        mul     $t3, $t0, $t1
+        add     $v0, $t2, $t3
+
+        jr      $ra
+
+
+# extern uint32_t total(const uint32_t *basket, size_t basket_count);
+total:
+        move    $t6, $ra
+        addi    $sp, $sp, -16
+        sw      $zero, 0($sp)
+        sw      $zero, 4($sp)
+        sw      $zero, 8($sp)
+        move    $a2, $sp
+        jal     count
+        move    $a0, $a2
+        jal     sort
+        jal     difference
+        jal     adjust
+        jal     score
+        addi    $sp, $sp, 16
+        jr      $t6

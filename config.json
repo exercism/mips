@@ -610,6 +610,14 @@
         ]
       },
       {
+        "slug": "book-store",
+        "name": "Book Store",
+        "uuid": "f6c63da4-7c49-4c3b-b77e-4f78ca373f1c",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 8
+      },
+      {
         "slug": "flower-field",
         "name": "Flower Field",
         "uuid": "86e3409c-2093-43c3-8c9b-f0d567428e05",

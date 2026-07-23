@@ -1,0 +1,10 @@
+# Instructions append
+
+## Registers
+
+| Register | Usage     | Type    | Description                 |
+| -------- | --------- | ------- | --------------------------- |
+| `$a0`    | input     | address | array of book words         |
+| `$a1`    | input     | integer | number of books             |
+| `$v0`    | output    | integer | price, in cents             |
+| `$t0-9`  | temporary | any     | used for temporary storage  |
