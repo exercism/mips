@@ -546,6 +546,14 @@
         "difficulty": 6
       },
       {
+        "slug": "ocr-numbers",
+        "name": "OCR Numbers",
+        "uuid": "75f8a273-b25c-4e51-84fa-46b9a71fc431",
+        "practices": [],
+        "prerequisites": [],
+        "difficulty": 6
+      },
+      {
         "slug": "pascals-triangle",
         "name": "Pascal's Triangle",
         "uuid": "4bf78b97-f958-4327-bdbb-f36dcd6c7f15",

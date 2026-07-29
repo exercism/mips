@@ -1,0 +1,14 @@
+# Instructions append
+
+## Grid format
+
+The grid is represented as a null-terminated string, with a newline character at the end of each row.
+
+## Registers
+
+| Register | Usage        | Type    | Description                                                               |
+| -------- | ------------ | ------- | ------------------------------------------------------------------------- |
+| `$a0`    | input        | address | null-terminated input string                                              |
+| `$a1`    | input/output | address | null-terminated result string, empty if grid dimensions invalid           |
+| `$v0`    | output       | integer | grid status (`0` = `ok`, `-1` = `invalid columns`, `-2` = `invalid rows`) |
+| `$t0-9`  | temporary    | any     | for temporary storage                                                     |
