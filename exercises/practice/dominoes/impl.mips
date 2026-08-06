@@ -1,0 +1,11 @@
+# | Register | Usage     | Type    | Description                                      |
+# | -------- | --------- | ------- | ------------------------------------------------ |
+# | `$a0`    | input     | address | array of stone bytes                             |
+# | `$a1`    | input     | integer | number of stones                                 |
+# | `$v0`    | output    | boolean | dominoes can chain (`0` = `false`, `1` = `true`) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                       |
+
+.globl can_chain
+
+can_chain:
+        jr $ra

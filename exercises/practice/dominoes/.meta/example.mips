@@ -1,0 +1,152 @@
+# | Register | Usage     | Type    | Description                                      |
+# | -------- | --------- | ------- | ------------------------------------------------ |
+# | `$a0`    | input     | address | array of stone bytes                             |
+# | `$a1`    | input     | integer | number of stones                                 |
+# | `$v0`    | output    | boolean | dominoes can chain (`0` = `false`, `1` = `true`) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                       |
+
+.globl can_chain
+
+init_parents:
+        li      $t0, 64
+        move    $t1, $zero
+
+.init_parent:
+        add     $t2, $a0, $t1
+        sw      $t1, 0($t2)
+        addi    $t1, $t1, 4
+        bne     $t1, $t0, .init_parent
+
+        jr      $ra
+
+
+root:
+        sll     $a1, $a1, 2
+        j       .fixed_point_check
+
+.reparent:
+        add     $t0, $a0, $a1
+        sh      $t1, 0($t0)
+        move    $a1, $t1
+
+.fixed_point_check:
+        add     $t0, $a0, $a1
+        lh      $t1, 0($t0)
+        add     $t0, $a0, $t1
+        lh      $t1, 0($t0)
+        bne     $a1, $t1, .reparent
+
+        move    $a0, $a1
+        jr      $ra
+
+
+merge:
+        move    $t6, $ra
+        move    $t4, $a0
+        jal     root
+        move    $a3, $a0                # a3 first root
+        move    $a0, $t4
+        move    $a1, $a2
+        jal     root                    # a0 second root
+        beq     $a0, $a3, .merge_ret
+
+        add     $t0, $t4, $a3
+        add     $t1, $t4, $a0
+        lh      $t2, 2($t0)             # first depth
+        lh      $t3, 2($t1)             # second depth
+        bgt     $t2, $t3, .merge_into_first
+
+        blt     $t2, $t3, .merge_into_second
+
+        addi    $t3, $t3, 1
+        sh      $t3, 2($t1)
+
+.merge_into_second:
+        sh      $a0, 0($t0)
+        jr      $t6
+
+.merge_into_first:
+        sh      $a3, 0($t1)
+
+.merge_ret:
+        jr      $t6
+
+
+# extern int can_chain(size_t domino_count, const uint8_t *dominoes);
+can_chain:
+        move    $a2, $a0
+        move    $a0, $a1
+        move    $a1, $a2
+
+        move    $t5, $ra                # return address
+
+        move    $t8, $a1                # start of dominoes
+        add     $t9, $a1, $a0           # end of dominoes
+
+        add     $sp, $sp, -128
+        move    $a0, $sp                # table for Disjoint Set operations
+        jal     init_parents
+
+        addi    $t0, $a0, 128
+        addi    $t7, $a0, 64
+
+.init_tally:
+        addi    $t0, $t0, -4
+        sw      $zero, 0($t0)
+        bne     $t0, $t7, .init_tally
+
+        beq     $t9, $t8, .report
+
+.tally:
+        subi    $t9, $t9, 1
+        lb      $a2, 0($t9)
+        andi    $a1, $a2, 0xf
+        srl     $a2, $a2, 4
+
+        sll     $t0, $a1, 2
+        add     $t0, $t7, $t0
+        lw      $t1, 0($t0)
+        addi    $t1, $t1, 1
+        sw      $t1, 0($t0)
+
+        sll     $t0, $a2, 2
+        add     $t0, $t7, $t0
+        lw      $t1, 0($t0)
+        addi    $t1, $t1, 1
+        sw      $t1, 0($t0)
+
+        move    $a0, $sp
+        jal     merge
+        bne     $t9, $t8, .tally
+
+.report:
+        addi    $t0, $sp, 128
+        move    $t4, $zero              # number of non-empty roots
+
+.read_tally:
+        subi    $t0, $t0, 4
+        lw      $t1, 0($t0)
+        beqz    $t1, .next_tally
+
+        andi    $t1, $t1, 1
+        bnez    $t1, .fail              # odd tally?
+
+        sub     $t1, $t0, $t7
+        add     $t2, $sp, $t1
+        lh      $t3, 0($t2)
+        sub     $t3, $t3, $t1
+        sltiu   $t3, $t3, 1
+        add     $t4, $t4, $t3           # update number of roots
+
+.next_tally:
+        bne     $t0, $t7, .read_tally
+
+        li      $v0, 1
+        ble     $t4, $v0, .return
+
+.fail:
+        move    $v0, $zero
+
+.return:
+        add     $sp, $sp, 128
+        jr      $t5
