@@ -18,7 +18,7 @@
 .data
 
 # number of test cases
-n:  .word 19
+n:  .word 25
 # input names (null terminated)
 names:  .asciiz
         "Gianna",
@@ -35,11 +35,17 @@ names:  .asciiz
         "Juan",
         "Patricia",
         "Washi",
+        "Ingrid",
+        "Mario",
+        "Quentin",
         "Nayra",
+        "Ugo",
+        "Boris",
         "John",
         "Zeinab",
         "Knud",
-        "Yma"
+        "Yma",
+        "Elias"
 # input numbers
 numbers:  .word
         4,
@@ -56,11 +62,17 @@ numbers:  .word
         12,
         13,
         21,
+        22,
+        33,
+        52,
         62,
+        72,
+        91,
         100,
         101,
         112,
-        123
+        123,
+        972
 # expected output values (null terminated)
 outs:  .asciiz
         "Gianna, you are the 4th customer we serve today. Thank you!",
@@ -77,11 +89,17 @@ outs:  .asciiz
         "Juan, you are the 12th customer we serve today. Thank you!",
         "Patricia, you are the 13th customer we serve today. Thank you!",
         "Washi, you are the 21st customer we serve today. Thank you!",
+        "Ingrid, you are the 22nd customer we serve today. Thank you!",
+        "Mario, you are the 33rd customer we serve today. Thank you!",
+        "Quentin, you are the 52nd customer we serve today. Thank you!",
         "Nayra, you are the 62nd customer we serve today. Thank you!",
+        "Ugo, you are the 72nd customer we serve today. Thank you!",
+        "Boris, you are the 91st customer we serve today. Thank you!",
         "John, you are the 100th customer we serve today. Thank you!",
         "Zeinab, you are the 101st customer we serve today. Thank you!",
         "Knud, you are the 112th customer we serve today. Thank you!",
-        "Yma, you are the 123rd customer we serve today. Thank you!"
+        "Yma, you are the 123rd customer we serve today. Thank you!",
+        "Elias, you are the 972nd customer we serve today. Thank you!"
 
 failmsg: .asciiz "failed for test input: "
 numbermsg: .asciiz " with number "
@@ -151,7 +169,7 @@ exit_fail:
         li      $v0, 4
         syscall
 
-        lb      $a0, 0($s2)             # print number that failed on
+        lw      $a0, 0($s2)             # print number that failed on
         li      $v0, 1                  # 1 is print integer
         syscall
 
