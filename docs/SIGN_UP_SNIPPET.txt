@@ -1,0 +1,17 @@
+.globl count_char
+
+count_char:
+        li      $v0, 0
+
+loop:
+        lb      $t0, 0($a0)
+        beq     $t0, $zero, end
+        bne     $t0, $a1, next
+        addi    $v0, $v0, 1
+
+next:
+        addi    $a0, $a0, 1
+        j       loop
+
+end:
+        jr      $ra
