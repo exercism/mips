@@ -11,7 +11,7 @@
 # t1 - char byte of expected output
 # t2 - char byte of actual output
 
-.eqv BUFFER_SIZE 24
+.eqv BUFFER_SIZE 40
 
 .data
 
@@ -41,7 +41,7 @@ ins:  .asciiz
         "yellow",
         "rhythm",
         "my",
-        "quick fast run"
+        "why do squids enjoy xrays"
 # expected output values (null terminated)
 outs:  .asciiz
         "appleay",
@@ -66,7 +66,7 @@ outs:  .asciiz
         "ellowyay",
         "ythmrhay",
         "ymay",
-        "ickquay astfay unray"
+        "ywhay oday idssquay enjoyay xraysay"
 
 
 failmsg: .asciiz "failed for test input: "
